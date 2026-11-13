@@ -15,9 +15,11 @@ export interface Save {
   seenIntro: Record<number, boolean>; // ville -> intro de Paco vue
   city: CityState; // Ma Ville
   days: string[]; // jours joués (AAAA-MM-JJ), pour la régularité
+  quiz: Record<number, number>; // ville -> meilleur score au quiz de Paco (0..3)
+  cards: string[]; // cartes entreprises gagnées (symboles)
 }
 
-const fresh = (): Save => ({ savings: 10000, stars: {}, seenIntro: {}, city: newCity(COMPANIES), days: [] });
+const fresh = (): Save => ({ savings: 10000, stars: {}, seenIntro: {}, city: newCity(COMPANIES), days: [], quiz: {}, cards: [] });
 
 export function load(): Save {
   try {
@@ -39,9 +41,13 @@ export function cityStars(s: Save, city: number) {
   return LEVELS.filter((l) => l.city === city).reduce((n, l) => n + (s.stars[l.id] ?? 0), 0);
 }
 
-/** GDD §7 : ville suivante débloquée avec ≥ 5 étoiles sur 9 (le quiz de Paco arrive à l'étape suivante). */
+/** GDD §7 : ville suivante débloquée avec ≥ 5 étoiles sur 9 + quiz de Paco réussi (2/3). */
+export function cityValidated(s: Save, city: number) {
+  return cityStars(s, city) >= 5 && (s.quiz[city] ?? 0) >= 2;
+}
+
 export function cityUnlocked(s: Save, city: number) {
-  return city === 1 || cityStars(s, city - 1) >= 5;
+  return city === 1 || cityValidated(s, city - 1);
 }
 
 export function levelUnlocked(s: Save, l: LevelDef) {
@@ -51,7 +57,7 @@ export function levelUnlocked(s: Save, l: LevelDef) {
 }
 
 export function title(s: Save) {
-  const done = Array.from({ length: 15 }, (_, i) => i + 1).filter((c) => cityStars(s, c) >= 5).length;
+  const done = Array.from({ length: 15 }, (_, i) => i + 1).filter((c) => cityValidated(s, c)).length;
   if (done >= 15) return 'GOAT de la BRVM';
   if (done >= 9) return 'Investisseur Patient';
   if (done >= 4) return 'Actionnaire Moyen';
@@ -59,7 +65,25 @@ export function title(s: Save) {
 }
 
 export function citiesDone(s: Save) {
-  return CITIES.filter((c) => cityStars(s, c.n) >= 5).length;
+  return CITIES.filter((c) => cityValidated(s, c.n)).length;
+}
+
+/** Cartes gagnées en gardant une part au moins 10 séances (GDD §5). */
+export function cardsFromHoldings(s: Save): string[] {
+  const won = Object.entries(s.city.holdings)
+    .filter(([, h]) => s.city.seance - h.since >= 10)
+    .map(([sym]) => sym);
+  return [...new Set([...s.cards, ...won])];
+}
+
+/** Carte offerte pour un quiz sans faute : une entreprise du pays de la ville, sinon une entreprise débloquée. */
+export function quizRewardCard(s: Save, city: number): string | null {
+  const country = CITIES[city - 1].country;
+  const pool = COMPANIES.filter((c) => !s.cards.includes(c.symbol));
+  const local = pool.filter((c) => c.country === country);
+  const list = local.length ? local : pool.filter((c) => unlockedCompanies(s).includes(c));
+  if (!list.length) return null;
+  return list[(s.days.length + city * 7) % list.length].symbol;
 }
 
 /** Les entreprises des pays dont au moins une ville est débloquée. */

@@ -1,6 +1,24 @@
 import { useEffect, useState } from 'react';
 import { CITIES } from './data/cities';
-import { COMPANIES, LEVELS, cityStars, cityUnlocked, citiesDone, levelUnlocked, load, persist, title, today, unlockedCompanies, type Save } from './store';
+import {
+  COMPANIES,
+  LEVELS,
+  cardsFromHoldings,
+  cityStars,
+  cityUnlocked,
+  cityValidated,
+  citiesDone,
+  levelUnlocked,
+  load,
+  persist,
+  quizRewardCard,
+  title,
+  today,
+  unlockedCompanies,
+  type Save,
+} from './store';
+import { QuizView } from './components/QuizView';
+import { CardsView } from './components/CardsView';
 import { CityView } from './components/CityView';
 import { advance, scorePaco } from './engine/city';
 import { LevelView, type LevelResult } from './components/LevelView';
@@ -9,7 +27,7 @@ import { isMuted, setMuted, startMusic } from './audio';
 import type { LevelDef } from './engine/board';
 import './App.css';
 
-type Screen = { name: 'home' } | { name: 'map' } | { name: 'ville' } | { name: 'city'; city: number } | { name: 'level'; level: LevelDef };
+type Screen = { name: 'home' } | { name: 'map' } | { name: 'ville' } | { name: 'cards' } | { name: 'quiz'; city: number } | { name: 'city'; city: number } | { name: 'level'; level: LevelDef };
 
 export default function App() {
   const [save, setSave] = useState<Save>(load);
@@ -26,14 +44,26 @@ export default function App() {
   const onEnd = (level: LevelDef, r: LevelResult) => {
     // 1 puzzle réussi = 1 séance dans Ma Ville (GDD §2).
     const step = advance(save.city, COMPANIES, 2026);
-    setSave((s) => ({
-      ...s,
-      savings: s.savings + r.savings + step.cashGained,
-      stars: { ...s.stars, [level.id]: Math.max(s.stars[level.id] ?? 0, r.stars) },
-      city: step.state,
-      days: s.days.includes(today()) ? s.days : [...s.days, today()],
-    }));
+    setSave((s) => {
+      const next: Save = {
+        ...s,
+        savings: s.savings + r.savings + step.cashGained,
+        stars: { ...s.stars, [level.id]: Math.max(s.stars[level.id] ?? 0, r.stars) },
+        city: step.state,
+        days: s.days.includes(today()) ? s.days : [...s.days, today()],
+      };
+      return { ...next, cards: cardsFromHoldings(next) };
+    });
     setScreen({ name: 'city', city: level.city });
+  };
+
+  const onQuiz = (city: number, score: number) => {
+    setSave((s) => {
+      const next = { ...s, quiz: { ...s.quiz, [city]: Math.max(s.quiz[city] ?? 0, score) } };
+      const card = score === 3 ? quizRewardCard(s, city) : null;
+      return card ? { ...next, cards: [...next.cards, card] } : next;
+    });
+    setScreen({ name: 'city', city });
   };
 
   const toggleSound = () => {
@@ -83,6 +113,12 @@ export default function App() {
             <span>🏙️ Ma Ville</span>
             <small>
               Score PACO {scorePaco(save.city, COMPANIES, save.days.length)} · séance {save.city.seance}
+            </small>
+          </button>
+          <button className="villebtn alt" onClick={() => setScreen({ name: 'cards' })}>
+            <span>🃏 Mes cartes</span>
+            <small>
+              {save.cards.length} / {unlockedCompanies(save).length} entreprises
             </small>
           </button>
           <ol className="route">
@@ -144,7 +180,20 @@ export default function App() {
                       );
                     })}
                   </div>
-                  {done && <Paco pose="apprendre" text={`Ce qu'on retient : ${c.retiens}`} />}
+                  {done && !cityValidated(save, c.n) && (
+                    <>
+                      <Paco pose="apprendre" text={`Ce qu'on retient : ${c.retiens}`} />
+                      <button className="btn big" onClick={() => setScreen({ name: 'quiz', city: c.n })}>
+                        Quiz de Paco
+                      </button>
+                    </>
+                  )}
+                  {cityValidated(save, c.n) && (
+                    <Paco
+                      pose="reussir"
+                      text={`Ville validée ! ${c.retiens}${c.n < 15 ? ` Direction ${CITIES[c.n].name}.` : ''}`}
+                    />
+                  )}
                   <button className="villebtn" onClick={() => setScreen({ name: 'ville' })}>
                     <span>🏙️ Voir Ma Ville</span>
                     <small>Chaque niveau réussi fait passer une séance de bourse.</small>
@@ -166,6 +215,14 @@ export default function App() {
           onChange={(city, cash) => setSave((s) => ({ ...s, city, savings: cash }))}
           onBack={() => setScreen({ name: 'map' })}
         />
+      )}
+
+      {screen.name === 'quiz' && (
+        <QuizView city={screen.city} onDone={(score) => onQuiz(screen.city, score)} onQuit={() => setScreen({ name: 'city', city: screen.city })} />
+      )}
+
+      {screen.name === 'cards' && (
+        <CardsView cards={save.cards} companies={unlockedCompanies(save)} onBack={() => setScreen({ name: 'map' })} />
       )}
 
       {screen.name === 'level' && (

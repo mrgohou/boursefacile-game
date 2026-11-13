@@ -1,0 +1,86 @@
+// Quiz de Paco : 3 questions par ville, 2 bonnes réponses pour passer (GDD §7).
+// La première réponse de chaque liste est la bonne ; l'ordre est mélangé à l'affichage.
+
+export interface Question {
+  q: string;
+  a: [string, ...string[]];
+  why: string;
+}
+
+export const QUIZ: Record<number, Question[]> = {
+  1: [
+    { q: 'Combien de pays partagent la BRVM ?', a: ['8', '3', '15', '1'], why: "Les 8 pays de l'UEMOA ont une seule bourse commune." },
+    { q: 'Dans quelle monnaie achète-t-on les actions à la BRVM ?', a: ['Le franc CFA', "L'euro", 'Le dollar', 'Le naira'], why: 'Tout se fait en franc CFA : pas de risque de change dans la zone.' },
+    { q: 'Où se trouve le siège de la BRVM ?', a: ['Abidjan', 'Dakar', 'Lomé', 'Paris'], why: 'Le siège est à Abidjan, et chaque pays a une antenne.' },
+  ],
+  2: [
+    { q: "Une action, c'est…", a: ["un petit morceau d'une entreprise", 'un prêt à une banque', 'un billet de loterie', 'un produit en magasin'], why: "Avec une action, tu possèdes une petite part de l'entreprise." },
+    { q: "Si tu as des actions Sonatel, tu es…", a: ['un peu propriétaire de Sonatel', 'employé de Sonatel', 'obligé d’être client Sonatel'], why: "Tu es actionnaire : tu partages ses succès et ses risques." },
+    { q: '10 actions à 4 110 FCFA coûtent combien, sans les frais ?', a: ['41 100 FCFA', '4 120 FCFA', '411 000 FCFA', '4 110 FCFA'], why: '10 × 4 110 = 41 100 FCFA.' },
+  ],
+  3: [
+    { q: "Beaucoup plus d'acheteurs que de vendeurs : le prix…", a: ['monte', 'baisse', 'ne bouge pas'], why: "Quand tout le monde veut acheter, les prix proposés montent." },
+    { q: "Qui fixe le prix d'une action chaque jour ?", a: ["L'offre et la demande des investisseurs", 'Le gouvernement', 'Ta banque', 'Paco'], why: 'Le prix vient de la rencontre entre acheteurs et vendeurs.' },
+    { q: 'Une action passe de 80 000 à 84 000 FCFA. Elle a gagné…', a: ['5 %', '4 %', '40 %', '84 %'], why: '4 000 ÷ 80 000 = 0,05, soit 5 %.' },
+  ],
+  4: [
+    { q: 'Quelles sont les deux façons de gagner en bourse ?', a: ['La plus-value et les dividendes', 'La loterie et la chance', 'Les frais et les impôts'], why: 'Gain total = plus-value à la revente + dividendes reçus.' },
+    { q: 'Achat à 2 000, revente à 2 200 FCFA : quelle plus-value par action ?', a: ['200 FCFA', '2 200 FCFA', '4 200 FCFA', '20 FCFA'], why: '2 200 − 2 000 = 200 FCFA (avant frais).' },
+    { q: "Un dividende, c'est…", a: ["une part du bénéfice versée aux actionnaires", 'une taxe à payer', "le prix d'achat de l'action"], why: "L'entreprise partage une partie de ses bénéfices." },
+  ],
+  5: [
+    { q: 'Action à 10 000 FCFA, dividende de 800 FCFA : quel rendement ?', a: ['8 %', '80 %', '0,8 %', '12 %'], why: '800 ÷ 10 000 × 100 = 8 %. Soit 8 pièces pour 100 posées.' },
+    { q: 'Qui décide de verser un dividende ?', a: ["Les actionnaires, en assemblée générale (AGO)", 'La BRVM', 'Ta SGI'], why: "Chaque année, l'AGO vote ce qu'on fait du bénéfice." },
+    { q: "Un dividende versé l'an dernier est-il garanti cette année ?", a: ['Non, jamais garanti', 'Oui, toujours'], why: 'Il dépend des bénéfices et du vote de l’AGO.' },
+  ],
+  6: [
+    { q: 'Le BPA, c’est…', a: ["le bénéfice net divisé par le nombre d'actions", 'le prix divisé par le dividende', 'le nombre de salariés'], why: "Il dit ce que chaque action « gagne » vraiment." },
+    { q: "Bénéfice de 10 milliards, 10 millions d'actions : quel BPA ?", a: ['1 000 FCFA', '100 FCFA', '10 000 FCFA', '1 FCFA'], why: '10 000 000 000 ÷ 10 000 000 = 1 000 FCFA.' },
+    { q: 'Un BPA négatif veut dire que…', a: ["l'entreprise a perdu de l'argent", "l'action est gratuite", 'le dividende sera énorme'], why: 'Cœur rouge : cette année, l’entreprise a fait une perte.' },
+  ],
+  7: [
+    { q: 'Le PER se calcule comment ?', a: ['Cours ÷ BPA', 'BPA ÷ cours', 'Dividende × 10'], why: 'PER = prix de l’action ÷ bénéfice par action.' },
+    { q: 'Cours de 10 000 FCFA, BPA de 1 000 FCFA : quel PER ?', a: ['10', '1', '100', '9 000'], why: '10 000 ÷ 1 000 = 10 : il faut 10 années de bénéfice pour « rembourser » le prix.' },
+    { q: 'Si le BPA est négatif, le PER…', a: ['ne se calcule pas', 'vaut zéro', 'est excellent'], why: 'Pas de bénéfice, pas de PER : la règle d’or de Bourse Facile.' },
+  ],
+  8: [
+    { q: 'Pour acheter une action à la BRVM, je passe par…', a: ['une SGI agréée', 'le marché du quartier', "n'importe quel site internet"], why: 'Seules les SGI agréées peuvent passer tes ordres.' },
+    { q: 'SGI veut dire…', a: ["Société de Gestion et d'Intermédiation", "Société Générale d'Investissement", 'Service du Gouvernement Ivoirien'], why: "C'est ton intermédiaire officiel avec la bourse." },
+    { q: 'Où sont gardées tes actions ?', a: ['Sur un compte-titres', 'Dans un portefeuille Mobile Money', 'Dans un coffre à la maison'], why: 'La SGI ouvre pour toi un compte-titres.' },
+  ],
+  9: [
+    { q: 'Un ordre « à cours limité », c’est…', a: ["fixer le prix maximum que j'accepte de payer", 'acheter à n’importe quel prix', 'acheter sans payer de frais'], why: "Tu protèges ton budget : pas d'achat au-dessus de ta limite." },
+    { q: "Ma limite est plus basse que le cours du jour. Mon ordre…", a: ['attend', "s'exécute plus cher", 'est payé par Paco'], why: "Il reste en attente jusqu'à ce qu'un vendeur accepte ton prix." },
+    { q: 'Qui transmet ton ordre à la bourse ?', a: ['Ta SGI', 'Ton voisin', "L'État"], why: 'Tu donnes la consigne, ta SGI l’exécute.' },
+  ],
+  10: [
+    { q: 'Que coûte chaque achat ou vente ?', a: ['Des frais', 'Rien du tout'], why: 'Courtage et autres frais : vérifie le barème de ta SGI.' },
+    { q: 'Acheter et revendre très souvent…', a: ['fait payer beaucoup de frais', 'rapporte toujours plus', 'supprime les frais'], why: 'Les frais grignotent tes gains à chaque opération.' },
+    { q: 'Des frais de 1 % sur 10 000 FCFA, ça fait…', a: ['100 FCFA', '10 FCFA', '1 000 FCFA', '1 FCFA'], why: '1 % de 10 000 = 100 FCFA.' },
+  ],
+  11: [
+    { q: "Diversifier, c'est…", a: ['répartir son argent entre plusieurs entreprises et secteurs', 'tout mettre sur une seule action', 'changer de SGI chaque mois'], why: 'Plusieurs paniers, moins de risque.' },
+    { q: 'Pourquoi diversifier ?', a: ['Une mauvaise nouvelle touche moins tout ton portefeuille', 'Pour gagner à coup sûr', 'Pour payer moins de frais'], why: 'La diversification réduit le risque, elle ne garantit pas de gain.' },
+    { q: 'Quelle ville est la plus diversifiée ?', a: ['Banque + télécoms + agro', 'Trois banques', 'Une seule entreprise'], why: 'Trois secteurs différents réagissent différemment aux nouvelles.' },
+  ],
+  12: [
+    { q: 'Fractionnement par 10 : 1 action à 41 000 FCFA devient…', a: ['10 actions à 4 100 FCFA', '1 action à 4 100 FCFA', '10 actions à 41 000 FCFA'], why: 'Plus de parts, chacune plus petite.' },
+    { q: 'Après un fractionnement, la valeur totale de tes actions…', a: ['ne change pas', 'est multipliée par 10', 'est divisée par 10'], why: '10 × 4 100 = 41 000 : même valeur.' },
+    { q: 'Pourquoi une entreprise fractionne-t-elle ses actions ?', a: ['Pour rendre l’action plus accessible', 'Pour cacher ses pertes', 'Pour supprimer les dividendes'], why: 'Un prix unitaire plus bas attire plus d’acheteurs, comme Sonatel en 2026.' },
+  ],
+  13: [
+    { q: 'Pour toucher le dividende, il faut avoir l’action…', a: ['avant la date de détachement', 'après la date de paiement', 'à n’importe quel moment'], why: 'Après le détachement, le dividende de l’année est déjà attribué.' },
+    { q: 'La date de paiement, c’est…', a: ["le jour où l'argent arrive sur ton compte", "le jour de l'AGO", "le jour où tu achètes"], why: 'Le détachement vient d’abord, le paiement ensuite.' },
+    { q: 'Où vérifier les dates officielles ?', a: ['Dans les avis publiés par la BRVM', 'Dans une rumeur sur les réseaux', 'Nulle part'], why: 'Les avis officiels font foi, et un avis rectificatif peut les changer.' },
+  ],
+  14: [
+    { q: 'Épargner un peu chaque mois…', a: ['fait grandir ton épargne avec le temps', 'ne sert à rien', 'coûte plus cher que tout placer d’un coup'], why: 'La régularité et le temps travaillent pour toi.' },
+    { q: 'Des dividendes réinvestis…', a: ['peuvent rapporter à leur tour', 'disparaissent', 'sont interdits'], why: "C'est l'effet boule de neige." },
+    { q: 'Les performances passées…', a: ['ne garantissent pas les résultats futurs', 'garantissent les gains de demain'], why: 'Le passé aide à comprendre, pas à prédire.' },
+  ],
+  15: [
+    { q: 'La stratégie préférée de Paco ?', a: ['Patience + diversification', 'Tout miser vite', 'Suivre une rumeur'], why: 'Sage plutôt que chanceux : c’est le Score PACO.' },
+    { q: 'Avant d’investir pour de vrai, il faut…', a: ['comprendre, comparer les frais et placer seulement ce qu’on peut laisser longtemps', 'emprunter beaucoup', 'tout placer le premier jour'], why: "On n'investit que l'argent dont on n'a pas besoin tout de suite." },
+    { q: 'Le marché baisse. Un GOAT de la BRVM…', a: ['garde son calme et regarde les entreprises', 'vend tout immédiatement', 'arrête de lire les nouvelles'], why: 'Une séance ne fait pas une année.' },
+  ],
+};
