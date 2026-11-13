@@ -1,0 +1,1034 @@
+{
+  "schema_version": 2,
+  "status": "imported",
+  "rendering": "pre_rendered_2d_clay_isometric",
+  "source": {
+    "repository": "https://github.com/mrgohou/boursefacile-game",
+    "commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+    "source_path_convention": "same assets/ relative paths as runtime_path",
+    "import_method": "original WebP files copied without resizing",
+    "provenance_status": "repository_and_commit_recorded",
+    "usage_rights_status": "confirmation_to_record"
+  },
+  "classification": {
+    "building_sectors": [
+      "agro",
+      "banque",
+      "distribution",
+      "energie",
+      "industrie",
+      "services",
+      "telecom"
+    ],
+    "building_sector_count": 7,
+    "base_tile_count": 6,
+    "seventh_sector": "services",
+    "seventh_sector_tile_mapping": "needs_game_design_confirmation",
+    "note": "Repository name services supersedes the prior visual label logistics; no seventh tile invented."
+  },
+  "integration": {
+    "mascot_widget": "PacoMascot(size:112, pose:accueil)",
+    "city_widget": "CityIllustration(height:180, ownedCompanyIds:[cacao,telecom,banque])",
+    "city_visible_files": [
+      "assets/buildings/agro-1.webp",
+      "assets/buildings/telecom-1.webp",
+      "assets/buildings/banque-1.webp"
+    ],
+    "building_growth": "not_implemented_pending_rules_validation",
+    "decode": "Image.asset cacheWidth derived from display width × devicePixelRatio",
+    "pubspec_registration": "managed_by_parent_integration",
+    "ui_reference": "dashboard is a layout reference, not a game asset"
+  },
+  "budgets": {
+    "actual_asset_bytes": 991724,
+    "proposed_initial_art_bytes": 400000,
+    "validation": "measure packaged size and decoded memory on target device; no source resize performed"
+  },
+  "validation_remaining": [
+    "Inspect alpha edges on light and dark surfaces",
+    "Calibrate pivots across all five levels before growth",
+    "Confirm rights of use and modification with project owner",
+    "Confirm mapping of services versus six base tiles",
+    "Verify device decode memory and visual legibility"
+  ],
+  "assets": [
+    {
+      "id": "agro-1",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/agro-1.webp",
+      "source_path": "assets/buildings/agro-1.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 15622,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "agro",
+      "level": 1,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "agro-2",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/agro-2.webp",
+      "source_path": "assets/buildings/agro-2.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 18636,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "agro",
+      "level": 2,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "agro-3",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/agro-3.webp",
+      "source_path": "assets/buildings/agro-3.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 20656,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "agro",
+      "level": 3,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "agro-4",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/agro-4.webp",
+      "source_path": "assets/buildings/agro-4.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 21918,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "agro",
+      "level": 4,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "agro-5",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/agro-5.webp",
+      "source_path": "assets/buildings/agro-5.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 22574,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "agro",
+      "level": 5,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "banque-1",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/banque-1.webp",
+      "source_path": "assets/buildings/banque-1.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 12458,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "banque",
+      "level": 1,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "banque-2",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/banque-2.webp",
+      "source_path": "assets/buildings/banque-2.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 14990,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "banque",
+      "level": 2,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "banque-3",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/banque-3.webp",
+      "source_path": "assets/buildings/banque-3.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 15190,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "banque",
+      "level": 3,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "banque-4",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/banque-4.webp",
+      "source_path": "assets/buildings/banque-4.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 16022,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "banque",
+      "level": 4,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "banque-5",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/banque-5.webp",
+      "source_path": "assets/buildings/banque-5.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 14636,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "banque",
+      "level": 5,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "distribution-1",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/distribution-1.webp",
+      "source_path": "assets/buildings/distribution-1.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 15364,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "distribution",
+      "level": 1,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "distribution-2",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/distribution-2.webp",
+      "source_path": "assets/buildings/distribution-2.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 16926,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "distribution",
+      "level": 2,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "distribution-3",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/distribution-3.webp",
+      "source_path": "assets/buildings/distribution-3.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 18936,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "distribution",
+      "level": 3,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "distribution-4",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/distribution-4.webp",
+      "source_path": "assets/buildings/distribution-4.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 19492,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "distribution",
+      "level": 4,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "distribution-5",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/distribution-5.webp",
+      "source_path": "assets/buildings/distribution-5.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 18414,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "distribution",
+      "level": 5,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "energie-1",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/energie-1.webp",
+      "source_path": "assets/buildings/energie-1.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 17218,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "energie",
+      "level": 1,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "energie-2",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/energie-2.webp",
+      "source_path": "assets/buildings/energie-2.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 17870,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "energie",
+      "level": 2,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "energie-3",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/energie-3.webp",
+      "source_path": "assets/buildings/energie-3.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 18820,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "energie",
+      "level": 3,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "energie-4",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/energie-4.webp",
+      "source_path": "assets/buildings/energie-4.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 19420,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "energie",
+      "level": 4,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "energie-5",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/energie-5.webp",
+      "source_path": "assets/buildings/energie-5.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 18390,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "energie",
+      "level": 5,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "industrie-1",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/industrie-1.webp",
+      "source_path": "assets/buildings/industrie-1.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 13084,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "industrie",
+      "level": 1,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "industrie-2",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/industrie-2.webp",
+      "source_path": "assets/buildings/industrie-2.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 14934,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "industrie",
+      "level": 2,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "industrie-3",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/industrie-3.webp",
+      "source_path": "assets/buildings/industrie-3.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 15674,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "industrie",
+      "level": 3,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "industrie-4",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/industrie-4.webp",
+      "source_path": "assets/buildings/industrie-4.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 15488,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "industrie",
+      "level": 4,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "industrie-5",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/industrie-5.webp",
+      "source_path": "assets/buildings/industrie-5.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 17144,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "industrie",
+      "level": 5,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "passant-rouge",
+      "kind": "pedestrian",
+      "status": "imported",
+      "runtime_path": "assets/buildings/passant-rouge.webp",
+      "source_path": "assets/buildings/passant-rouge.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 8754,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending"
+    },
+    {
+      "id": "passant-vert",
+      "kind": "pedestrian",
+      "status": "imported",
+      "runtime_path": "assets/buildings/passant-vert.webp",
+      "source_path": "assets/buildings/passant-vert.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 9288,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending"
+    },
+    {
+      "id": "services-1",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/services-1.webp",
+      "source_path": "assets/buildings/services-1.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 13456,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "services",
+      "level": 1,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "services-2",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/services-2.webp",
+      "source_path": "assets/buildings/services-2.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 14956,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "services",
+      "level": 2,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "services-3",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/services-3.webp",
+      "source_path": "assets/buildings/services-3.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 15878,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "services",
+      "level": 3,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "services-4",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/services-4.webp",
+      "source_path": "assets/buildings/services-4.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 16368,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "services",
+      "level": 4,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "services-5",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/services-5.webp",
+      "source_path": "assets/buildings/services-5.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 14048,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "services",
+      "level": 5,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "telecom-1",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/telecom-1.webp",
+      "source_path": "assets/buildings/telecom-1.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 17684,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "telecom",
+      "level": 1,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "telecom-2",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/telecom-2.webp",
+      "source_path": "assets/buildings/telecom-2.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 17040,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "telecom",
+      "level": 2,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "telecom-3",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/telecom-3.webp",
+      "source_path": "assets/buildings/telecom-3.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 17448,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "telecom",
+      "level": 3,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "telecom-4",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/telecom-4.webp",
+      "source_path": "assets/buildings/telecom-4.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 17522,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "telecom",
+      "level": 4,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "telecom-5",
+      "kind": "building",
+      "status": "imported",
+      "runtime_path": "assets/buildings/telecom-5.webp",
+      "source_path": "assets/buildings/telecom-5.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 17566,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "sector": "telecom",
+      "level": 5,
+      "growth_rule_status": "not_validated",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "id": "accueil",
+      "kind": "mascot",
+      "status": "imported",
+      "runtime_path": "assets/paco/accueil.webp",
+      "source_path": "assets/paco/accueil.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 26116,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pose": "accueil",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.9
+      ]
+    },
+    {
+      "id": "analyser",
+      "kind": "mascot",
+      "status": "imported",
+      "runtime_path": "assets/paco/analyser.webp",
+      "source_path": "assets/paco/analyser.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 20418,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pose": "analyser",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.9
+      ]
+    },
+    {
+      "id": "apprendre",
+      "kind": "mascot",
+      "status": "imported",
+      "runtime_path": "assets/paco/apprendre.webp",
+      "source_path": "assets/paco/apprendre.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 16754,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pose": "apprendre",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.9
+      ]
+    },
+    {
+      "id": "attention",
+      "kind": "mascot",
+      "status": "imported",
+      "runtime_path": "assets/paco/attention.webp",
+      "source_path": "assets/paco/attention.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 32084,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pose": "attention",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.9
+      ]
+    },
+    {
+      "id": "confiance",
+      "kind": "mascot",
+      "status": "imported",
+      "runtime_path": "assets/paco/confiance.webp",
+      "source_path": "assets/paco/confiance.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 26342,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pose": "confiance",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.9
+      ]
+    },
+    {
+      "id": "expliquer",
+      "kind": "mascot",
+      "status": "imported",
+      "runtime_path": "assets/paco/expliquer.webp",
+      "source_path": "assets/paco/expliquer.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 24446,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pose": "expliquer",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.9
+      ]
+    },
+    {
+      "id": "patience",
+      "kind": "mascot",
+      "status": "imported",
+      "runtime_path": "assets/paco/patience.webp",
+      "source_path": "assets/paco/patience.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 29760,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pose": "patience",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.9
+      ]
+    },
+    {
+      "id": "progresser",
+      "kind": "mascot",
+      "status": "imported",
+      "runtime_path": "assets/paco/progresser.webp",
+      "source_path": "assets/paco/progresser.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 18774,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pose": "progresser",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.9
+      ]
+    },
+    {
+      "id": "reconfort",
+      "kind": "mascot",
+      "status": "imported",
+      "runtime_path": "assets/paco/reconfort.webp",
+      "source_path": "assets/paco/reconfort.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 29810,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pose": "reconfort",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.9
+      ]
+    },
+    {
+      "id": "reflechir",
+      "kind": "mascot",
+      "status": "imported",
+      "runtime_path": "assets/paco/reflechir.webp",
+      "source_path": "assets/paco/reflechir.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 22544,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pose": "reflechir",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.9
+      ]
+    },
+    {
+      "id": "reussir",
+      "kind": "mascot",
+      "status": "imported",
+      "runtime_path": "assets/paco/reussir.webp",
+      "source_path": "assets/paco/reussir.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 16892,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pose": "reussir",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.9
+      ]
+    },
+    {
+      "id": "ago",
+      "kind": "tile",
+      "status": "imported",
+      "runtime_path": "assets/tiles/ago.webp",
+      "source_path": "assets/tiles/ago.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 34418,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "ampoule",
+      "kind": "tile",
+      "status": "imported",
+      "runtime_path": "assets/tiles/ampoule.webp",
+      "source_path": "assets/tiles/ampoule.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 7640,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "bidon",
+      "kind": "tile",
+      "status": "imported",
+      "runtime_path": "assets/tiles/bidon.webp",
+      "source_path": "assets/tiles/bidon.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 7028,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "billet",
+      "kind": "tile",
+      "status": "imported",
+      "runtime_path": "assets/tiles/billet.webp",
+      "source_path": "assets/tiles/billet.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 8628,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "cacao",
+      "kind": "tile",
+      "status": "imported",
+      "runtime_path": "assets/tiles/cacao.webp",
+      "source_path": "assets/tiles/cacao.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 9066,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "cadenas",
+      "kind": "tile",
+      "status": "imported",
+      "runtime_path": "assets/tiles/cadenas.webp",
+      "source_path": "assets/tiles/cadenas.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 6566,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "diversif",
+      "kind": "tile",
+      "status": "imported",
+      "runtime_path": "assets/tiles/diversif.webp",
+      "source_path": "assets/tiles/diversif.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 11568,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "dividende",
+      "kind": "tile",
+      "status": "imported",
+      "runtime_path": "assets/tiles/dividende.webp",
+      "source_path": "assets/tiles/dividende.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 18224,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "engrenage",
+      "kind": "tile",
+      "status": "imported",
+      "runtime_path": "assets/tiles/engrenage.webp",
+      "source_path": "assets/tiles/engrenage.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 7226,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "id": "telephone",
+      "kind": "tile",
+      "status": "imported",
+      "runtime_path": "assets/tiles/telephone.webp",
+      "source_path": "assets/tiles/telephone.webp",
+      "source_commit": "c491e6ed1f14034b4b57c0eda91ace4ed63d034c",
+      "size_bytes": 7536,
+      "alpha_validation": "pending_device_visual_review",
+      "rights_record": "repository_origin_recorded_usage_confirmation_pending",
+      "pivot_normalized_proposed": [
+        0.5,
+        0.5
+      ]
+    }
+  ]
+}
