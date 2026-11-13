@@ -1,0 +1,1289 @@
+[
+  {
+    "id": "c1-l1",
+    "city": 1,
+    "index": 1,
+    "moves": 26,
+    "tiles": [
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 12
+      }
+    ],
+    "seed": 1000,
+    "pacoBefore": "Récolte 12 cacao pour remplir ta tirelire.",
+    "pacoHint": "Aligne 4 tuiles pour créer une tuile Dividende : elle vide toute une ligne !"
+  },
+  {
+    "id": "c1-l2",
+    "city": 1,
+    "index": 2,
+    "moves": 26,
+    "tiles": [
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 950
+      }
+    ],
+    "seed": 8919,
+    "pacoBefore": "Atteins 950 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c1-l3",
+    "city": 1,
+    "index": 3,
+    "moves": 26,
+    "tiles": [
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 10
+      },
+      {
+        "kind": "collect",
+        "tile": "telephone",
+        "count": 10
+      }
+    ],
+    "seed": 16838,
+    "pacoBefore": "Récolte 10 cacao et 10 téléphones : deux secteurs, c'est plus solide !",
+    "pacoHint": "Une forme en L ou en T crée une tuile AGO qui explose tout autour."
+  },
+  {
+    "id": "c2-l1",
+    "city": 2,
+    "index": 1,
+    "moves": 26,
+    "tiles": [
+      "telephone",
+      "cacao",
+      "billet",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "telephone",
+        "count": 12
+      }
+    ],
+    "seed": 24757,
+    "pacoBefore": "Récolte 12 téléphones pour remplir ta tirelire.",
+    "pacoHint": "Aligne 4 tuiles pour créer une tuile Dividende : elle vide toute une ligne !"
+  },
+  {
+    "id": "c2-l2",
+    "city": 2,
+    "index": 2,
+    "moves": 26,
+    "tiles": [
+      "telephone",
+      "cacao",
+      "billet",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 1050
+      }
+    ],
+    "seed": 32676,
+    "pacoBefore": "Atteins 1050 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c2-l3",
+    "city": 2,
+    "index": 3,
+    "moves": 26,
+    "tiles": [
+      "telephone",
+      "cacao",
+      "billet",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "telephone",
+        "count": 10
+      },
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 10
+      }
+    ],
+    "seed": 40595,
+    "pacoBefore": "Récolte 10 téléphones et 10 cacao : deux secteurs, c'est plus solide !",
+    "pacoHint": "Une forme en L ou en T crée une tuile AGO qui explose tout autour."
+  },
+  {
+    "id": "c3-l1",
+    "city": 3,
+    "index": 1,
+    "moves": 26,
+    "tiles": [
+      "billet",
+      "cacao",
+      "telephone",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "billet",
+        "count": 13
+      }
+    ],
+    "seed": 48514,
+    "pacoBefore": "Récolte 13 billets pour remplir ta tirelire.",
+    "pacoHint": "Aligne 4 tuiles pour créer une tuile Dividende : elle vide toute une ligne !"
+  },
+  {
+    "id": "c3-l2",
+    "city": 3,
+    "index": 2,
+    "moves": 26,
+    "tiles": [
+      "billet",
+      "cacao",
+      "telephone",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 1150
+      }
+    ],
+    "seed": 56433,
+    "pacoBefore": "Atteins 1150 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c3-l3",
+    "city": 3,
+    "index": 3,
+    "moves": 25,
+    "tiles": [
+      "billet",
+      "cacao",
+      "telephone",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "billet",
+        "count": 11
+      },
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 11
+      }
+    ],
+    "seed": 64352,
+    "pacoBefore": "Récolte 11 billets et 11 cacao : deux secteurs, c'est plus solide !",
+    "pacoHint": "Une forme en L ou en T crée une tuile AGO qui explose tout autour."
+  },
+  {
+    "id": "c4-l1",
+    "city": 4,
+    "index": 1,
+    "moves": 25,
+    "tiles": [
+      "bidon",
+      "cacao",
+      "telephone",
+      "billet",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "bidon",
+        "count": 13
+      }
+    ],
+    "seed": 72271,
+    "pacoBefore": "Récolte 13 bidons pour remplir ta tirelire.",
+    "pacoHint": "Aligne 4 tuiles pour créer une tuile Dividende : elle vide toute une ligne !"
+  },
+  {
+    "id": "c4-l2",
+    "city": 4,
+    "index": 2,
+    "moves": 25,
+    "tiles": [
+      "bidon",
+      "cacao",
+      "telephone",
+      "billet",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 1250
+      }
+    ],
+    "seed": 80190,
+    "pacoBefore": "Atteins 1250 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c4-l3",
+    "city": 4,
+    "index": 3,
+    "moves": 25,
+    "tiles": [
+      "bidon",
+      "cacao",
+      "telephone",
+      "billet",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "bidon",
+        "count": 11
+      },
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 11
+      }
+    ],
+    "seed": 88109,
+    "pacoBefore": "Récolte 11 bidons et 11 cacao : deux secteurs, c'est plus solide !",
+    "pacoHint": "Une forme en L ou en T crée une tuile AGO qui explose tout autour."
+  },
+  {
+    "id": "c5-l1",
+    "city": 5,
+    "index": 1,
+    "moves": 25,
+    "tiles": [
+      "telephone",
+      "cacao",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "telephone",
+        "count": 14
+      }
+    ],
+    "seed": 96028,
+    "pacoBefore": "Récolte 14 téléphones pour remplir ta tirelire.",
+    "pacoHint": "Aligne 4 tuiles pour créer une tuile Dividende : elle vide toute une ligne !"
+  },
+  {
+    "id": "c5-l2",
+    "city": 5,
+    "index": 2,
+    "moves": 25,
+    "tiles": [
+      "telephone",
+      "cacao",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 1350
+      }
+    ],
+    "seed": 103947,
+    "pacoBefore": "Atteins 1350 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c5-l3",
+    "city": 5,
+    "index": 3,
+    "moves": 25,
+    "tiles": [
+      "telephone",
+      "cacao",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "telephone",
+        "count": 11
+      },
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 11
+      }
+    ],
+    "seed": 111866,
+    "pacoBefore": "Récolte 11 téléphones et 11 cacao : deux secteurs, c'est plus solide !",
+    "pacoHint": "Une forme en L ou en T crée une tuile AGO qui explose tout autour."
+  },
+  {
+    "id": "c6-l1",
+    "city": 6,
+    "index": 1,
+    "moves": 25,
+    "tiles": [
+      "engrenage",
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "engrenage",
+        "count": 15
+      }
+    ],
+    "seed": 119785,
+    "pacoBefore": "Récolte 15 engrenages pour remplir ta tirelire.",
+    "pacoHint": "Aligne 4 tuiles pour créer une tuile Dividende : elle vide toute une ligne !"
+  },
+  {
+    "id": "c6-l2",
+    "city": 6,
+    "index": 2,
+    "moves": 24,
+    "tiles": [
+      "engrenage",
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 1450
+      }
+    ],
+    "seed": 127704,
+    "pacoBefore": "Atteins 1450 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c6-l3",
+    "city": 6,
+    "index": 3,
+    "moves": 24,
+    "tiles": [
+      "engrenage",
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "engrenage",
+        "count": 12
+      },
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 12
+      }
+    ],
+    "seed": 135623,
+    "pacoBefore": "Récolte 12 engrenages et 12 cacao : deux secteurs, c'est plus solide !",
+    "pacoHint": "Une forme en L ou en T crée une tuile AGO qui explose tout autour."
+  },
+  {
+    "id": "c7-l1",
+    "city": 7,
+    "index": 1,
+    "moves": 24,
+    "tiles": [
+      "ampoule",
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "ampoule",
+        "count": 15
+      }
+    ],
+    "seed": 143542,
+    "pacoBefore": "Récolte 15 ampoules pour remplir ta tirelire.",
+    "pacoHint": "Aligne 4 tuiles pour créer une tuile Dividende : elle vide toute une ligne !"
+  },
+  {
+    "id": "c7-l2",
+    "city": 7,
+    "index": 2,
+    "moves": 24,
+    "tiles": [
+      "ampoule",
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 1550
+      }
+    ],
+    "seed": 151461,
+    "pacoBefore": "Atteins 1550 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c7-l3",
+    "city": 7,
+    "index": 3,
+    "moves": 24,
+    "tiles": [
+      "ampoule",
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "ampoule",
+        "count": 12
+      },
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 12
+      }
+    ],
+    "seed": 159380,
+    "pacoBefore": "Récolte 12 ampoules et 12 cacao : deux secteurs, c'est plus solide !",
+    "pacoHint": "Une forme en L ou en T crée une tuile AGO qui explose tout autour."
+  },
+  {
+    "id": "c8-l1",
+    "city": 8,
+    "index": 1,
+    "moves": 24,
+    "tiles": [
+      "billet",
+      "cacao",
+      "telephone",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "billet",
+        "count": 16
+      }
+    ],
+    "seed": 167299,
+    "pacoBefore": "Récolte 16 billets pour remplir ta tirelire.",
+    "pacoHint": "Aligne 4 tuiles pour créer une tuile Dividende : elle vide toute une ligne !"
+  },
+  {
+    "id": "c8-l2",
+    "city": 8,
+    "index": 2,
+    "moves": 24,
+    "tiles": [
+      "billet",
+      "cacao",
+      "telephone",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 1650
+      }
+    ],
+    "seed": 175218,
+    "pacoBefore": "Atteins 1650 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c8-l3",
+    "city": 8,
+    "index": 3,
+    "moves": 24,
+    "tiles": [
+      "billet",
+      "cacao",
+      "telephone",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "billet",
+        "count": 12
+      },
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 12
+      }
+    ],
+    "seed": 183137,
+    "pacoBefore": "Récolte 12 billets et 12 cacao : deux secteurs, c'est plus solide !",
+    "pacoHint": "Une forme en L ou en T crée une tuile AGO qui explose tout autour."
+  },
+  {
+    "id": "c9-l1",
+    "city": 9,
+    "index": 1,
+    "moves": 23,
+    "tiles": [
+      "telephone",
+      "cacao",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "telephone",
+        "count": 16
+      }
+    ],
+    "seed": 191056,
+    "pacoBefore": "Récolte 16 téléphones pour remplir ta tirelire.",
+    "pacoHint": "Aligne 4 tuiles pour créer une tuile Dividende : elle vide toute une ligne !"
+  },
+  {
+    "id": "c9-l2",
+    "city": 9,
+    "index": 2,
+    "moves": 23,
+    "tiles": [
+      "telephone",
+      "cacao",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 1800
+      }
+    ],
+    "seed": 198975,
+    "pacoBefore": "Atteins 1800 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c9-l3",
+    "city": 9,
+    "index": 3,
+    "moves": 23,
+    "tiles": [
+      "telephone",
+      "cacao",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "telephone",
+        "count": 13
+      },
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 13
+      }
+    ],
+    "seed": 206894,
+    "pacoBefore": "Récolte 13 téléphones et 13 cacao : deux secteurs, c'est plus solide !",
+    "pacoHint": "Une forme en L ou en T crée une tuile AGO qui explose tout autour."
+  },
+  {
+    "id": "c10-l1",
+    "city": 10,
+    "index": 1,
+    "moves": 23,
+    "tiles": [
+      "billet",
+      "cacao",
+      "telephone",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "billet",
+        "count": 17
+      },
+      {
+        "kind": "unlock",
+        "count": 2
+      }
+    ],
+    "locks": [
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "seed": 214813,
+    "pacoBefore": "Récolte 17 billets pour remplir ta tirelire. Ouvre aussi 2 cadenas « Frais ».",
+    "pacoHint": "Un cadenas s ouvre en le touchant 2 fois avec des alignements à côté."
+  },
+  {
+    "id": "c10-l2",
+    "city": 10,
+    "index": 2,
+    "moves": 23,
+    "tiles": [
+      "billet",
+      "cacao",
+      "telephone",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 1900
+      }
+    ],
+    "seed": 222732,
+    "pacoBefore": "Atteins 1900 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c10-l3",
+    "city": 10,
+    "index": 3,
+    "moves": 23,
+    "tiles": [
+      "billet",
+      "cacao",
+      "telephone",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "billet",
+        "count": 13
+      },
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 13
+      },
+      {
+        "kind": "unlock",
+        "count": 2
+      }
+    ],
+    "locks": [
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "seed": 230651,
+    "pacoBefore": "Récolte 13 billets et 13 cacao : deux secteurs, c'est plus solide ! Ouvre aussi 2 cadenas « Frais ».",
+    "pacoHint": "Un cadenas s ouvre en le touchant 2 fois avec des alignements à côté."
+  },
+  {
+    "id": "c11-l1",
+    "city": 11,
+    "index": 1,
+    "moves": 23,
+    "tiles": [
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 18
+      },
+      {
+        "kind": "unlock",
+        "count": 2
+      }
+    ],
+    "locks": [
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "seed": 238570,
+    "pacoBefore": "Récolte 18 cacao pour remplir ta tirelire. Ouvre aussi 2 cadenas « Frais ».",
+    "pacoHint": "Un cadenas s ouvre en le touchant 2 fois avec des alignements à côté."
+  },
+  {
+    "id": "c11-l2",
+    "city": 11,
+    "index": 2,
+    "moves": 23,
+    "tiles": [
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 2000
+      }
+    ],
+    "seed": 246489,
+    "pacoBefore": "Atteins 2000 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c11-l3",
+    "city": 11,
+    "index": 3,
+    "moves": 22,
+    "tiles": [
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 14
+      },
+      {
+        "kind": "collect",
+        "tile": "telephone",
+        "count": 14
+      },
+      {
+        "kind": "unlock",
+        "count": 2
+      }
+    ],
+    "locks": [
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "seed": 254408,
+    "pacoBefore": "Récolte 14 cacao et 14 téléphones : deux secteurs, c'est plus solide ! Ouvre aussi 2 cadenas « Frais ».",
+    "pacoHint": "Un cadenas s ouvre en le touchant 2 fois avec des alignements à côté."
+  },
+  {
+    "id": "c12-l1",
+    "city": 12,
+    "index": 1,
+    "moves": 22,
+    "tiles": [
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 18
+      },
+      {
+        "kind": "unlock",
+        "count": 2
+      }
+    ],
+    "locks": [
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "seed": 262327,
+    "pacoBefore": "Récolte 18 cacao pour remplir ta tirelire. Ouvre aussi 2 cadenas « Frais ».",
+    "pacoHint": "Un cadenas s ouvre en le touchant 2 fois avec des alignements à côté."
+  },
+  {
+    "id": "c12-l2",
+    "city": 12,
+    "index": 2,
+    "moves": 22,
+    "tiles": [
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 2100
+      }
+    ],
+    "seed": 270246,
+    "pacoBefore": "Atteins 2100 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c12-l3",
+    "city": 12,
+    "index": 3,
+    "moves": 22,
+    "tiles": [
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 14
+      },
+      {
+        "kind": "collect",
+        "tile": "telephone",
+        "count": 14
+      },
+      {
+        "kind": "unlock",
+        "count": 2
+      }
+    ],
+    "locks": [
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        4
+      ]
+    ],
+    "seed": 278165,
+    "pacoBefore": "Récolte 14 cacao et 14 téléphones : deux secteurs, c'est plus solide ! Ouvre aussi 2 cadenas « Frais ».",
+    "pacoHint": "Un cadenas s ouvre en le touchant 2 fois avec des alignements à côté."
+  },
+  {
+    "id": "c13-l1",
+    "city": 13,
+    "index": 1,
+    "moves": 26,
+    "tiles": [
+      "engrenage",
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "engrenage",
+        "count": 12
+      },
+      {
+        "kind": "unlock",
+        "count": 3
+      }
+    ],
+    "locks": [
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "seed": 286084,
+    "pacoBefore": "Récolte 12 engrenages pour remplir ta tirelire. Ouvre aussi 3 cadenas « Frais ».",
+    "pacoHint": "Un cadenas s ouvre en le touchant 2 fois avec des alignements à côté."
+  },
+  {
+    "id": "c13-l2",
+    "city": 13,
+    "index": 2,
+    "moves": 26,
+    "tiles": [
+      "engrenage",
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 2000
+      }
+    ],
+    "seed": 294003,
+    "pacoBefore": "Atteins 2000 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c13-l3",
+    "city": 13,
+    "index": 3,
+    "moves": 26,
+    "tiles": [
+      "engrenage",
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon",
+      "ampoule"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "engrenage",
+        "count": 12
+      },
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 12
+      },
+      {
+        "kind": "unlock",
+        "count": 3
+      }
+    ],
+    "locks": [
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "seed": 301922,
+    "pacoBefore": "Récolte 12 engrenages et 12 cacao : deux secteurs, c'est plus solide ! Ouvre aussi 3 cadenas « Frais ».",
+    "pacoHint": "Un cadenas s ouvre en le touchant 2 fois avec des alignements à côté."
+  },
+  {
+    "id": "c14-l1",
+    "city": 14,
+    "index": 1,
+    "moves": 26,
+    "tiles": [
+      "ampoule",
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon",
+      "engrenage"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "ampoule",
+        "count": 12
+      },
+      {
+        "kind": "unlock",
+        "count": 3
+      }
+    ],
+    "locks": [
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "seed": 309841,
+    "pacoBefore": "Récolte 12 ampoules pour remplir ta tirelire. Ouvre aussi 3 cadenas « Frais ».",
+    "pacoHint": "Un cadenas s ouvre en le touchant 2 fois avec des alignements à côté."
+  },
+  {
+    "id": "c14-l2",
+    "city": 14,
+    "index": 2,
+    "moves": 25,
+    "tiles": [
+      "ampoule",
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon",
+      "engrenage"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 2100
+      }
+    ],
+    "seed": 317760,
+    "pacoBefore": "Atteins 2100 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c14-l3",
+    "city": 14,
+    "index": 3,
+    "moves": 25,
+    "tiles": [
+      "ampoule",
+      "cacao",
+      "telephone",
+      "billet",
+      "bidon",
+      "engrenage"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "ampoule",
+        "count": 13
+      },
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 13
+      },
+      {
+        "kind": "unlock",
+        "count": 3
+      }
+    ],
+    "locks": [
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "seed": 325679,
+    "pacoBefore": "Récolte 13 ampoules et 13 cacao : deux secteurs, c'est plus solide ! Ouvre aussi 3 cadenas « Frais ».",
+    "pacoHint": "Un cadenas s ouvre en le touchant 2 fois avec des alignements à côté."
+  },
+  {
+    "id": "c15-l1",
+    "city": 15,
+    "index": 1,
+    "moves": 25,
+    "tiles": [
+      "billet",
+      "cacao",
+      "telephone",
+      "bidon",
+      "ampoule",
+      "engrenage"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "billet",
+        "count": 13
+      },
+      {
+        "kind": "unlock",
+        "count": 3
+      }
+    ],
+    "locks": [
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "seed": 333598,
+    "pacoBefore": "Récolte 13 billets pour remplir ta tirelire. Ouvre aussi 3 cadenas « Frais ».",
+    "pacoHint": "Un cadenas s ouvre en le touchant 2 fois avec des alignements à côté."
+  },
+  {
+    "id": "c15-l2",
+    "city": 15,
+    "index": 2,
+    "moves": 25,
+    "tiles": [
+      "billet",
+      "cacao",
+      "telephone",
+      "bidon",
+      "ampoule",
+      "engrenage"
+    ],
+    "objectives": [
+      {
+        "kind": "score",
+        "target": 2200
+      }
+    ],
+    "seed": 341517,
+    "pacoBefore": "Atteins 2200 points. Les cascades rapportent plus : sois patient.",
+    "pacoHint": "Joue en bas de la grille : les tuiles qui tombent créent des cascades."
+  },
+  {
+    "id": "c15-l3",
+    "city": 15,
+    "index": 3,
+    "moves": 25,
+    "tiles": [
+      "billet",
+      "cacao",
+      "telephone",
+      "bidon",
+      "ampoule",
+      "engrenage"
+    ],
+    "objectives": [
+      {
+        "kind": "collect",
+        "tile": "billet",
+        "count": 13
+      },
+      {
+        "kind": "collect",
+        "tile": "cacao",
+        "count": 13
+      },
+      {
+        "kind": "unlock",
+        "count": 3
+      }
+    ],
+    "locks": [
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        2,
+        3
+      ]
+    ],
+    "seed": 349436,
+    "pacoBefore": "Récolte 13 billets et 13 cacao : deux secteurs, c'est plus solide ! Ouvre aussi 3 cadenas « Frais ».",
+    "pacoHint": "Un cadenas s ouvre en le touchant 2 fois avec des alignements à côté."
+  }
+]
