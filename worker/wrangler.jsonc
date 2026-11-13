@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "paco-market",
+  "main": "src/index.js",
+  "compatibility_date": "2026-11-01",
+  // Séance BRVM terminée vers 15 h 30 (Abidjan = UTC) ; publication à 17 h, nouvel essai à 19 h. Lundi à vendredi.
+  "triggers": { "crons": ["0 17 * * 1-5", "0 19 * * 1-5"] },
+  "vars": {
+    "FIREBASE_PROJECT_ID": "third-storm-9w532",
+    "FIRESTORE_DATABASE": "ai-studio-bourseclair-8beb427d-785b-41cf-b1ba-358589ed533a"
+  },
+  // Secrets (jamais dans le code) : wrangler secret put FIREBASE_SERVICE_ACCOUNT / RUN_TOKEN
+  "observability": { "enabled": true }
+}

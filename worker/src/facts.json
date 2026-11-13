@@ -1,0 +1,386 @@
+{
+ "SNTS": {
+  "name": "Sonatel Sénégal",
+  "sector": "Télécommunications",
+  "family": "telecom",
+  "country": "Sénégal",
+  "eps": 185.0,
+  "lastDividend": 157.5
+ },
+ "SLBC": {
+  "name": "Solibra Côte d'Ivoire",
+  "sector": "Agroalimentaire & Boissons",
+  "family": "agro",
+  "country": "Côte d'Ivoire",
+  "eps": 6800.0,
+  "lastDividend": 4050.0
+ },
+ "ETIT": {
+  "name": "Ecobank Transnational Inc.",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Togo",
+  "eps": 7.8,
+  "lastDividend": 3.5
+ },
+ "SGBC": {
+  "name": "Société Générale Côte d'Ivoire",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Côte d'Ivoire",
+  "eps": 2100.0,
+  "lastDividend": 1350.0
+ },
+ "CIEC": {
+  "name": "Compagnie Ivoirienne d'Electricité (CIE)",
+  "sector": "Services Publics / Energie",
+  "family": "energie",
+  "country": "Côte d'Ivoire",
+  "eps": 210.0,
+  "lastDividend": 150.0
+ },
+ "ONTBF": {
+  "name": "Onatel Burkina Faso",
+  "sector": "Télécommunications",
+  "family": "telecom",
+  "country": "Burkina Faso",
+  "eps": 310.0,
+  "lastDividend": 260.0
+ },
+ "TTLC": {
+  "name": "TotalEnergies Côte d'Ivoire",
+  "sector": "Distribution Pétrolière",
+  "family": "distribution",
+  "country": "Côte d'Ivoire",
+  "eps": 240.0,
+  "lastDividend": 185.0
+ },
+ "CBIBF": {
+  "name": "Coris Bank International",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Burkina Faso",
+  "eps": 1250.0,
+  "lastDividend": 860.0
+ },
+ "PALC": {
+  "name": "Palm Côte d'Ivoire",
+  "sector": "Agriculture & Agro-industrie",
+  "family": "agro",
+  "country": "Côte d'Ivoire",
+  "eps": 720.0,
+  "lastDividend": 500.0
+ },
+ "BOAC": {
+  "name": "Bank of Africa Côte d'Ivoire",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Côte d'Ivoire",
+  "eps": 850.0,
+  "lastDividend": 620.0
+ },
+ "ABJC": {
+  "name": "Servair Abidjan",
+  "sector": "Services & Restauration",
+  "family": "services",
+  "country": "Côte d'Ivoire",
+  "eps": 140.0,
+  "lastDividend": 95.0
+ },
+ "SDSC": {
+  "name": "Bolloré Transport & Logistics CI (AGL)",
+  "sector": "Transport & Logistique",
+  "family": "services",
+  "country": "Côte d'Ivoire",
+  "eps": 155.0,
+  "lastDividend": 100.0
+ },
+ "SDCC": {
+  "name": "Société des Eaux de Côte d'Ivoire (SODECI)",
+  "sector": "Services Publics / Eau",
+  "family": "energie",
+  "country": "Côte d'Ivoire",
+  "eps": 480.0,
+  "lastDividend": 320.0
+ },
+ "BOAN": {
+  "name": "Bank of Africa Niger",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Niger",
+  "eps": 380.0,
+  "lastDividend": 270.0
+ },
+ "SIVC": {
+  "name": "Air Liquide Côte d'Ivoire",
+  "sector": "Industrie & Gaz Médicaux",
+  "family": "industrie",
+  "country": "Côte d'Ivoire",
+  "eps": 65.0,
+  "lastDividend": 40.0
+ },
+ "BOAS": {
+  "name": "Bank of Africa Sénégal",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Sénégal",
+  "eps": 390.0,
+  "lastDividend": 280.0
+ },
+ "CABC": {
+  "name": "Sicable Côte d'Ivoire",
+  "sector": "Industrie Câblerie",
+  "family": "industrie",
+  "country": "Côte d'Ivoire",
+  "eps": 120.0,
+  "lastDividend": 80.0
+ },
+ "BICB": {
+  "name": "BIIC Bénin",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Bénin",
+  "eps": 820.0,
+  "lastDividend": 550.0
+ },
+ "ECOC": {
+  "name": "Ecobank Côte d'Ivoire",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Côte d'Ivoire",
+  "eps": 1180.0,
+  "lastDividend": 810.0
+ },
+ "CFAC": {
+  "name": "CFAO Motors Côte d'Ivoire",
+  "sector": "Distribution Automobile",
+  "family": "distribution",
+  "country": "Côte d'Ivoire",
+  "eps": 78.0,
+  "lastDividend": 52.0
+ },
+ "SIBC": {
+  "name": "Société Ivoirienne de Banque (SIB)",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Côte d'Ivoire",
+  "eps": 490.0,
+  "lastDividend": 350.0
+ },
+ "FTSC": {
+  "name": "Filtisac Côte d'Ivoire",
+  "sector": "Sacs & Emballages",
+  "family": "industrie",
+  "country": "Côte d'Ivoire",
+  "eps": 180.0,
+  "lastDividend": 120.0
+ },
+ "BOABF": {
+  "name": "Bank of Africa Burkina Faso",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Burkina Faso",
+  "eps": 810.0,
+  "lastDividend": 580.0
+ },
+ "BICC": {
+  "name": "BICI Côte d'Ivoire",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Côte d'Ivoire",
+  "eps": 1050.0,
+  "lastDividend": 720.0
+ },
+ "SMBC": {
+  "name": "Société Multinationale de Bitumes (SMB)",
+  "sector": "Raffinage & Bitumes",
+  "family": "distribution",
+  "country": "Côte d'Ivoire",
+  "eps": 1420.0,
+  "lastDividend": 980.0
+ },
+ "UNXC": {
+  "name": "Uniwax Côte d'Ivoire",
+  "sector": "Textile & Wax",
+  "family": "industrie",
+  "country": "Côte d'Ivoire",
+  "eps": 62.0,
+  "lastDividend": 40.0
+ },
+ "BOAB": {
+  "name": "Bank of Africa Bénin",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Bénin",
+  "eps": 690.0,
+  "lastDividend": 480.0
+ },
+ "BOAM": {
+  "name": "Bank of Africa Mali",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Mali",
+  "eps": 210.0,
+  "lastDividend": 140.0
+ },
+ "STBC": {
+  "name": "SITAB Côte d'Ivoire",
+  "sector": "Tabac & Agro-industrie",
+  "family": "agro",
+  "country": "Côte d'Ivoire",
+  "eps": 780.0,
+  "lastDividend": 550.0
+ },
+ "PRSC": {
+  "name": "Tractafric Motors Côte d'Ivoire",
+  "sector": "Distribution Automobile",
+  "family": "distribution",
+  "country": "Côte d'Ivoire",
+  "eps": 220.0,
+  "lastDividend": 150.0
+ },
+ "SEMC": {
+  "name": "Crown Siem Côte d'Ivoire",
+  "sector": "Emballages Métalliques",
+  "family": "industrie",
+  "country": "Côte d'Ivoire",
+  "eps": 95.0,
+  "lastDividend": 60.0
+ },
+ "SHEC": {
+  "name": "Vivo Energy Côte d'Ivoire",
+  "sector": "Distribution Pétrolière",
+  "family": "distribution",
+  "country": "Côte d'Ivoire",
+  "eps": 72.0,
+  "lastDividend": 50.0
+ },
+ "ORGT": {
+  "name": "Oragroup Togo",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Togo",
+  "eps": 180.0,
+  "lastDividend": 90.0
+ },
+ "STAC": {
+  "name": "SETAO Côte d'Ivoire",
+  "sector": "Bâtiment & Travaux Publics",
+  "family": "industrie",
+  "country": "Côte d'Ivoire",
+  "eps": 65.0,
+  "lastDividend": 45.0
+ },
+ "SCRC": {
+  "name": "Sucrivoire Côte d'Ivoire",
+  "sector": "Agro-industrie / Sucre",
+  "family": "agro",
+  "country": "Côte d'Ivoire",
+  "eps": 55.0,
+  "lastDividend": 35.0
+ },
+ "BNBC": {
+  "name": "Bernabé Côte d'Ivoire",
+  "sector": "Quincaillerie & Outillage",
+  "family": "industrie",
+  "country": "Côte d'Ivoire",
+  "eps": 98.0,
+  "lastDividend": 65.0
+ },
+ "NTLC": {
+  "name": "Nestlé Côte d'Ivoire",
+  "sector": "Agroalimentaire",
+  "family": "agro",
+  "country": "Côte d'Ivoire",
+  "eps": 920.0,
+  "lastDividend": 710.0
+ },
+ "NSBC": {
+  "name": "NSIA Banque Côte d'Ivoire",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Côte d'Ivoire",
+  "eps": 710.0,
+  "lastDividend": 490.0
+ },
+ "TTLS": {
+  "name": "TotalEnergies Sénégal",
+  "sector": "Distribution Pétrolière",
+  "family": "distribution",
+  "country": "Sénégal",
+  "eps": 230.0,
+  "lastDividend": 170.0
+ },
+ "NEIC": {
+  "name": "NEI-CEDA Côte d'Ivoire",
+  "sector": "Edition & Imprimerie",
+  "family": "industrie",
+  "country": "Côte d'Ivoire",
+  "eps": 48.0,
+  "lastDividend": 30.0
+ },
+ "SOGC": {
+  "name": "SOGB Côte d'Ivoire",
+  "sector": "Agro-industrie / Caoutchouc",
+  "family": "agro",
+  "country": "Côte d'Ivoire",
+  "eps": 420.0,
+  "lastDividend": 310.0
+ },
+ "UNLC": {
+  "name": "Unilever Côte d'Ivoire",
+  "sector": "Produits de Grande Consommation",
+  "family": "distribution",
+  "country": "Côte d'Ivoire",
+  "eps": 510.0,
+  "lastDividend": 350.0
+ },
+ "SPHC": {
+  "name": "SAPH Côte d'Ivoire",
+  "sector": "Agro-industrie / Caoutchouc",
+  "family": "agro",
+  "country": "Côte d'Ivoire",
+  "eps": 620.0,
+  "lastDividend": 450.0
+ },
+ "SICC": {
+  "name": "Sicor Côte d'Ivoire",
+  "sector": "Agro-industrie / Coprah",
+  "family": "agro",
+  "country": "Côte d'Ivoire",
+  "eps": 450.0,
+  "lastDividend": 300.0
+ },
+ "LNBB": {
+  "name": "Loterie Nationale du Bénin",
+  "sector": "Services / Jeux & Loterie",
+  "family": "services",
+  "country": "Bénin",
+  "eps": 380.0,
+  "lastDividend": 250.0
+ },
+ "ORAC": {
+  "name": "Orange Côte d'Ivoire",
+  "sector": "Télécommunications",
+  "family": "telecom",
+  "country": "Côte d'Ivoire",
+  "eps": null,
+  "lastDividend": null
+ },
+ "SAFC": {
+  "name": "SAFCA",
+  "sector": "Crédit-bail",
+  "family": "banque",
+  "country": "Côte d'Ivoire",
+  "eps": null,
+  "lastDividend": null
+ },
+ "BBGC": {
+  "name": "Bridge Bank Group Côte d’Ivoire",
+  "sector": "Services Financiers / Banque",
+  "family": "banque",
+  "country": "Côte d'Ivoire",
+  "eps": null,
+  "lastDividend": null
+ }
+}

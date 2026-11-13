@@ -1,6 +1,6 @@
 {
  "sessionDate": "2026-11-13",
- "source": "Flux de l'app Bourse Facile (/api/market/daily-quotes, source RichBourse), relevé le 13/11/2026. Instantané de test : BPA, PER et dividendes à vérifier avec les publications officielles avant la bêta.",
+ "source": "Cours : flux de l'app Bourse Facile du 13/11/2026 (RichBourse), symboles corrigés selon brvm.org. BPA, PER et dividendes à vérifier avec les publications officielles avant la bêta.",
  "excluded": {
   "ORAC": "Cours identique à ORGT (Oragroup) dans le flux : rapprochement erroné, à corriger.",
   "SAFC": "Pays et données financières manquants dans le flux.",
@@ -86,7 +86,7 @@
    "dividendYield": 8.7
   },
   {
-   "symbol": "TTLCI",
+   "symbol": "TTLC",
    "name": "TotalEnergies Côte d'Ivoire",
    "sector": "Distribution Pétrolière",
    "family": "distribution",
@@ -99,7 +99,7 @@
    "dividendYield": 5.97
   },
   {
-   "symbol": "CBBF",
+   "symbol": "CBIBF",
    "name": "Coris Bank International",
    "sector": "Services Financiers / Banque",
    "family": "banque",
@@ -229,7 +229,7 @@
    "dividendYield": 2.75
   },
   {
-   "symbol": "BIIC",
+   "symbol": "BICB",
    "name": "BIIC Bénin",
    "sector": "Services Financiers / Banque",
    "family": "banque",
@@ -294,7 +294,7 @@
    "dividendYield": 7.06
   },
   {
-   "symbol": "BOAB",
+   "symbol": "BOABF",
    "name": "Bank of Africa Burkina Faso",
    "sector": "Services Financiers / Banque",
    "family": "banque",
@@ -346,7 +346,7 @@
    "dividendYield": 2.12
   },
   {
-   "symbol": "BOABN",
+   "symbol": "BOAB",
    "name": "Bank of Africa Bénin",
    "sector": "Services Financiers / Banque",
    "family": "banque",
@@ -385,7 +385,7 @@
    "dividendYield": 2.56
   },
   {
-   "symbol": "TTRC",
+   "symbol": "PRSC",
    "name": "Tractafric Motors Côte d'Ivoire",
    "sector": "Distribution Automobile",
    "family": "distribution",
@@ -592,5 +592,13 @@
    "lastDividend": 250.0,
    "dividendYield": 6.58
   }
- ]
+ ],
+ "symbolFixes": {
+  "TTLCI": "TTLC",
+  "BIIC": "BICB",
+  "TTRC": "PRSC",
+  "CBBF": "CBIBF",
+  "BOAB (Burkina)": "BOABF",
+  "BOABN": "BOAB"
+ }
 }
