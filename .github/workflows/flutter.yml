@@ -1,0 +1,76 @@
+name: PACO Bourse (Flutter)
+
+on:
+  push:
+    branches: ['v1/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: flutter-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Plateformes (générées, non versionnées)
+        run: |
+          flutter create . --platforms=android,web --project-name paco_bourse --org ci.boursefacile
+          rm -f test/widget_test.dart
+
+      - name: Analyse, tests, captures, builds
+        id: checks
+        run: |
+          set +e
+          mkdir -p ../ci-out
+          flutter --version > ../ci-out/flutter-version.txt 2>&1
+          flutter pub get > ../ci-out/pub-get.txt 2>&1; echo "pub_get=$?" >> ../ci-out/status.txt
+          flutter analyze --no-fatal-infos > ../ci-out/analyze.txt 2>&1; echo "analyze=$?" >> ../ci-out/status.txt
+          flutter test > ../ci-out/test.txt 2>&1; echo "test=$?" >> ../ci-out/status.txt
+          PACO_SHOTS=1 flutter test test/screens_test.dart --update-goldens > ../ci-out/shots.txt 2>&1; echo "shots=$?" >> ../ci-out/status.txt
+          mkdir -p ../ci-out/goldens && cp -r test/goldens/. ../ci-out/goldens/ 2>/dev/null
+          flutter build web --release > ../ci-out/build-web.txt 2>&1; echo "web=$?" >> ../ci-out/status.txt
+          if [ -d build/web ]; then sed -i 's|<base href="/">|<base href="./">|' build/web/index.html; mkdir -p ../ci-out/web && cp -r build/web/. ../ci-out/web/; fi
+          flutter build apk --release > ../ci-out/build-apk.txt 2>&1; echo "apk=$?" >> ../ci-out/status.txt
+          cat ../ci-out/status.txt
+          exit 0
+
+      - name: Publier les résultats (branche ci-results)
+        working-directory: ci-out
+        run: |
+          git init -q
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          echo "${GITHUB_SHA}" > sha.txt
+          git checkout -q -b ci-results
+          git add -A
+          git commit -qm "CI ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" ci-results
+
+      - name: APK de test (pré-version ci-latest)
+        if: hashFiles('app/build/app/outputs/flutter-apk/app-release.apk') != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete ci-latest -y --cleanup-tag || true
+          gh release create ci-latest build/app/outputs/flutter-apk/app-release.apk --prerelease --title "PACO Bourse — APK de test" --notes "Build automatique ${GITHUB_SHA}. Signature de test, à usage interne."
+
+      - name: Échec si un contrôle a échoué
+        run: "! grep -E '=[1-9]' ../ci-out/status.txt"
