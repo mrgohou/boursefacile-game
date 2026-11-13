@@ -38,7 +38,7 @@ export class PuzzleScene extends Phaser.Scene {
 
   preload() {
     for (const t of [...TILE_TYPES, 'dividende', 'ago', 'diversif', 'cadenas'])
-      this.load.svg(t, `${import.meta.env.BASE_URL}tiles/${t}.svg`, { width: 128, height: 128 });
+      this.load.image(t, `${import.meta.env.BASE_URL}tiles/${t}.webp`);
   }
 
   create() {
@@ -74,7 +74,12 @@ export class PuzzleScene extends Phaser.Scene {
     const s = this.cell - 6;
     const parts: Phaser.GameObjects.GameObject[] = [this.add.image(0, 0, TILE_TYPES[t.type]).setDisplaySize(s, s)];
     if (t.special) parts.push(this.add.image(0, 0, t.special).setDisplaySize(s, s).setName('special'));
-    if (t.lock) parts.push(this.add.image(0, 0, 'cadenas').setDisplaySize(s, s).setName('lock'));
+    if (t.lock) {
+      // Cadenas « Frais » : voile sombre + cadenas, retirés ensemble à l'ouverture.
+      const veil = this.add.rectangle(0, 0, s, s, 0x103b2c, 0.45).setName('veil');
+      const lock = this.add.image(0, 0, 'cadenas').setDisplaySize(s * 0.62, s * 0.5).setName('lock');
+      parts.push(veil, lock);
+    }
     const cont = this.add.container(x, fromY ?? y, parts);
     this.sprites.set(t.id, cont);
     return cont;
@@ -172,9 +177,11 @@ export class PuzzleScene extends Phaser.Scene {
     for (const h of step.lockHits) {
       const s = this.sprites.get(h.tile.id);
       const lock = s?.getByName('lock') as Phaser.GameObjects.Image | null;
+      const veil = s?.getByName('veil') as Phaser.GameObjects.Rectangle | null;
       if (lock) {
         if (h.opened) {
           sfx('unlock');
+          veil?.destroy();
           this.tweens.add({ targets: lock, alpha: 0, scale: 1.4, duration: 200, onComplete: () => lock.destroy() });
         } else this.tweens.add({ targets: lock, alpha: 0.55, yoyo: true, duration: 90 });
       }

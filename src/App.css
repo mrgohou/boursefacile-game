@@ -118,7 +118,7 @@ button:disabled { cursor: default; }
 .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 20px; width: min(480px, 92vw); background: var(--profond); color: #fff; border-radius: 18px; padding: 12px 16px; font-size: 14px; z-index: 5; }
 .card { background: #fff; border-radius: 24px; width: 100%; overflow: hidden; padding-bottom: 16px; display: flex; flex-direction: column; align-items: center; }
 .card-head { width: 100%; display: flex; gap: 12px; align-items: center; padding: 16px; }
-.card-head img { width: 56px; height: 56px; }
+.card-head img { width: 72px; height: 72px; object-fit: contain; }
 .card-head div { display: flex; flex-direction: column; }
 .card ul { list-style: none; padding: 0 16px; margin: 8px 0; width: 100%; }
 .card li { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid #eef1ef; font-size: 14px; }
@@ -143,7 +143,7 @@ button:disabled { cursor: default; }
 .family h3 small { color: var(--doux); font-weight: 500; font-size: 12px; }
 .deck { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .mini-card { aspect-ratio: 3 / 4; border: 0; border-radius: 14px; background: var(--c); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 4px 0 rgba(16, 59, 44, 0.15); }
-.mini-card img { width: 34px; height: 34px; }
+.mini-card img { width: 80%; height: auto; }
 .mini-card b { font-size: 11px; }
 .mini-card.missing { background: #e3e8e4; box-shadow: none; color: #9aa69f; }
 .mini-card.missing b { font-size: 22px; }
@@ -152,3 +152,8 @@ button:disabled { cursor: default; }
 .account h3 { margin: 0; }
 .account input { border: 1px solid #dfe6e1; border-radius: 14px; padding: 12px 14px; font: inherit; }
 .error { color: #b3261e; margin: 0; font-size: 14px; }
+
+/* Bâtiments 3D */
+.building .bimg { width: 100%; aspect-ratio: 1; object-fit: contain; object-position: bottom; filter: drop-shadow(0 6px 6px rgba(16, 59, 44, 0.18)); }
+.building .walker { position: absolute; bottom: 38px; left: 2%; width: 22%; animation: walk 2.4s ease-in-out infinite alternate; }
+@keyframes walk { from { transform: translateX(0); } to { transform: translateX(10px); } }

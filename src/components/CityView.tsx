@@ -113,7 +113,12 @@ export function CityView({ city, cash, companies, citiesDone, daysPlayed, sgiOpe
 
           {tab === 'ville' && (
             <>
-              {tip && <Paco pose={owned.length ? 'reflechir' : 'expliquer'} text={tip} />}
+              {tip && (
+                <Paco
+                  pose={!owned.length ? 'expliquer' : tip.startsWith('AGO') ? 'patience' : 'attention'}
+                  text={tip}
+                />
+              )}
               <div className="buildings">
                 {owned.map(([sym, h]) => {
                   const c = companies.find((x) => x.symbol === sym);
@@ -121,14 +126,9 @@ export function CityView({ city, cash, companies, citiesDone, daysPlayed, sgiOpe
                   const lvl = buildingLevel(city, sym);
                   const up = city.prices[sym] >= c.price;
                   return (
-                    <button key={sym} className="building" onClick={() => setDetail(c)} style={{ ['--h' as string]: `${40 + lvl * 14}px`, ['--c' as string]: FAMILIES[c.family].color }}>
-                      <span className="walkers">
-                        <i className={up ? 'g' : 'r'} />
-                        <i className={up ? 'g' : 'r'} />
-                      </span>
-                      <span className="tower">
-                        <img src={`${base}tiles/${FAMILIES[c.family].tile}.svg`} alt="" />
-                      </span>
+                    <button key={sym} className="building" onClick={() => setDetail(c)}>
+                      <img className="bimg" src={`${base}buildings/${c.family}-${lvl}.webp`} alt="" />
+                      <img className={`walker ${up ? 'w1' : 'w2'}`} src={`${base}buildings/passant-${up ? 'vert' : 'rouge'}.webp`} alt={up ? 'acheteurs' : 'vendeurs'} />
                       <b>{sym}</b>
                       <small>
                         {h.qty} part{h.qty > 1 ? 's' : ''} · niv. {lvl}
@@ -184,7 +184,7 @@ export function CityView({ city, cash, companies, citiesDone, daysPlayed, sgiOpe
         <div className="overlay" onClick={() => setDetail(null)}>
           <div className="card" onClick={(e) => e.stopPropagation()}>
             <div className="card-head" style={{ background: FAMILIES[detail.family].color }}>
-              <img src={`${base}tiles/${FAMILIES[detail.family].tile}.svg`} alt="" />
+              <img src={`${base}buildings/${detail.family}-3.webp`} alt="" />
               <div>
                 <b>{detail.name}</b>
                 <small>

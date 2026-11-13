@@ -47,7 +47,7 @@ export function CardsView({ cards, companies, onBack }: { cards: string[]; compa
                   >
                     {got ? (
                       <>
-                        <img src={`${base}tiles/${FAMILIES[f].tile}.svg`} alt="" />
+                        <img src={`${base}buildings/${f}-1.webp`} alt="" />
                         <b>{c.symbol}</b>
                       </>
                     ) : (
@@ -64,7 +64,7 @@ export function CardsView({ cards, companies, onBack }: { cards: string[]; compa
         <div className="overlay" onClick={() => setOpen(null)}>
           <div className="card" onClick={(e) => e.stopPropagation()}>
             <div className="card-head" style={{ background: FAMILIES[open.family].color }}>
-              <img src={`${base}tiles/${FAMILIES[open.family].tile}.svg`} alt="" />
+              <img src={`${base}buildings/${open.family}-3.webp`} alt="" />
               <div>
                 <b>{open.name}</b>
                 <small>

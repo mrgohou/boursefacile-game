@@ -1,4 +1,4 @@
-export type Pose = 'accueil' | 'confiance' | 'reflechir' | 'expliquer' | 'apprendre' | 'analyser' | 'progresser' | 'reussir';
+export type Pose = 'accueil' | 'confiance' | 'reflechir' | 'expliquer' | 'apprendre' | 'analyser' | 'progresser' | 'reussir' | 'attention' | 'patience' | 'reconfort';
 
 export function Paco({ pose, text, onClose, cta = 'OK' }: { pose: Pose; text: string; onClose?: () => void; cta?: string }) {
   return (

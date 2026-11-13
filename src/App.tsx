@@ -117,7 +117,7 @@ export default function App() {
             <b>PACO Bourse</b>
           </div>
           <div className="wallet" title="Ton épargne (FCFA-jeu, fictifs)">
-            <img src={`${import.meta.env.BASE_URL}tiles/billet.svg`} alt="" />
+            <img src={`${import.meta.env.BASE_URL}tiles/billet.webp`} alt="" />
             {save.savings.toLocaleString('fr-FR')}
           </div>
           <button className="ghost" onClick={toggleSound} aria-label={muted ? 'Activer le son' : 'Couper le son'}>

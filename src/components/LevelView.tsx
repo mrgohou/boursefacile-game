@@ -32,8 +32,8 @@ function objText(o: Objective, p: Progress) {
 
 function objIcon(o: Objective) {
   const base = import.meta.env.BASE_URL;
-  if (o.kind === 'collect') return <img src={`${base}tiles/${o.tile}.svg`} alt={LABEL[o.tile]} />;
-  if (o.kind === 'unlock') return <img src={`${base}tiles/cadenas.svg`} alt="cadenas" />;
+  if (o.kind === 'collect') return <img src={`${base}tiles/${o.tile}.webp`} alt={LABEL[o.tile]} />;
+  if (o.kind === 'unlock') return <img src={`${base}tiles/cadenas.webp`} alt="cadenas" />;
   return <span className="pts">pts</span>;
 }
 
@@ -152,7 +152,7 @@ export function LevelView({ level, onEnd, onQuit }: { level: LevelDef; onEnd: (r
       {phase === 'lost' && (
         <div className="overlay">
           <Paco
-            pose="reflechir"
+            pose={fails >= 2 ? 'reflechir' : 'reconfort'}
             text={fails >= 2 ? level.pacoHint : 'Presque ! On réessaie ? Tu ne perds rien, chaque essai t’entraîne.'}
             onClose={retry}
             cta="Rejouer"
