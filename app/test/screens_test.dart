@@ -12,15 +12,21 @@ import 'package:paco_bourse/services/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> loadFont() async {
+  TestWidgetsFlutterBinding.ensureInitialized();
   final loader = FontLoader('Manrope')..addFont(rootBundle.load('assets/fonts/Manrope.ttf'));
   await loader.load();
 }
 
-Future<(GameState, Settings)> setup({Map<String, Object> prefs = const {}}) async {
+Content? _content;
+
+Future<(GameState, Settings)> setup(WidgetTester tester, {Map<String, Object> prefs = const {}}) async {
   SharedPreferences.setMockInitialValues(prefs);
-  final p = await SharedPreferences.getInstance();
-  final content = await Content.load(rootBundle);
-  return (GameState(content, p), Settings(p));
+  // Chargement réel (hors horloge simulée des tests) pour éviter tout blocage.
+  return (await tester.runAsync(() async {
+    final p = await SharedPreferences.getInstance();
+    _content ??= await Content.load(rootBundle);
+    return (GameState(_content!, p), Settings(p));
+  }))!;
 }
 
 Future<void> precacheAll(WidgetTester tester) async {
@@ -50,7 +56,7 @@ void main() {
       tester.view.physicalSize = const Size(1080, 2340);
       tester.view.devicePixelRatio = 2.75;
       addTearDown(tester.view.reset);
-      final (game, settings) = await setup(prefs: {'paco.theme': dark ? 'dark' : 'light'});
+      final (game, settings) = await setup(tester, prefs: {'paco.theme': dark ? 'dark' : 'light'});
 
       await tester.pumpWidget(PacoApp(state: game, settings: settings));
       await tester.pump();
@@ -102,12 +108,12 @@ void main() {
       await tester.pumpAndSettle();
       await shot(tester, '07-ville-$mode');
 
-      await game.flush();
+      await tester.runAsync(game.flush);
     });
   }
 
   testWidgets('le quiz valide une ville avec 2 bonnes réponses', (tester) async {
-    final (game, settings) = await setup();
+    final (game, settings) = await setup(tester);
     game.seenIntro.addAll([0, 1]);
     for (var l = 1; l <= 3; l++) {
       game.stars['c1-l$l'] = 2;

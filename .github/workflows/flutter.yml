@@ -35,26 +35,54 @@ jobs:
           flutter create . --platforms=android,web --project-name paco_bourse --org ci.boursefacile
           rm -f test/widget_test.dart
 
-      - name: Analyse, tests, captures, builds
-        id: checks
+      - name: Préparation
         run: |
-          set +e
           mkdir -p ../ci-out
           flutter --version > ../ci-out/flutter-version.txt 2>&1
-          flutter pub get > ../ci-out/pub-get.txt 2>&1; echo "pub_get=$?" >> ../ci-out/status.txt
-          flutter analyze --no-fatal-infos > ../ci-out/analyze.txt 2>&1; echo "analyze=$?" >> ../ci-out/status.txt
-          flutter test > ../ci-out/test.txt 2>&1; echo "test=$?" >> ../ci-out/status.txt
-          PACO_SHOTS=1 flutter test test/screens_test.dart --update-goldens > ../ci-out/shots.txt 2>&1; echo "shots=$?" >> ../ci-out/status.txt
-          mkdir -p ../ci-out/goldens && cp -r test/goldens/. ../ci-out/goldens/ 2>/dev/null
-          flutter build web --release > ../ci-out/build-web.txt 2>&1; echo "web=$?" >> ../ci-out/status.txt
+          flutter pub get 2>&1 | tee ../ci-out/pub-get.txt
+
+      - name: Analyse
+        timeout-minutes: 5
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          flutter analyze --no-fatal-infos 2>&1 | tee ../ci-out/analyze.txt; echo "analyze=$?" >> ../ci-out/status.txt
+
+      - name: Tests du moteur
+        timeout-minutes: 6
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          flutter test --timeout=120s test/engine_test.dart test/market_test.dart 2>&1 | tee ../ci-out/test-engine.txt; echo "engine=$?" >> ../ci-out/status.txt
+
+      - name: Tests des écrans et captures
+        timeout-minutes: 8
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          PACO_SHOTS=1 flutter test --timeout=180s --update-goldens test/screens_test.dart 2>&1 | tee ../ci-out/test-screens.txt; echo "screens=$?" >> ../ci-out/status.txt
+          mkdir -p ../ci-out/goldens && cp -r test/goldens/. ../ci-out/goldens/ 2>/dev/null || true
+
+      - name: Build web
+        timeout-minutes: 10
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          flutter build web --release 2>&1 | tee ../ci-out/build-web.txt; echo "web=$?" >> ../ci-out/status.txt
           if [ -d build/web ]; then sed -i 's|<base href="/">|<base href="./">|' build/web/index.html; mkdir -p ../ci-out/web && cp -r build/web/. ../ci-out/web/; fi
-          flutter build apk --release > ../ci-out/build-apk.txt 2>&1; echo "apk=$?" >> ../ci-out/status.txt
-          cat ../ci-out/status.txt
-          exit 0
+
+      - name: Build APK
+        timeout-minutes: 15
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          flutter build apk --release 2>&1 | tail -40 | tee ../ci-out/build-apk.txt; echo "apk=$?" >> ../ci-out/status.txt
 
       - name: Publier les résultats (branche ci-results)
+        if: always()
         working-directory: ci-out
         run: |
+          cat status.txt || true
           git init -q
           git config user.name "ci"
           git config user.email "ci@users.noreply.github.com"
@@ -73,4 +101,5 @@ jobs:
           gh release create ci-latest build/app/outputs/flutter-apk/app-release.apk --prerelease --title "PACO Bourse — APK de test" --notes "Build automatique ${GITHUB_SHA}. Signature de test, à usage interne."
 
       - name: Échec si un contrôle a échoué
+        if: always()
         run: "! grep -E '=[1-9]' ../ci-out/status.txt"
