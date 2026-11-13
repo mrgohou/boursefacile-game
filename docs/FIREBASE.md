@@ -21,6 +21,14 @@ match /game_feedback/{id} {
     && request.resource.data.changer.size() <= 500;
   allow read: if false;
 }
+// Inscriptions bêta (page testeur.html) : création seule, champs limités, aucune lecture publique.
+match /beta_signups/{id} {
+  allow create: if request.resource.data.keys().hasOnly(['prenom','contact','commune','profil','majeur','accord','createdAt'])
+    && request.resource.data.majeur == true && request.resource.data.accord == true
+    && request.resource.data.prenom.size() <= 40 && request.resource.data.contact.size() <= 80
+    && request.resource.data.commune.size() <= 60;
+  allow read, update, delete: if false;
+}
 // Cours du jour : lecture publique, écriture réservée au serveur (Admin SDK).
 match /market_snapshots/{id} {
   allow read: if true;
@@ -53,3 +61,9 @@ Le jeu lit `market_snapshots/latest` :
 
 S'il est absent ou incomplet, le jeu utilise l'instantané intégré (`src/data/market-snapshot.json`).
 Le programme qui écrit ce document chaque soir reste à choisir : fonction planifiée Firebase (offre Blaze) ou Cloudflare Worker.
+
+## 4. Page « Deviens testeur »
+
+Publiée avec le jeu : https://paco-bourse.web.app/testeur.html. Les inscriptions arrivent dans `beta_signups`
+(lisibles seulement depuis la console Firebase). Ce sont des données personnelles : les supprimer au lancement public,
+comme promis sur la page, et vérifier les formalités auprès de l'ARTCI (loi ivoirienne sur les données personnelles).

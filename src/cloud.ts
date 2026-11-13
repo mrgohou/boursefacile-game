@@ -54,3 +54,6 @@ export async function loadMarket(): Promise<{ sessionDate: string; companies: Co
 export async function sendFeedback(uid: string, city: number, f: object) {
   return (await impl()).writeFeedback(uid, city, f);
 }
+export async function sendSignup(data: Record<string, string | boolean>) {
+  return (await impl()).writeSignup(data);
+}

@@ -10,7 +10,7 @@ import {
   type Auth,
   type User,
 } from 'firebase/auth';
-import { doc, getDoc, getFirestore, serverTimestamp, setDoc, type Firestore } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getFirestore, serverTimestamp, setDoc, type Firestore } from 'firebase/firestore';
 import type { Save } from './store';
 import type { Company } from './engine/city';
 
@@ -50,4 +50,9 @@ export async function readMarket(): Promise<{ sessionDate: string; companies: Co
 /** Avis testeur : game_feedback/{uid}_{ville}, sans nom ni e-mail. */
 export async function writeFeedback(uid: string, city: number, f: object) {
   await setDoc(doc(db, 'game_feedback', `${uid}_${city}`), { uid, city, ...f, at: serverTimestamp() });
+}
+
+/** Inscription bêta (page « Deviens testeur ») : création seule, aucune lecture publique. */
+export async function writeSignup(data: Record<string, string | boolean>) {
+  await addDoc(collection(db, 'beta_signups'), { ...data, createdAt: serverTimestamp() });
 }
