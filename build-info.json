@@ -1,0 +1,11 @@
+{
+  "version": "0.1.0+1",
+  "type": "debug",
+  "abi": "arm64-v8a",
+  "minSdk": 24,
+  "targetSdk": 36,
+  "bytes": 93701239,
+  "sha256": "9d53db71665b6987e4e838de9f39e74e00a8ef64a3ad696fc57c119b8e1a79ad",
+  "webp_assets": 58,
+  "androidVersionCode": 2001
+}
