@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/content.dart';
 import 'services/game_state.dart';
+import 'services/market.dart';
 import 'services/settings.dart';
 import 'ui/brand_theme.dart';
 import 'ui/scope.dart';
@@ -13,7 +16,12 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   final content = await Content.load(rootBundle);
-  runApp(PacoApp(state: GameState(content, prefs), settings: Settings(prefs)));
+  final state = GameState(content, prefs);
+  runApp(PacoApp(state: state, settings: Settings(prefs)));
+  // Cours du jour en arrière-plan : le jeu démarre tout de suite, même hors ligne.
+  unawaited(fetchMarket(prefs).then((m) {
+    if (m != null) state.applyMarket(m);
+  }));
 }
 
 class PacoApp extends StatefulWidget {

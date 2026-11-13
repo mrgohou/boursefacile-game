@@ -34,3 +34,11 @@ describe('worker paco-market', () => {
     });
   });
 });
+
+import { fromValue } from '../src/firestore.js';
+describe('lecture Firestore', () => {
+  it('relit ce qui a été écrit', () => {
+    const data = { sessionDate: '2026-11-13', companies: [{ symbol: 'SNTS', price: 4110, per: 22.2, eps: null }] };
+    expect(fromValue(toValue(data))).toEqual(data);
+  });
+});

@@ -19,7 +19,7 @@ class MapTab extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
       children: [
         Text(game.title, style: text.headlineMedium),
-        Text('Cours BRVM du ${game.content.market.sessionDate.split('-').reversed.join('/')}', style: text.bodySmall),
+        Text('Cours BRVM du ${game.market.sessionDate.split('-').reversed.join('/')}', style: text.bodySmall),
         const SizedBox(height: 16),
         if (game.citiesDone >= 15 && game.score < goatScore) ...[
           PacoBubble(

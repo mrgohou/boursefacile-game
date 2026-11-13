@@ -53,3 +53,24 @@ export async function writeDoc(env, path, data) {
   });
   if (!res.ok) throw new Error(`Écriture Firestore refusée : ${res.status} ${await res.text()}`);
 }
+
+/** Valeur Firestore REST → valeur JS. */
+export function fromValue(v) {
+  if ('nullValue' in v) return null;
+  if ('booleanValue' in v) return v.booleanValue;
+  if ('integerValue' in v) return Number(v.integerValue);
+  if ('doubleValue' in v) return v.doubleValue;
+  if ('stringValue' in v) return v.stringValue;
+  if ('arrayValue' in v) return (v.arrayValue.values ?? []).map(fromValue);
+  if ('mapValue' in v) return Object.fromEntries(Object.entries(v.mapValue.fields ?? {}).map(([k, x]) => [k, fromValue(x)]));
+  return null;
+}
+
+export async function readDoc(env, path) {
+  const sa = JSON.parse(env.FIREBASE_SERVICE_ACCOUNT);
+  const token = await accessToken(sa);
+  const url = `https://firestore.googleapis.com/v1/projects/${env.FIREBASE_PROJECT_ID}/databases/${env.FIRESTORE_DATABASE}/documents/${path}`;
+  const res = await fetch(url, { headers: { authorization: `Bearer ${token}` } });
+  if (!res.ok) throw new Error(`Lecture Firestore refusée : ${res.status}`);
+  return fromValue({ mapValue: { fields: (await res.json()).fields } });
+}

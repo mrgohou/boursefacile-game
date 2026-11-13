@@ -2,7 +2,7 @@
 // dans Firestore (market_snapshots/latest + un historique par date). Lu par le jeu PACO Bourse.
 import facts from './facts.json';
 import { buildSnapshot } from './parse.js';
-import { writeDoc } from './firestore.js';
+import { readDoc, writeDoc } from './firestore.js';
 
 const ROOT = 'https://www.brvm.org';
 const UA = { 'user-agent': 'PacoBourse/0.1 (+https://paco-bourse.web.app)', accept: 'text/html' };
@@ -26,9 +26,12 @@ export default {
   async scheduled(_event, env, ctx) {
     ctx.waitUntil(run(env));
   },
-  // Déclenchement manuel protégé : GET /run avec l'en-tête x-run-token.
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
     const url = new URL(req.url);
+    // Cours du jour pour le jeu, servis depuis le cache du réseau Cloudflare :
+    // 10 000 joueurs = quelques lectures Firestore par heure, pas une par joueur.
+    if (url.pathname === '/market/latest') return marketLatest(req, env, ctx);
+    // Déclenchement manuel protégé : GET /run avec l'en-tête x-run-token.
     if (url.pathname !== '/run') return new Response('PACO Bourse market worker', { status: 200 });
     if (!env.RUN_TOKEN || req.headers.get('x-run-token') !== env.RUN_TOKEN) return new Response('Interdit', { status: 403 });
     try {
@@ -39,3 +42,28 @@ export default {
     }
   },
 };
+
+const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'GET' };
+
+async function marketLatest(req, env, ctx) {
+  const cache = caches.default;
+  const key = new Request(new URL('/market/latest', req.url).toString(), { method: 'GET' });
+  const hit = await cache.match(key);
+  if (hit) return hit;
+  let body;
+  try {
+    body = JSON.stringify(await readDoc(env, 'market_snapshots/latest'));
+  } catch (e) {
+    return Response.json({ error: 'indisponible' }, { status: 503, headers: { ...CORS, 'retry-after': '60' } });
+  }
+  const res = new Response(body, {
+    headers: {
+      ...CORS,
+      'content-type': 'application/json; charset=utf-8',
+      // 15 min en cache partagé ; le téléphone garde sa copie 5 min et peut réutiliser l'ancienne pendant 1 h si besoin.
+      'cache-control': 'public, max-age=300, s-maxage=900, stale-while-revalidate=3600',
+    },
+  });
+  ctx.waitUntil(cache.put(key, res.clone()));
+  return res;
+}

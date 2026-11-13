@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../data/content.dart';
 import '../engine/board.dart';
 import '../engine/city.dart';
+import 'market.dart';
 
 const goatScore = 700;
 
@@ -19,9 +20,12 @@ class TesterFeedback {
 }
 
 class GameState extends ChangeNotifier {
-  GameState(this.content, this._prefs) {
+  GameState(this.content, this._prefs) : market = cachedMarket(_prefs, content.market) ?? content.market {
     _load();
   }
+
+  /// Cours en vigueur : instantané intégré, ou copie plus récente reçue du serveur.
+  MarketSnapshot market;
 
   static const _key = 'paco.save.v1';
   final Content content;
@@ -39,10 +43,19 @@ class GameState extends ChangeNotifier {
   Map<int, TesterFeedback> feedback = {};
   bool pacoDiscret = false;
 
-  List<Company> get companies => content.market.companies;
+  List<Company> get companies => market.companies;
+
+  /// Nouveaux cours reçus : référence mise à jour, prix manquants ajoutés (nouvelles sociétés).
+  void applyMarket(MarketSnapshot m) {
+    if (m.sessionDate.compareTo(market.sessionDate) <= 0) return;
+    market = m;
+    city = city.copyWith(prices: {for (final c in m.companies) c.symbol: c.price, ...city.prices});
+    _changed();
+  }
 
   void _load() {
     city = CityState.fresh(companies);
+    final fresh = city.prices;
     final raw = _prefs.getString(_key);
     if (raw == null) return;
     try {
@@ -50,7 +63,8 @@ class GameState extends ChangeNotifier {
       savings = (j['savings'] as num).toDouble();
       stars = (j['stars'] as Map).map((k, v) => MapEntry(k as String, v as int));
       seenIntro = (j['seenIntro'] as List).cast<int>().toSet();
-      city = CityState.fromJson((j['city'] as Map).cast());
+      final saved = CityState.fromJson((j['city'] as Map).cast());
+      city = saved.copyWith(prices: {...fresh, ...saved.prices});
       days = (j['days'] as List).cast<String>().toSet();
       quiz = (j['quiz'] as Map).map((k, v) => MapEntry(int.parse(k as String), v as int));
       cards = (j['cards'] as List).cast<String>();
