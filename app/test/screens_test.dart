@@ -136,5 +136,6 @@ void main() {
     expect(game.cityValidated(1), isTrue);
     expect(game.cards, hasLength(1));
     expect(find.text('Ton avis sur Abidjan'), findsOneWidget);
+    await tester.runAsync(game.flush);
   });
 }
