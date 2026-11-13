@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { CITIES } from './data/cities';
-import { LEVELS, cityStars, cityUnlocked, levelUnlocked, load, persist, title, type Save } from './store';
+import { COMPANIES, LEVELS, cityStars, cityUnlocked, citiesDone, levelUnlocked, load, persist, title, today, unlockedCompanies, type Save } from './store';
+import { CityView } from './components/CityView';
+import { advance, scorePaco } from './engine/city';
 import { LevelView, type LevelResult } from './components/LevelView';
 import { Paco } from './components/Paco';
 import { isMuted, setMuted, startMusic } from './audio';
 import type { LevelDef } from './engine/board';
 import './App.css';
 
-type Screen = { name: 'home' } | { name: 'map' } | { name: 'city'; city: number } | { name: 'level'; level: LevelDef };
+type Screen = { name: 'home' } | { name: 'map' } | { name: 'ville' } | { name: 'city'; city: number } | { name: 'level'; level: LevelDef };
 
 export default function App() {
   const [save, setSave] = useState<Save>(load);
@@ -22,10 +24,14 @@ export default function App() {
   };
 
   const onEnd = (level: LevelDef, r: LevelResult) => {
+    // 1 puzzle réussi = 1 séance dans Ma Ville (GDD §2).
+    const step = advance(save.city, COMPANIES, 2026);
     setSave((s) => ({
       ...s,
-      savings: s.savings + r.savings,
+      savings: s.savings + r.savings + step.cashGained,
       stars: { ...s.stars, [level.id]: Math.max(s.stars[level.id] ?? 0, r.stars) },
+      city: step.state,
+      days: s.days.includes(today()) ? s.days : [...s.days, today()],
     }));
     setScreen({ name: 'city', city: level.city });
   };
@@ -73,6 +79,12 @@ export default function App() {
           <p className="titre">
             Titre : <b>{title(save)}</b>
           </p>
+          <button className="villebtn" onClick={() => setScreen({ name: 'ville' })}>
+            <span>🏙️ Ma Ville</span>
+            <small>
+              Score PACO {scorePaco(save.city, COMPANIES, save.days.length)} · séance {save.city.seance}
+            </small>
+          </button>
           <ol className="route">
             {CITIES.map((c) => {
               const open = cityUnlocked(save, c.n);
@@ -133,12 +145,28 @@ export default function App() {
                     })}
                   </div>
                   {done && <Paco pose="apprendre" text={`Ce qu'on retient : ${c.retiens}`} />}
-                  <p className="fine">Ma Ville, le guichet SGI et le quiz de Paco arrivent à l'étape suivante du prototype.</p>
+                  <button className="villebtn" onClick={() => setScreen({ name: 'ville' })}>
+                    <span>🏙️ Voir Ma Ville</span>
+                    <small>Chaque niveau réussi fait passer une séance de bourse.</small>
+                  </button>
                 </>
               )}
             </main>
           );
         })()}
+
+      {screen.name === 'ville' && (
+        <CityView
+          city={save.city}
+          cash={save.savings}
+          companies={unlockedCompanies(save)}
+          citiesDone={citiesDone(save)}
+          daysPlayed={save.days.length}
+          sgiOpen={cityUnlocked(save, 2)}
+          onChange={(city, cash) => setSave((s) => ({ ...s, city, savings: cash }))}
+          onBack={() => setScreen({ name: 'map' })}
+        />
+      )}
 
       {screen.name === 'level' && (
         <LevelView

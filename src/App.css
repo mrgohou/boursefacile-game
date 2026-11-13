@@ -78,3 +78,49 @@ button:disabled { cursor: default; }
 .result { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .stars { font-size: 52px; color: #ffc533; text-shadow: 0 3px 0 rgba(0, 0, 0, 0.15); letter-spacing: 6px; }
 .gain { background: #fff; border-radius: 999px; padding: 8px 16px; font-weight: 800; color: var(--profond); margin: 0; }
+
+/* ---------- Ma Ville ---------- */
+.villebtn { width: 100%; border: 0; border-radius: 22px; background: var(--profond); color: #fff; padding: 14px 16px; margin: 0 0 14px; display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+.villebtn span { font-weight: 800; font-size: 18px; }
+.villebtn small { opacity: 0.8; }
+.cityview { padding: 0 16px 90px; display: flex; flex-direction: column; gap: 12px; }
+.kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.kpis div { background: #fff; border-radius: 18px; padding: 10px; display: flex; flex-direction: column; }
+.kpis div:first-child { background: var(--citron); }
+.kpis small { font-size: 11px; color: var(--doux); }
+.kpis b { font-size: 20px; }
+.seance { margin: 0; color: var(--doux); font-size: 14px; }
+.event { background: var(--jaune); border-radius: 16px; padding: 10px 14px; font-size: 14px; }
+.event.ago { background: var(--citron); font-weight: 700; }
+.tabs { display: flex; background: #e3e8e4; border-radius: 999px; padding: 4px; }
+.tabs button { flex: 1; border: 0; background: transparent; border-radius: 999px; padding: 10px; font-weight: 700; }
+.tabs button.on { background: #fff; }
+.buildings { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: end; }
+.building { border: 0; background: transparent; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 0; position: relative; }
+.building .tower { width: 76%; height: var(--h); background: linear-gradient(180deg, var(--c), color-mix(in srgb, var(--c) 70%, #103b2c)); border-radius: 16px 16px 6px 6px; display: grid; place-items: start center; padding-top: 6px; box-shadow: inset 0 -8px 0 rgba(0, 0, 0, 0.12), 0 6px 10px rgba(16, 59, 44, 0.15); transition: height 0.4s; }
+.building .tower img { width: 36px; height: 36px; }
+.building b { font-size: 13px; }
+.building small { font-size: 11px; color: var(--doux); }
+.walkers { position: absolute; bottom: 34px; left: 4%; right: 4%; display: flex; justify-content: space-between; pointer-events: none; }
+.walkers i { width: 7px; height: 12px; border-radius: 5px 5px 3px 3px; animation: walk 1.6s ease-in-out infinite alternate; }
+.walkers i.g { background: #2f8f4e; }
+.walkers i.r { background: #d62828; }
+.walkers i + i { animation-delay: 0.8s; }
+@keyframes walk { from { transform: translateX(0); } to { transform: translateX(6px); } }
+.sgi h3 { margin: 14px 0 6px; font-size: 15px; }
+.row { display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 16px; padding: 8px 10px; margin-bottom: 6px; }
+.row .who { flex: 1; border: 0; background: transparent; text-align: left; display: flex; flex-direction: column; padding: 0; min-width: 0; }
+.row .who small { color: var(--doux); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .px { font-weight: 800; font-variant-numeric: tabular-nums; }
+.mini { border: 0; border-radius: 12px; background: var(--profond); color: #fff; font-weight: 800; width: 44px; height: 36px; }
+.mini.sell { background: #e3e8e4; color: var(--texte); }
+.mini:disabled { opacity: 0.3; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 20px; width: min(480px, 92vw); background: var(--profond); color: #fff; border-radius: 18px; padding: 12px 16px; font-size: 14px; z-index: 5; }
+.card { background: #fff; border-radius: 24px; width: 100%; overflow: hidden; padding-bottom: 16px; display: flex; flex-direction: column; align-items: center; }
+.card-head { width: 100%; display: flex; gap: 12px; align-items: center; padding: 16px; }
+.card-head img { width: 56px; height: 56px; }
+.card-head div { display: flex; flex-direction: column; }
+.card ul { list-style: none; padding: 0 16px; margin: 8px 0; width: 100%; }
+.card li { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid #eef1ef; font-size: 14px; }
+.card li span { color: var(--doux); }
+.card li b { text-align: right; }
