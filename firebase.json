@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "site": "paco-bourse",
+    "public": "dist",
+    "ignore": ["firebase.json", "**/.*"],
+    "headers": [
+      { "source": "/assets/**", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] }
+    ]
+  }
+}

@@ -12,6 +12,7 @@
     "levels": "node scripts/gen-levels.mjs"
   },
   "dependencies": {
+    "firebase": "^13.3.0",
     "phaser": "^4.2.1",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"

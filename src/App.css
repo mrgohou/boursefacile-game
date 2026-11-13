@@ -147,3 +147,8 @@ button:disabled { cursor: default; }
 .mini-card b { font-size: 11px; }
 .mini-card.missing { background: #e3e8e4; box-shadow: none; color: #9aa69f; }
 .mini-card.missing b { font-size: 22px; }
+.ghost.small { font-size: 14px; color: var(--profond); text-decoration: underline; }
+.account { padding: 18px; gap: 10px; align-items: stretch; }
+.account h3 { margin: 0; }
+.account input { border: 1px solid #dfe6e1; border-radius: 14px; padding: 12px 14px; font: inherit; }
+.error { color: #b3261e; margin: 0; font-size: 14px; }

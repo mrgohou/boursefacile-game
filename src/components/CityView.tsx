@@ -142,7 +142,7 @@ export function CityView({ city, cash, companies, citiesDone, daysPlayed, sgiOpe
 
           {tab === 'sgi' && (
             <div className="sgi">
-              <p className="fine">Cours réels de la BRVM (séance du 13/11/2026, version de test). Frais : 1 %, minimum 50.</p>
+              <p className="fine">Cours réels de la BRVM (version de test). Frais : 1 %, minimum 50.</p>
               {byFamily.map(([fam, list]) => (
                 <div key={fam}>
                   <h3>{FAMILIES[fam as keyof typeof FAMILIES].label}</h3>

@@ -95,3 +95,16 @@ export function unlockedCompanies(s: Save) {
 export function today() {
   return new Date().toISOString().slice(0, 10);
 }
+
+/** Remplace les cours de référence par l'instantané du jour (Firestore market_snapshots/latest). */
+export function applyMarket(companies: Company[]) {
+  const valid = companies.filter((c) => c && c.symbol && c.price > 0);
+  if (valid.length < 10) return false; // instantané incomplet : on garde l'actuel
+  COMPANIES.splice(0, COMPANIES.length, ...valid);
+  return true;
+}
+
+/** Avancement d'une sauvegarde, pour choisir entre la version locale et la version en ligne. */
+export function progressOf(s: Save) {
+  return Object.values(s.stars).reduce((a, b) => a + b, 0) * 1000 + s.city.seance;
+}

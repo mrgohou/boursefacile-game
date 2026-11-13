@@ -18,6 +18,10 @@ import {
   type Save,
 } from './store';
 import { QuizView } from './components/QuizView';
+import { AccountSheet } from './components/AccountSheet';
+import { cloudAvailable, loadCloudSave, loadMarket, onUser, saveCloud, signOut } from './cloud';
+import { applyMarket, progressOf } from './store';
+import snapshot from './data/market-snapshot.json';
 import { CardsView } from './components/CardsView';
 import { CityView } from './components/CityView';
 import { advance, scorePaco } from './engine/city';
@@ -34,7 +38,40 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'home' });
   const [muted, setM] = useState(isMuted());
 
+  const [uid, setUid] = useState<string | null>(null);
+  const [account, setAccount] = useState(false);
+  const [marketDate, setMarketDate] = useState(snapshot.sessionDate);
+  const cloud = cloudAvailable();
+
   useEffect(() => persist(save), [save]);
+
+  // Cours du jour publiés dans Firestore (sinon : instantané intégré au jeu).
+  useEffect(() => {
+    if (!cloud) return;
+    void loadMarket().then((m) => {
+      if (m && m.sessionDate > snapshot.sessionDate && applyMarket(m.companies)) setMarketDate(m.sessionDate);
+    });
+  }, [cloud]);
+
+  // Compte : on récupère la sauvegarde en ligne si elle est plus avancée.
+  useEffect(() => {
+    if (!cloud) return;
+    let off: (() => void) | undefined;
+    void onUser(async (u) => {
+      setUid(u?.uid ?? null);
+      if (!u) return;
+      const remote = await loadCloudSave(u.uid).catch(() => null);
+      setSave((local) => (remote && progressOf(remote) > progressOf(local) ? { ...local, ...remote } : local));
+    }).then((f) => (off = f));
+    return () => off?.();
+  }, [cloud]);
+
+  // Sauvegarde en ligne, au plus une fois toutes les 3 secondes.
+  useEffect(() => {
+    if (!uid) return;
+    const t = window.setTimeout(() => void saveCloud(uid, save).catch(() => undefined), 3000);
+    return () => window.clearTimeout(t);
+  }, [uid, save]);
 
   const start = () => {
     startMusic();
@@ -100,6 +137,19 @@ export default function App() {
           <button className="btn big" onClick={start}>
             Jouer
           </button>
+          {cloud ? (
+            uid ? (
+              <button className="ghost small" onClick={() => void signOut()}>
+                Connecté · progression sauvegardée en ligne · se déconnecter
+              </button>
+            ) : (
+              <button className="ghost small" onClick={() => setAccount(true)}>
+                Se connecter pour sauvegarder en ligne
+              </button>
+            )
+          ) : (
+            <p className="fine">Aperçu : la progression reste sur cet appareil. Les comptes marchent sur la version hébergée.</p>
+          )}
           <p className="fine">Version de test v0 · FCFA-jeu fictifs · aucun argent réel · aucun conseil d'investissement</p>
         </main>
       )}
@@ -107,7 +157,7 @@ export default function App() {
       {screen.name === 'map' && (
         <main className="map">
           <p className="titre">
-            Titre : <b>{title(save)}</b>
+            Titre : <b>{title(save)}</b> · cours BRVM du {marketDate.split('-').reverse().join('/')}
           </p>
           <button className="villebtn" onClick={() => setScreen({ name: 'ville' })}>
             <span>🏙️ Ma Ville</span>
@@ -233,6 +283,7 @@ export default function App() {
           onQuit={() => setScreen({ name: 'city', city: screen.level.city })}
         />
       )}
+      {account && <AccountSheet onClose={() => setAccount(false)} />}
     </div>
   );
 }
