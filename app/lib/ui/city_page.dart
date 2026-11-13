@@ -4,6 +4,7 @@ import 'feedback_sheet.dart';
 import 'level_page.dart';
 import 'paco.dart';
 import 'quiz_page.dart';
+import 'stars.dart';
 import 'scope.dart';
 
 /// Une ville : présentation par Paco, 3 niveaux, quiz de validation.
@@ -105,7 +106,7 @@ class _LevelCard extends StatelessWidget {
                       ? Text('$levelIndex', style: Theme.of(context).textTheme.headlineLarge)
                       : Icon(Icons.lock_outline, color: scheme.onSurfaceVariant),
                   const SizedBox(height: 4),
-                  Text('★' * st + '☆' * (3 - st), style: const TextStyle(color: Color(0xFFE09F00), letterSpacing: 2)),
+                  Stars(st),
                 ],
               ),
             ),

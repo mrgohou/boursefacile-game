@@ -25,10 +25,11 @@ class SettingsTab extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         Text('Apparence', style: text.titleMedium),
+        Text('« Auto » suit le réglage de ton téléphone.', style: text.bodySmall),
         const SizedBox(height: 8),
         SegmentedButton<ThemeMode>(
           segments: const [
-            ButtonSegment(value: ThemeMode.system, label: Text('Téléphone'), icon: Icon(Icons.phone_android)),
+            ButtonSegment(value: ThemeMode.system, label: Text('Auto'), icon: Icon(Icons.brightness_auto_outlined)),
             ButtonSegment(value: ThemeMode.light, label: Text('Clair'), icon: Icon(Icons.light_mode_outlined)),
             ButtonSegment(value: ThemeMode.dark, label: Text('Sombre'), icon: Icon(Icons.dark_mode_outlined)),
           ],

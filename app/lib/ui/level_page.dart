@@ -7,6 +7,7 @@ import '../game/puzzle_game.dart';
 import 'format.dart';
 import 'paco.dart';
 import 'scope.dart';
+import 'stars.dart';
 
 const _labels = {
   'cacao': 'cacao',
@@ -131,9 +132,7 @@ class _LevelPageState extends State<LevelPage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text('★' * s + '☆' * (3 - s),
-                            style: const TextStyle(fontSize: 40, color: Color(0xFFFFC533), letterSpacing: 6),
-                            semanticsLabel: '$s étoiles sur 3'),
+                        Stars(s, size: 44),
                         Text('+ ${fcfa(eng.savingsEarned(progress))} FCFA-jeu d’épargne', style: Theme.of(context).textTheme.titleMedium),
                         if (reward != null) Text('Ma Ville : ${reward!.event}', textAlign: TextAlign.center),
                         if (reward?.ago == true) Text('AGO : + ${fcfa(reward!.cashGained)} FCFA-jeu de dividendes'),

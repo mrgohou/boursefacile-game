@@ -87,7 +87,7 @@ class _CityTile extends StatelessWidget {
           child: open ? Text('$n', style: const TextStyle(fontWeight: FontWeight.w800)) : const Icon(Icons.lock_outline, size: 20),
         ),
         title: Text(name),
-        subtitle: Text('$notion · $st/9 ★'),
+        subtitle: Text('$notion · $st/9 étoiles'),
         trailing: done ? Icon(Icons.verified, color: scheme.primary, semanticLabel: 'Ville validée') : const Icon(Icons.chevron_right),
         onTap: open ? () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => CityPage(city: n))) : null,
       ),

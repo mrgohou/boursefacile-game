@@ -68,7 +68,7 @@ jobs:
         continue-on-error: true
         run: |
           set -o pipefail
-          flutter build web --release 2>&1 | tee ../ci-out/build-web.txt; echo "web=$?" >> ../ci-out/status.txt
+          flutter build web --release --no-web-resources-cdn 2>&1 | tee ../ci-out/build-web.txt; echo "web=$?" >> ../ci-out/status.txt
           if [ -d build/web ]; then sed -i 's|<base href="/">|<base href="./">|' build/web/index.html; mkdir -p ../ci-out/web && cp -r build/web/. ../ci-out/web/; fi
 
       - name: Build APK
@@ -76,7 +76,7 @@ jobs:
         continue-on-error: true
         run: |
           set -o pipefail
-          flutter build apk --release 2>&1 | tail -40 | tee ../ci-out/build-apk.txt; echo "apk=$?" >> ../ci-out/status.txt
+          flutter build apk --release --split-per-abi 2>&1 | tail -40 | tee ../ci-out/build-apk.txt; echo "apk=$?" >> ../ci-out/status.txt
 
       - name: Publier les résultats (branche ci-results)
         if: always()
@@ -93,12 +93,12 @@ jobs:
           git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" ci-results
 
       - name: APK de test (pré-version ci-latest)
-        if: hashFiles('app/build/app/outputs/flutter-apk/app-release.apk') != ''
+        if: hashFiles('app/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk') != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release delete ci-latest -y --cleanup-tag || true
-          gh release create ci-latest build/app/outputs/flutter-apk/app-release.apk --prerelease --title "PACO Bourse — APK de test" --notes "Build automatique ${GITHUB_SHA}. Signature de test, à usage interne."
+          gh release create ci-latest build/app/outputs/flutter-apk/app-arm64-v8a-release.apk build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk --prerelease --title "PACO Bourse — APK de test" --notes "Build automatique ${GITHUB_SHA}. Signature de test, à usage interne."
 
       - name: Échec si un contrôle a échoué
         if: always()
