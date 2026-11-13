@@ -4,7 +4,13 @@
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
 let musicTimer: number | null = null;
-let muted = localStorage.getItem('paco.muted') === '1';
+let muted = (() => {
+  try {
+    return localStorage.getItem('paco.muted') === '1';
+  } catch {
+    return false;
+  }
+})();
 
 function audio() {
   if (!ctx) {
@@ -103,7 +109,11 @@ export function isMuted() {
 
 export function setMuted(m: boolean) {
   muted = m;
-  localStorage.setItem('paco.muted', m ? '1' : '0');
+  try {
+    localStorage.setItem('paco.muted', m ? '1' : '0');
+  } catch {
+    /* pas de stockage : réglage gardé pour la session */
+  }
   if (master) master.gain.value = m ? 0 : 0.6;
   if (m) stopMusic();
   else startMusic();
