@@ -46,3 +46,8 @@ export async function readMarket(): Promise<{ sessionDate: string; companies: Co
   const d = snap.data();
   return { sessionDate: d.sessionDate as string, companies: d.companies as Company[] };
 }
+
+/** Avis testeur : game_feedback/{uid}_{ville}, sans nom ni e-mail. */
+export async function writeFeedback(uid: string, city: number, f: object) {
+  await setDoc(doc(db, 'game_feedback', `${uid}_${city}`), { uid, city, ...f, at: serverTimestamp() });
+}

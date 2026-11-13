@@ -157,3 +157,8 @@ button:disabled { cursor: default; }
 .building .bimg { width: 100%; aspect-ratio: 1; object-fit: contain; object-position: bottom; filter: drop-shadow(0 6px 6px rgba(16, 59, 44, 0.18)); }
 .building .walker { position: absolute; bottom: 38px; left: 2%; width: 22%; animation: walk 2.4s ease-in-out infinite alternate; }
 @keyframes walk { from { transform: translateX(0); } to { transform: translateX(10px); } }
+.faces { display: flex; gap: 10px; }
+.faces button { flex: 1; font-size: 30px; border: 2px solid #dfe6e1; background: #fff; border-radius: 16px; padding: 6px; }
+.faces button.on { border-color: var(--profond); background: var(--citron); }
+.account label { font-weight: 700; font-size: 14px; }
+.account textarea { border: 1px solid #dfe6e1; border-radius: 14px; padding: 10px 12px; font: inherit; resize: vertical; }

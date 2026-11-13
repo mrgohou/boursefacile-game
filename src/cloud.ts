@@ -51,3 +51,6 @@ export async function loadMarket(): Promise<{ sessionDate: string; companies: Co
     return null;
   }
 }
+export async function sendFeedback(uid: string, city: number, f: object) {
+  return (await impl()).writeFeedback(uid, city, f);
+}

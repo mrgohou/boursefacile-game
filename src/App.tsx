@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { CITIES } from './data/cities';
 import {
   COMPANIES,
@@ -19,13 +19,16 @@ import {
 } from './store';
 import { QuizView } from './components/QuizView';
 import { AccountSheet } from './components/AccountSheet';
-import { cloudAvailable, loadCloudSave, loadMarket, onUser, saveCloud, signOut } from './cloud';
-import { applyMarket, progressOf } from './store';
+import { cloudAvailable, loadCloudSave, loadMarket, onUser, saveCloud, sendFeedback, signOut } from './cloud';
+import { GOAT_SCORE, applyMarket, progressOf, type Feedback } from './store';
 import snapshot from './data/market-snapshot.json';
 import { CardsView } from './components/CardsView';
 import { CityView } from './components/CityView';
 import { advance, scorePaco } from './engine/city';
-import { LevelView, type LevelResult } from './components/LevelView';
+import type { LevelResult } from './components/LevelView';
+import { FeedbackSheet } from './components/FeedbackSheet';
+// Le moteur de jeu (Phaser) n'est chargé qu'au premier niveau : accueil plus rapide.
+const LevelView = lazy(() => import('./components/LevelView').then((m) => ({ default: m.LevelView })));
 import { Paco } from './components/Paco';
 import { isMuted, setMuted, startMusic } from './audio';
 import type { LevelDef } from './engine/board';
@@ -40,6 +43,7 @@ export default function App() {
 
   const [uid, setUid] = useState<string | null>(null);
   const [account, setAccount] = useState(false);
+  const [feedbackFor, setFeedbackFor] = useState<number | null>(null);
   const [marketDate, setMarketDate] = useState(snapshot.sessionDate);
   const cloud = cloudAvailable();
 
@@ -101,6 +105,14 @@ export default function App() {
       return card ? { ...next, cards: [...next.cards, card] } : next;
     });
     setScreen({ name: 'city', city });
+    if (score >= 2 && !save.feedback[city]) setFeedbackFor(city);
+  };
+
+  const onFeedback = (city: number, f: Feedback | null) => {
+    setFeedbackFor(null);
+    if (!f) return;
+    setSave((s) => ({ ...s, feedback: { ...s.feedback, [city]: f } }));
+    if (uid) void sendFeedback(uid, city, f).catch(() => undefined);
   };
 
   const toggleSound = () => {
@@ -159,6 +171,12 @@ export default function App() {
           <p className="titre">
             Titre : <b>{title(save)}</b> · cours BRVM du {marketDate.split('-').reverse().join('/')}
           </p>
+          {citiesDone(save) >= 15 && title(save) !== 'GOAT de la BRVM' && (
+            <Paco
+              pose="progresser"
+              text={`Les 15 villes sont validées ! Fais grimper ton Score PACO à ${GOAT_SCORE} pour devenir GOAT de la BRVM.`}
+            />
+          )}
           <button className="villebtn" onClick={() => setScreen({ name: 'ville' })}>
             <span>🏙️ Ma Ville</span>
             <small>
@@ -276,14 +294,17 @@ export default function App() {
       )}
 
       {screen.name === 'level' && (
+        <Suspense fallback={<p className="fine">Chargement du niveau…</p>}>
         <LevelView
           key={screen.level.id}
           level={screen.level}
           onEnd={(r) => onEnd(screen.level, r)}
           onQuit={() => setScreen({ name: 'city', city: screen.level.city })}
         />
+        </Suspense>
       )}
       {account && <AccountSheet onClose={() => setAccount(false)} />}
+      {feedbackFor != null && <FeedbackSheet city={CITIES[feedbackFor - 1].name} onDone={(f) => onFeedback(feedbackFor, f)} />}
     </div>
   );
 }

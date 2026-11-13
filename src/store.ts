@@ -3,7 +3,7 @@ import levels from './data/levels.json';
 import type { LevelDef } from './engine/board';
 import snapshot from './data/market-snapshot.json';
 import { CITIES } from './data/cities';
-import { newCity, type CityState, type Company } from './engine/city';
+import { newCity, scorePaco, type CityState, type Company } from './engine/city';
 
 export const LEVELS = levels as LevelDef[];
 export const COMPANIES = snapshot.companies as Company[];
@@ -17,9 +17,17 @@ export interface Save {
   days: string[]; // jours joués (AAAA-MM-JJ), pour la régularité
   quiz: Record<number, number>; // ville -> meilleur score au quiz de Paco (0..3)
   cards: string[]; // cartes entreprises gagnées (symboles)
+  feedback: Record<number, Feedback>; // avis des testeurs, par ville
 }
 
-const fresh = (): Save => ({ savings: 10000, stars: {}, seenIntro: {}, city: newCity(COMPANIES), days: [], quiz: {}, cards: [] });
+export interface Feedback {
+  compris: 1 | 2 | 3;
+  amusant: 1 | 2 | 3;
+  changer: string;
+  at: string;
+}
+
+const fresh = (): Save => ({ savings: 10000, stars: {}, seenIntro: {}, city: newCity(COMPANIES), days: [], quiz: {}, cards: [], feedback: {} });
 
 export function load(): Save {
   try {
@@ -56,9 +64,13 @@ export function levelUnlocked(s: Save, l: LevelDef) {
   return (s.stars[`c${l.city}-l${l.index - 1}`] ?? 0) > 0;
 }
 
+export const GOAT_SCORE = 700;
+
 export function title(s: Save) {
   const done = Array.from({ length: 15 }, (_, i) => i + 1).filter((c) => cityValidated(s, c)).length;
-  if (done >= 15) return 'GOAT de la BRVM';
+  // GDD §7 : GOAT = ville 15 validée + Score PACO ≥ 700.
+  if (done >= 15 && scorePaco(s.city, COMPANIES, s.days.length) >= GOAT_SCORE) return 'GOAT de la BRVM';
+  if (done >= 15) return 'Investisseur Patient';
   if (done >= 9) return 'Investisseur Patient';
   if (done >= 4) return 'Actionnaire Moyen';
   return 'Actionnaire Débutant';

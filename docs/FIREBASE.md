@@ -14,6 +14,13 @@ match /game_saves/{uid} {
   allow read, write: if request.auth != null && request.auth.uid == uid
     && (request.resource == null || request.resource.data.json.size() < 200000);
 }
+// Avis des testeurs : chacun écrit les siens, personne ne les relit depuis le jeu.
+match /game_feedback/{id} {
+  allow create, update: if request.auth != null && id.matches(request.auth.uid + '_[0-9]+')
+    && request.resource.data.uid == request.auth.uid
+    && request.resource.data.changer.size() <= 500;
+  allow read: if false;
+}
 // Cours du jour : lecture publique, écriture réservée au serveur (Admin SDK).
 match /market_snapshots/{id} {
   allow read: if true;
