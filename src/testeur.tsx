@@ -37,7 +37,6 @@ function Page() {
       <section className="hero">
         <p className="kicker">Bêta fermée · 100 places · Côte d'Ivoire</p>
         <h1>Apprends la bourse en jouant</h1>
-        <p className="slogan">Apprends la bourse en jouant.</p>
         <p className="lead">
           PACO Bourse, c'est un jeu où l'on aligne des tuiles pour épargner, puis où l'on investit dans les <b>vraies entreprises de la BRVM</b>. Paco l'éléphant explique tout, ville après ville.
         </p>
