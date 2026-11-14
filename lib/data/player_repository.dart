@@ -12,9 +12,11 @@ abstract interface class PlayerRepository {
 
 class LocalPlayerRepository implements PlayerRepository {
   LocalPlayerRepository({SharedPreferencesAsync? preferences})
-    : _preferences = preferences ?? SharedPreferencesAsync();
+    : _createdPreferences = preferences;
   static const key = 'paco.mobile.player.v1';
-  final SharedPreferencesAsync _preferences;
+  SharedPreferencesAsync? _createdPreferences;
+  SharedPreferencesAsync get _preferences =>
+      _createdPreferences ??= SharedPreferencesAsync();
 
   @override
   Future<PlayerState> load() async {

@@ -24,11 +24,11 @@ jobs:
       - run: flutter analyze
       - run: flutter test
       - run: sdkmanager "platforms;android-35" "platforms;android-36" "build-tools;36.0.0" "ndk;28.2.13676358" "cmake;3.22.1"
-      - run: flutter build apk --debug --split-per-abi --target-platform android-arm64
+      - run: flutter build apk --profile --split-per-abi --target-platform android-arm64
       - uses: actions/upload-artifact@v4
         with:
-          name: paco-bourse-android-debug
-          path: build/app/outputs/flutter-apk/app-arm64-v8a-debug.apk
+          name: paco-bourse-android-profile
+          path: build/app/outputs/flutter-apk/app-arm64-v8a-profile.apk
           retention-days: 14
           compression-level: 0
   api:

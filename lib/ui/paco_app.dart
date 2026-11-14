@@ -41,7 +41,10 @@ class _PacoAppState extends State<PacoApp> {
   void initState() {
     super.initState();
     audio = widget.audio ?? PacoAudio();
-    unawaited(audio.initialize());
+    // Render the home/loading screen before contacting native audio plugins.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) unawaited(audio.initialize());
+    });
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import 'package:paco_bourse/main.dart' as entrypoint;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paco_bourse/audio/game_audio.dart';
 import 'package:paco_bourse/data/player_repository.dart';
@@ -23,6 +24,38 @@ void motionOff(WidgetTester tester) {
 }
 
 void main() {
+  testWidgets(
+    'real entrypoint displays a recoverable error if native storage is unavailable',
+    (tester) async {
+      motionOff(tester);
+      entrypoint.main();
+      await tester.pumpAndSettle();
+      expect(find.text('Réessayer'), findsOneWidget);
+      expect(
+        find.textContaining('Impossible de lire la sauvegarde'),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('native audio failure does not prevent the city first frame', (
+    tester,
+  ) async {
+    motionOff(tester);
+    await tester.pumpWidget(PacoApp(repository: TestRepository()));
+    await tester.pumpAndSettle();
+    expect(find.text('Ma ville'), findsOneWidget);
+    expect(find.byType(CityMap), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('home is the city and inventories open from the game dock', (
     tester,
   ) async {

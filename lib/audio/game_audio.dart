@@ -86,10 +86,13 @@ class SilentGameAudio extends GameAudio {
 
 class PacoAudio extends GameAudio with WidgetsBindingObserver {
   PacoAudio({SharedPreferencesAsync? preferences})
-    : _preferences = preferences ?? SharedPreferencesAsync();
-  final SharedPreferencesAsync _preferences;
-  final AudioPlayer _musicPlayer = AudioPlayer();
-  final List<AudioPlayer> _voices = List.generate(3, (_) => AudioPlayer());
+    : _createdPreferences = preferences;
+  SharedPreferencesAsync? _createdPreferences;
+  SharedPreferencesAsync get _preferences =>
+      _createdPreferences ??= SharedPreferencesAsync();
+  AudioPlayer? _createdMusicPlayer;
+  AudioPlayer get _musicPlayer => _createdMusicPlayer ??= AudioPlayer();
+  final List<AudioPlayer> _voices = [];
   final List<int> _voiceTokens = [0, 0, 0];
   final List<Future<void>> _voiceQueues = List.generate(
     3,
@@ -140,6 +143,7 @@ class PacoAudio extends GameAudio with WidgetsBindingObserver {
       if (_disposed) return;
       if (musicRevision == _musicRevision) _music = music ?? true;
       if (sfxRevision == _sfxRevision) _sfx = sfx ?? true;
+      _voices.addAll(List.generate(3, (_) => AudioPlayer()));
       await _musicPlayer.setReleaseMode(ReleaseMode.loop);
       await _musicPlayer.setVolume(.22);
       for (final voice in _voices) {
@@ -168,7 +172,9 @@ class PacoAudio extends GameAudio with WidgetsBindingObserver {
     _musicQueue = _musicQueue.then((_) async {
       if (_disposed || token != _token) return;
       try {
-        await _musicPlayer.stop();
+        final player = _createdMusicPlayer;
+        if (player == null) return;
+        await player.stop();
         if (_disposed || token != _token || !_ready || !_music || _paused) {
           return;
         }
@@ -309,7 +315,7 @@ class PacoAudio extends GameAudio with WidgetsBindingObserver {
   Future<void> _release() async {
     await _musicQueue;
     await Future.wait(_voiceQueues);
-    for (final player in [_musicPlayer, ..._voices]) {
+    for (final player in [?_createdMusicPlayer, ..._voices]) {
       try {
         await player.dispose();
       } catch (_) {

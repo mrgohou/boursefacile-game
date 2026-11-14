@@ -23,7 +23,7 @@ class PlayerController extends ChangeNotifier {
     error = null;
     _notify();
     try {
-      _state = await repository.load();
+      _state = await repository.load().timeout(const Duration(seconds: 15));
     } catch (_) {
       error = 'Impossible de lire la sauvegarde. Réessaie ou confirme une remise à zéro.';
     } finally {
