@@ -3,8 +3,8 @@ import 'package:material_ui/material_ui.dart';
 /// Shared Material 3 tokens. Typography follows the device's font and text scale.
 abstract final class PacoColors {
   static const forest = Color(0xFF163C32);
-  static const lime = Color(0xFFD9EE83);
-  static const cream = Color(0xFFF6F7F2);
+  static const lime = Color(0xFFFFDA70);
+  static const cream = Color(0xFFFFFBF1);
 }
 
 ThemeData buildPacoTheme({Brightness brightness = Brightness.light}) {
@@ -21,6 +21,7 @@ ThemeData buildPacoTheme({Brightness brightness = Brightness.light}) {
   );
   final base = ThemeData(
     useMaterial3: true,
+    fontFamily: 'Nunito',
     colorScheme: scheme,
     brightness: brightness,
     visualDensity: VisualDensity.standard,

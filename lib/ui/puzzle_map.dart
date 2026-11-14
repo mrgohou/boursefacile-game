@@ -17,10 +17,10 @@ class PuzzleMapPage extends StatelessWidget {
   static const positions = [.28, .67, .37, .72, .31, .62];
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: const Color(0xFFEAF2D8),
+    backgroundColor: const Color(0xFFECE5FB),
     appBar: AppBar(
       title: const Text('Le chemin de Paco'),
-      backgroundColor: const Color(0xFFEAF2D8),
+      backgroundColor: const Color(0xFFECE5FB),
     ),
     body: SafeArea(
       child: SingleChildScrollView(
@@ -43,7 +43,7 @@ class PuzzleMapPage extends StatelessWidget {
                             Text(
                               'Chaque pas compte.',
                               style: Theme.of(context).textTheme.headlineSmall
-                                  ?.copyWith(color: const Color(0xFF163C32)),
+                                  ?.copyWith(color: const Color(0xFF4B3478)),
                             ),
                             const SizedBox(height: 6),
                             const Text(
@@ -105,7 +105,7 @@ class PuzzleMapPage extends StatelessWidget {
                                       color: i > state.unlockedLevel
                                           ? const Color(0xFFCFD8BF)
                                           : state.answered.contains(i)
-                                          ? const Color(0xFF4F9368)
+                                          ? const Color(0xFF8762BD)
                                           : const Color(0xFFFFD875),
                                       shape: const CircleBorder(
                                         side: BorderSide(

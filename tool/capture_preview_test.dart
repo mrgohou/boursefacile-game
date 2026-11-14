@@ -33,6 +33,12 @@ class PreviewRepository implements PlayerRepository {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(() async {
+    await (FontLoader('Nunito')..addFont(
+          File('assets/fonts/Nunito.ttf')
+              .readAsBytes()
+              .then(ByteData.sublistView),
+        ))
+        .load();
     final sdk = Platform.environment['FLUTTER_ROOT'];
     if (sdk != null) {
       final font = FontLoader('Roboto');
@@ -106,6 +112,7 @@ void main() {
         RepaintBoundary(
           key: key,
           child: MaterialApp(
+            debugShowCheckedModeBanner: false,
             theme: buildPacoTheme(),
             home: const PuzzlePage(level: 2),
           ),

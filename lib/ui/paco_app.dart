@@ -9,6 +9,7 @@ import '../data/player_repository.dart';
 import '../domain/lessons.dart';
 import '../domain/player_state.dart';
 import 'city_map.dart';
+import 'game_chrome.dart';
 import 'collection_sheets.dart';
 import 'illustrations.dart';
 import 'paco_theme.dart';
@@ -530,82 +531,21 @@ class _PacoHomeState extends State<PacoHome> {
     ],
   );
 
-  Widget hudPanel(Widget child) => Material(
-    elevation: 3,
-    shadowColor: const Color(0x3322482D),
-    color: Theme.of(context).colorScheme.surfaceContainerLow,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(22),
-      side: const BorderSide(color: Color(0x55FFFFFF), width: 2),
-    ),
-    child: child,
-  );
+  Widget hudPanel(Widget child) => GamePanel(child: child);
   Widget dockButton(
     String label,
     IconData icon,
     VoidCallback action, {
     bool primary = false,
-  }) {
-    final content = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Material(
-          elevation: primary ? 7 : 3,
-          color: primary
-              ? const Color(0xFF225A3C)
-              : Theme.of(context).colorScheme.surfaceContainerLow,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(primary ? 25 : 19),
-            side: BorderSide(
-              color: primary
-                  ? const Color(0xFFECF8A3)
-                  : const Color(0xFFDCE6CD),
-              width: 2,
-            ),
-          ),
-          child: SizedBox(
-            width: primary ? 66 : 56,
-            height: primary ? 66 : 56,
-            child: Icon(
-              icon,
-              size: primary ? 33 : 26,
-              color: primary
-                  ? const Color(0xFFECF8A3)
-                  : Theme.of(context).colorScheme.primary,
-            ),
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w800,
-            color: Color(0xFF163C32),
-            shadows: [Shadow(color: Colors.white, blurRadius: 5)],
-          ),
-        ),
-      ],
-    );
-    return Expanded(
-      child: Semantics(
-        button: true,
-        label: label,
-        excludeSemantics: true,
-        child: GestureDetector(
-          key: ValueKey('dock-$label'),
-          behavior: HitTestBehavior.opaque,
-          onTap: controller.busy ? null : action,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: content,
-          ),
-        ),
-      ),
-    );
-  }
+  }) => Expanded(
+    child: GameAction(
+      key: ValueKey('dock-$label'),
+      label: label,
+      icon: icon,
+      onTap: controller.busy ? null : action,
+      primary: primary,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
@@ -651,7 +591,7 @@ class _PacoHomeState extends State<PacoHome> {
                         onGuichetTap: guichet,
                         reducedMotion: MediaQuery.disableAnimationsOf(context),
                         controlsBottomInset:
-                            MediaQuery.sizeOf(context).height > 700 ? 210 : 170,
+                            MediaQuery.sizeOf(context).height > 700 ? 175 : 140,
                       ),
                     ),
                   ),
@@ -662,18 +602,19 @@ class _PacoHomeState extends State<PacoHome> {
                     child: SafeArea(
                       bottom: false,
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+                        padding: const EdgeInsets.all(12),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Expanded(
-                                  child: hudPanel(
-                                    Padding(
+                                  child: GamePanel(
+                                    child: Padding(
                                       padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 9,
+                                        horizontal: 10,
+                                        vertical: 5,
                                       ),
                                       child: Row(
                                         children: [
@@ -684,17 +625,20 @@ class _PacoHomeState extends State<PacoHome> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Text(
+                                                const Text(
                                                   'Ma ville',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleMedium,
+                                                  style: TextStyle(
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w900,
+                                                    color: Color(0xFF23465A),
+                                                  ),
                                                 ),
                                                 Text(
                                                   '${s.answered.length}/6 notions',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .labelSmall,
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(0xFF48626E),
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -705,75 +649,62 @@ class _PacoHomeState extends State<PacoHome> {
                                   ),
                                 ),
                                 const SizedBox(width: 10),
-                                hudPanel(
-                                  IconButton(
+                                GamePanel(
+                                  color: const Color(0xFFD9F3FF),
+                                  child: IconButton(
                                     tooltip: 'Menu et options',
                                     onPressed: menu,
-                                    icon: const Icon(Icons.menu_rounded),
+                                    icon: const Icon(
+                                      Icons.menu_rounded,
+                                      color: Color(0xFF246990),
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: hudPanel(
-                                    InkWell(
-                                      borderRadius: BorderRadius.circular(22),
-                                      onTap: guichet,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 14,
-                                          vertical: 9,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            const Icon(
-                                              Icons.savings_rounded,
-                                              color: Color(0xFFB78423),
-                                              size: 21,
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Expanded(
-                                              child: Text(
-                                                '${money(s.cash)} FCFA-jeu',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelLarge,
-                                              ),
-                                            ),
-                                          ],
+                            GamePanel(
+                              radius: 16,
+                              color: const Color(0xFFFFE8A2),
+                              child: InkWell(
+                                onTap: guichet,
+                                borderRadius: BorderRadius.circular(16),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.monetization_on_rounded,
+                                        color: Color(0xFF9B6416),
+                                        size: 24,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Flexible(
+                                        child: Text(
+                                          '${money(s.cash)} FCFA-jeu',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w900,
+                                            color: Color(0xFF684412),
+                                          ),
                                         ),
                                       ),
-                                    ),
+                                      const SizedBox(width: 8),
+                                      const Icon(
+                                        Icons.chevron_right_rounded,
+                                        size: 20,
+                                        color: Color(0xFF684412),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                if (MediaQuery.textScalerOf(context).scale(14) <
-                                    21) ...[
-                                  const SizedBox(width: 12),
-                                  const Icon(
-                                    Icons.cloud_off_rounded,
-                                    size: 16,
-                                    color: Color(0xFF34583E),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  const Text(
-                                    'Fictif',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: Color(0xFF34583E),
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ],
-                              ],
+                              ),
                             ),
                             if (controller.busy)
-                              const Padding(
-                                padding: EdgeInsets.only(top: 6),
-                                child: LinearProgressIndicator(minHeight: 3),
-                              ),
+                              const LinearProgressIndicator(),
                           ],
                         ),
                       ),
@@ -793,42 +724,35 @@ class _PacoHomeState extends State<PacoHome> {
                             if (MediaQuery.sizeOf(context).height > 700 &&
                                 MediaQuery.textScalerOf(context).scale(14) < 20)
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: GestureDetector(
-                                  onTap: () => unawaited(puzzleMap()),
-                                  child: hudPanel(
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                        8,
-                                        8,
-                                        14,
-                                        8,
+                                padding: const EdgeInsets.only(bottom: 14),
+                                child: GamePanel(
+                                  child: InkWell(
+                                    onTap: () => unawaited(puzzleMap()),
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 8,
                                       ),
                                       child: Row(
                                         children: [
-                                          const PacoMascot(
-                                            size: 52,
-                                            pose: 'expliquer',
+                                          const Icon(
+                                            Icons.auto_awesome_rounded,
+                                            color: Color(0xFFB87514),
                                           ),
                                           const SizedBox(width: 8),
                                           Expanded(
                                             child: Text(
-                                              s.unlockedLevel == 0
-                                                  ? 'Ta ville commence ici. Joue pour découvrir ta première participation.'
-                                                  : s.holdings.values.every(
-                                                      (v) => v == 0,
-                                                    )
-                                                  ? 'Le guichet t’attend. Une première part donne vie à ton bâtiment.'
-                                                  : 'Touche un bâtiment pour voir tes parts, ou poursuis l’aventure.',
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall,
+                                              'Prochaine étape · ${math.min(s.unlockedLevel + 1, 6)}/6',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w800,
+                                                color: Color(0xFF345065),
+                                              ),
                                             ),
                                           ),
                                           const Icon(
                                             Icons.chevron_right_rounded,
+                                            color: Color(0xFF345065),
                                           ),
                                         ],
                                       ),

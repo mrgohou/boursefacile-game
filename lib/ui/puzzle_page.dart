@@ -8,6 +8,7 @@ import '../audio/game_audio.dart';
 import '../domain/lessons.dart';
 import '../game/paco_game.dart';
 import 'illustrations.dart';
+import 'game_chrome.dart';
 
 class PuzzlePage extends StatefulWidget {
   const PuzzlePage({
@@ -165,7 +166,11 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
       final frame = Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: const Color(0xFF274F48),
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF8D68C4), Color(0xFF4B3680)],
+          ),
           borderRadius: BorderRadius.circular(22),
           border: Border.all(color: const Color(0xFFFFE8A0), width: 2),
           boxShadow: const [
@@ -227,7 +232,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
         constraints: const BoxConstraints(minWidth: 78),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: const Color(0xFF245A42),
+          color: const Color(0xFF7551B5),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: Colors.white, width: 3),
         ),
@@ -236,7 +241,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
             const Text(
               'COUPS',
               style: TextStyle(
-                color: Color(0xFFE4F0B1),
+                color: Color(0xFFFFE899),
                 fontSize: 10,
                 fontWeight: FontWeight.w800,
               ),
@@ -244,7 +249,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
             Text(
               '${value.$2}',
               style: const TextStyle(
-                fontSize: 32,
+                fontSize: 34,
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
               ),
@@ -273,7 +278,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
             child: LinearProgressIndicator(
               value: (value.$1 / value.$3).clamp(0, 1),
               minHeight: 14,
-              color: const Color(0xFFE8BC4F),
+              color: const Color(0xFFFFB530),
               backgroundColor: Colors.white,
             ),
           ),
@@ -281,7 +286,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
           Text(
             '${value.$1} / ${value.$3} points',
             style: const TextStyle(
-              color: Color(0xFF34583E),
+              color: Color(0xFF594D70),
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -317,7 +322,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
             child: Text(
               won ? 'Bien joué !' : 'On réessaie ?',
               style: Theme.of(context).textTheme.headlineSmall
-                  ?.copyWith(color: const Color(0xFF245A42)),
+                  ?.copyWith(color: const Color(0xFF7551B5)),
             ),
           ),
           const SizedBox(height: 10),
@@ -330,7 +335,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
                       : 'La sauvegarde a échoué. Réessaie de l’enregistrer.')
                 : 'Tu ne perds ni épargne ni progression.',
             textAlign: TextAlign.center,
-            style: const TextStyle(color: Color(0xFF34583E)),
+            style: const TextStyle(color: Color(0xFF594D70)),
           ),
           const SizedBox(height: 14),
           FilledButton.icon(
@@ -364,7 +369,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
       child: Row(
         children: [
           PacoMascot(
-            size: 60,
+            size: 48,
             pose: won
                 ? 'reussir'
                 : lost
@@ -379,11 +384,11 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
                 Text(
                   lessons[widget.level].topic,
                   style: Theme.of(context).textTheme.titleLarge
-                      ?.copyWith(color: const Color(0xFF163C32)),
+                      ?.copyWith(color: const Color(0xFF4B3478)),
                 ),
                 const Text(
                   'Aligne au moins 3 symboles.',
-                  style: TextStyle(color: Color(0xFF34583E)),
+                  style: TextStyle(color: Color(0xFF594D70)),
                 ),
               ],
             ),
@@ -415,11 +420,17 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         header,
-        const SizedBox(height: 14),
-        scorePanel(),
+        const SizedBox(height: 10),
+        GamePanel(
+          color: const Color(0xFFFFF2CB),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: scorePanel(),
+          ),
+        ),
         const SizedBox(height: 16),
         board(),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         if (won || lost) result() else actions,
         const SizedBox(height: 14),
         const Padding(
@@ -427,15 +438,15 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
           child: Text(
             'Glisse une pièce vers sa voisine. Deux taps fonctionnent aussi.\nFCFA-jeu fictifs · aucun argent réel.',
             textAlign: TextAlign.center,
-            style: TextStyle(color: Color(0xFF456551), fontSize: 12),
+            style: TextStyle(color: Color(0xFF68547F), fontSize: 12),
           ),
         ),
       ],
     );
     return Scaffold(
-      backgroundColor: const Color(0xFFE9F0E1),
+      backgroundColor: const Color(0xFFF1E9FB),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFE9F0E1),
+        backgroundColor: const Color(0xFFF1E9FB),
         title: Text('Niveau ${widget.level + 1}'),
         actions: [
           soundControls(),
@@ -446,14 +457,23 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
           ),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(8, 8, 8, 28),
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 520),
-              child: content,
+      body: DecoratedBox(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFF1E9FB), Color(0xFFDDD5F7), Color(0xFFE6F5FF)],
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 28),
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 520),
+                child: content,
+              ),
             ),
           ),
         ),

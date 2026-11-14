@@ -65,7 +65,7 @@ class PacoGame extends FlameGame {
   }
 
   @override
-  Color backgroundColor() => const Color(0xFFF4F7EF);
+  Color backgroundColor() => const Color(0xFF493269);
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -243,7 +243,7 @@ class PacoGame extends FlameGame {
         ),
         Radius.circular(_unit * .18),
       );
-      canvas.drawRRect(r, Paint()..color = const Color(0xFFE3EBDF));
+      canvas.drawRRect(r, Paint()..color = const Color(0xFF624C86));
     }
     if (s?.phase == TurnPhase.shuffle) {
       final fresh = t >= .5;
@@ -314,11 +314,11 @@ class PacoGame extends FlameGame {
       if (s.chain > 1) {
         final text = TextPainter(
           text: TextSpan(
-            text: 'COMBO ×${s.chain}',
+            text: '${s.chain > 2 ? 'Magnifique !' : 'Super !'} ×${s.chain}',
             style: TextStyle(
               fontSize: _unit * .42,
               fontWeight: FontWeight.w900,
-              color: const Color(0xFF315D45),
+              color: const Color(0xFFFFE182),
               shadows: const [Shadow(color: Color(0xFFFFFFFF), blurRadius: 6)],
             ),
           ),

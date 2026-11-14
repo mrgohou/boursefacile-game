@@ -154,7 +154,7 @@ void main() {
     expect(repo.value.companyCards, contains('cacao'));
     await tester.tap(find.byTooltip('Fermer'));
     await tester.pumpAndSettle();
-    expect(find.text('Agroalimentaire · 1 part'), findsOneWidget);
+    expect(find.text('Agro\n1 part'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

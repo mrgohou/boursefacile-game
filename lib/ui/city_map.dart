@@ -64,12 +64,12 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
 
   void _center(Size viewport) {
     final scale = math
-        .min(viewport.width / 960, viewport.height / 760)
-        .clamp(.5, 1.0);
+        .min(viewport.width / 820, viewport.height / 1050)
+        .clamp(.38, .85);
     _transform.value = Matrix4.identity()
       ..translateByDouble(
-        viewport.width / 2 - 700 * scale,
-        viewport.height / 2 - 500 * scale,
+        viewport.width / 2 - 740 * scale,
+        viewport.height / 2 - 490 * scale,
         0,
         1,
       )
@@ -80,7 +80,7 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
     final viewport = _viewport;
     if (viewport == null) return;
     final current = _transform.value.getMaxScaleOnAxis();
-    final next = (current * factor).clamp(.5, 2.3);
+    final next = (current * factor).clamp(.35, 2.3);
     final focus = Offset(viewport.width / 2, viewport.height / 2);
     final scene = _transform.toScene(focus);
     _transform.value = Matrix4.identity()
@@ -95,6 +95,11 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
 
   Widget _building(String id, Offset ground, String asset) {
     final company = companies.firstWhere((c) => c.id == id);
+    final shortSector = {
+      'cacao': 'Agro',
+      'telecom': 'Télécoms',
+      'banque': 'Banque',
+    }[id]!;
     final quantity = widget.state.holdings[id] ?? 0;
     final owned = quantity > 0;
     return Positioned(
@@ -102,7 +107,7 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
       left: ground.dx - 100,
       top: ground.dy - 155,
       width: 200,
-      height: 270,
+      height: 285,
       child: Semantics(
         button: true,
         label: owned
@@ -172,11 +177,13 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
                 ),
                 child: Text(
                   owned
-                      ? '${company.sector} · $quantity part${quantity > 1 ? 's' : ''}'
-                      : '＋ ${company.sector}',
+                      ? '$shortSector\n$quantity part${quantity > 1 ? 's' : ''}'
+                      : '＋ $shortSector',
                   textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    fontSize: 14,
+                    fontSize: 26,
                     color: Color(0xFF274C38),
                     fontWeight: FontWeight.w700,
                   ),
@@ -190,10 +197,10 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
   }
 
   Widget _hub() => Positioned(
-    left: 678,
-    top: 215,
-    width: 190,
-    height: 205,
+    left: 635,
+    top: 130,
+    width: 220,
+    height: 230,
     child: Semantics(
       button: true,
       label: 'Guichet, ouvrir les échanges de ta ville.',
@@ -219,16 +226,20 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
                 children: [
                   Icon(
                     Icons.account_balance_outlined,
-                    size: 17,
+                    size: 25,
                     color: Color(0xFFD9EE83),
                   ),
                   SizedBox(width: 6),
-                  Text(
-                    'Guichet',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
+                  Flexible(
+                    child: Text(
+                      'Guichet',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 26,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ],
@@ -267,12 +278,12 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
         children: [
           Positioned.fill(
             child: ColoredBox(
-              color: const Color(0xFFCDE5DE),
+              color: const Color(0xFF12B7BD),
               child: InteractiveViewer(
                 key: const ValueKey('city-interactive'),
                 transformationController: _transform,
                 constrained: false,
-                minScale: .5,
+                minScale: .35,
                 maxScale: 2.3,
                 boundaryMargin: const EdgeInsets.all(250),
                 child: SizedBox(
@@ -281,14 +292,25 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      const Positioned.fill(
+                      Positioned.fill(
                         child: RepaintBoundary(
-                          child: CustomPaint(painter: _IslandPainter()),
+                          child: Image.asset(
+                            'assets/buildings/city-garden.png',
+                            fit: BoxFit.fill,
+                            excludeFromSemantics: true,
+                            cacheWidth: 1600,
+                            errorBuilder: (context, error, stack) =>
+                                const CustomPaint(painter: _IslandPainter()),
+                          ),
                         ),
                       ),
                       _hub(),
-                      _building('telecom', const Offset(980, 510), 'telecom-1'),
-                      _building('cacao', const Offset(530, 510), 'agro-1'),
+                      _building(
+                        'telecom',
+                        const Offset(1000, 465),
+                        'telecom-1',
+                      ),
+                      _building('cacao', const Offset(480, 465), 'agro-1'),
                       _building('banque', const Offset(755, 680), 'banque-1'),
                       Positioned.fill(
                         child: IgnorePointer(
@@ -389,8 +411,8 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
 
   Widget _passant(String color, double t, bool reverse) {
     final p = Offset.lerp(
-      const Offset(585, 450),
-      const Offset(815, 575),
+      const Offset(430, 320),
+      const Offset(1090, 680),
       reverse ? 1 - t : t,
     )!;
     return Positioned(
@@ -465,7 +487,7 @@ class _EmptyPlotPainter extends CustomPainter {
 
 class _IslandPainter extends CustomPainter {
   const _IslandPainter();
-  static const grass = Color(0xFFBBD78E);
+  static const grass = Color(0xFF8DCF51);
   void _tree(Canvas c, double x, double y, [double s = 1]) {
     c.save();
     c.translate(x, y);
@@ -563,7 +585,7 @@ class _IslandPainter extends CustomPainter {
           Offset(x + 77, y),
           Offset(x, y + 43),
           Offset(x - 77, y),
-        ], (i + j).isEven ? const Color(0xFFBEDA91) : const Color(0xFFBAD68C));
+        ], (i + j).isEven ? const Color(0xFF9AD85F) : const Color(0xFF94D459));
       }
     }
     final river = Path()
@@ -581,7 +603,7 @@ class _IslandPainter extends CustomPainter {
     c.drawPath(
       river,
       Paint()
-        ..color = const Color(0xFF8BCDD0)
+        ..color = const Color(0xFF39BFDC)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 54
         ..strokeCap = StrokeCap.round,
@@ -603,7 +625,7 @@ class _IslandPainter extends CustomPainter {
         ends[0],
         ends[1],
         Paint()
-          ..color = const Color(0xFFB8BBA3)
+          ..color = const Color(0xFF84989C)
           ..strokeWidth = 48
           ..strokeCap = StrokeCap.round,
       );
@@ -753,14 +775,14 @@ class _LifePainter extends CustomPainter {
   void paint(Canvas c, Size size) {
     _car(
       c,
-      Offset.lerp(const Offset(407, 341), const Offset(1083, 719), t)!,
+      Offset.lerp(const Offset(360, 300), const Offset(1090, 680), t)!,
       const Color(0xFFF1CF7C),
     );
     _car(
       c,
       Offset.lerp(
-        const Offset(390, 677),
-        const Offset(1015, 326),
+        const Offset(345, 640),
+        const Offset(1060, 300),
         (t + .45) % 1,
       )!,
       const Color(0xFFDC9F8B),
@@ -772,12 +794,12 @@ class _LifePainter extends CustomPainter {
     for (var i = 0; i < 6; i++) {
       final y = 454.0 + i * 42;
       final x =
-          350 + math.sin(i.toDouble()) * 22 + math.sin(t * math.pi * 2) * 5;
+          135 + math.sin(i.toDouble()) * 22 + math.sin(t * math.pi * 2) * 5;
       c.drawArc(Rect.fromLTWH(x, y, 19, 6), 0, math.pi, false, paint);
     }
     c.drawOval(
       Rect.fromCenter(
-        center: const Offset(704, 484),
+        center: const Offset(704, 430),
         width: 21 + math.sin(t * math.pi * 2) * 4,
         height: 8,
       ),

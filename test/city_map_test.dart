@@ -27,7 +27,7 @@ void main() {
       var state = PlayerState.initial();
       await tester.pumpWidget(scene(state, (id) => selected = id));
       await tester.pumpAndSettle();
-      expect(find.text('＋ Agroalimentaire'), findsOneWidget);
+      expect(find.text('＋ Agro'), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey('city-building-cacao')));
       expect(selected, 'cacao');
       state = state
@@ -38,8 +38,8 @@ void main() {
           .buy('cacao');
       await tester.pumpWidget(scene(state, (id) => selected = id));
       await tester.pumpAndSettle();
-      expect(find.text('Agroalimentaire · 1 part'), findsOneWidget);
-      expect(find.text('＋ Agroalimentaire'), findsNothing);
+      expect(find.text('Agro\n1 part'), findsOneWidget);
+      expect(find.text('＋ Agro'), findsNothing);
       expect(
         find.byWidgetPredicate((w) {
           if (w is! Image) return false;

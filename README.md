@@ -13,6 +13,10 @@ flutter run
 
 Sur macOS avec Xcode et un simulateur iOS : `flutter run -d <simulateur>`. La compilation iOS nécessite macOS et Xcode.
 
+## Refonte graphique 0.3.0
+
+Ville tropicale illustrée, commandes en relief, typographie Nunito embarquée et puzzle violet/or : voir `docs/DESIGN-0.3.md` et les captures dans `docs/screenshots/`. Le démarrage Android AOT avec rendu de compatibilité est conservé.
+
 ## Ce qui fonctionne
 
 - Accueil sur une ville isométrique : déplacement et zoom tactiles, bâtiments acquis, routes, rivière, passants et véhicules animés.
