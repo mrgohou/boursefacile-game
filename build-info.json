@@ -1,0 +1,26 @@
+{
+  "applicationId": "com.example.paco_bourse",
+  "versionName": "0.6.0",
+  "versionCode": 2007,
+  "minSdk": 24,
+  "targetSdk": 36,
+  "abis": [
+    "arm64-v8a"
+  ],
+  "playableStages": 30,
+  "chapters": 5,
+  "learningQuizzes": 30,
+  "saveFormat": 4,
+  "legacySaveVersions": [
+    1,
+    2,
+    3
+  ],
+  "sourceCommit": "3bdc4fa03a4cdcf71f35b227764d19a76b987c09",
+  "sourceBranch": "mobile/30-stages-v0.6.0",
+  "stageCatalogSHA256": "417c580ab30f2dbfda25ab53457709e9f0de4c30e0f83398d48c8ec45b97c555",
+  "bytes": 32903920,
+  "sha256": "c1dbb4e426e2975ddcad98240e9bc7945c9c084d31563e2edab98ef5425562d7",
+  "certificateSHA256": "2e4c05f6df6c334f7bd806f7df7ffb220506d1836bc8791f057ea0a37388c4f0",
+  "buildMode": "profile AOT / Skia"
+}

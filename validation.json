@@ -1,0 +1,8 @@
+{
+  "physicalDeviceTested": false,
+  "allThirtyStagesSolvedByLegalMoves": true,
+  "legacySaveMigrationVerified": true,
+  "stageThirtyNavigationVerified": true,
+  "testsPassed": 56,
+  "analyzerIssues": 0
+}
