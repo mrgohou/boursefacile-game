@@ -15,11 +15,13 @@ Sur macOS avec Xcode et un simulateur iOS : `flutter run -d <simulateur>`. La co
 
 ## Ce qui fonctionne
 
-- Interface Material Design 3, thèmes clair/sombre, navigation Aventure / Ville / Carnet.
-- Six puzzles 7×7 en Dart/Flame : échanges, cascades, indice, mélange si nécessaire, reprise sans pénalité.
+- Accueil sur une ville isométrique : déplacement et zoom tactiles, bâtiments acquis, routes, rivière, passants et véhicules animés.
+- Accès direct aux propriétés, cartes de collection permanentes, parcours de puzzles et guichet.
+- Six puzzles 7×7 en Dart/Flame : glissement tactile ou deux taps, échanges animés, chutes, cascades, particules, indice et mélange.
+- Deux musiques originales et neuf bruitages ; réglages indépendants et pause en arrière-plan.
 - Six questions pédagogiques ; seule la réussite du puzzle et de sa question débloque l'étape suivante.
 - Trois entreprises inventées, achats/ventes fictifs, frais, baisse et démonstration de dividende.
-- Sauvegarde locale versionnée ; écriture avant validation d'une action ; remise à zéro confirmée.
+- Sauvegarde locale v2 compatible v1 ; cartes conservées après vente, victoire enregistrée dès sa validation, remise à zéro confirmée.
 - UI testée à 360 dp et à 320 dp avec texte à 200 %. Plateau avec cibles d'au moins 48 dp et actions sémantiques par tuile.
 
 **Le démarrage est explicitement une démo locale.** Pas de compte Firebase, synchronisation, argent réel ou classement. Les données locales ne constituent jamais une preuve de gain pour un serveur.

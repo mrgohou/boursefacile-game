@@ -30,7 +30,7 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
+/build
 /coverage/
 
 # Symbolication related
@@ -59,3 +59,5 @@ app.*.map.json
 **/GoogleService-Info.plist
 **/node_modules/
 *.zip
+
+/android/.kotlin/

@@ -39,6 +39,7 @@ class PlayerState {
   final int cash;
   final Map<String, int> holdings, prices;
   final Set<int> completed, answered;
+  final Set<String> companyCards;
   final bool marketDropped, dividendPaid;
   final List<String> history;
 
@@ -48,6 +49,7 @@ class PlayerState {
     required Map<String, int> prices,
     required Set<int> completed,
     required Set<int> answered,
+    required Set<String> companyCards,
     required this.marketDropped,
     required this.dividendPaid,
     required List<String> history,
@@ -55,6 +57,7 @@ class PlayerState {
        prices = Map.unmodifiable(prices),
        completed = Set.unmodifiable(completed),
        answered = Set.unmodifiable(answered),
+       companyCards = Set.unmodifiable(companyCards),
        history = List.unmodifiable(history);
 
   factory PlayerState.initial() => PlayerState._(
@@ -63,6 +66,7 @@ class PlayerState {
     prices: {for (final c in companies) c.id: c.price},
     completed: {},
     answered: {},
+    companyCards: {},
     marketDropped: false,
     dividendPaid: false,
     history: [],
@@ -85,6 +89,7 @@ class PlayerState {
     Map<String, int>? prices,
     Set<int>? completed,
     Set<int>? answered,
+    Set<String>? companyCards,
     bool? marketDropped,
     bool? dividendPaid,
     required String message,
@@ -100,6 +105,7 @@ class PlayerState {
       prices: prices ?? this.prices,
       completed: completed ?? this.completed,
       answered: answered ?? this.answered,
+      companyCards: companyCards ?? this.companyCards,
       marketDropped: marketDropped ?? this.marketDropped,
       dividendPaid: dividendPaid ?? this.dividendPaid,
       history: log.length > 50 ? log.sublist(log.length - 50) : log,
@@ -145,6 +151,7 @@ class PlayerState {
     return _change(
       cash: cash - cost,
       holdings: {...holdings, id: holdings[id]! + 1},
+      companyCards: {...companyCards, id},
       message:
           'Achat : ${prices[id]} + ${_fee(prices[id]!)} FCFA-jeu de frais.',
     );
@@ -193,7 +200,8 @@ class PlayerState {
   }
 
   Map<String, dynamic> toJson() => {
-    'version': 1,
+    'version': 2,
+    'companyCards': companyCards.toList()..sort(),
     'cash': cash,
     'holdings': Map<String, int>.from(holdings),
     'prices': Map<String, int>.from(prices),
@@ -206,7 +214,7 @@ class PlayerState {
 
   factory PlayerState.fromJson(Map<String, dynamic> raw) {
     try {
-      if (raw['version'] != 1 ||
+      if ((raw['version'] != 1 && raw['version'] != 2) ||
           raw['cash'] is! int ||
           raw['cash'] < 0 ||
           raw['cash'] > _limit ||
@@ -226,6 +234,29 @@ class PlayerState {
                 !prices.containsKey(c.id),
           )) {
         throw const FormatException();
+      }
+      final Set<String> companyCards;
+      if (raw['version'] == 1) {
+        // Legacy saves have no identifiable sold-company history. Recover only
+        // cards proven by current ownership; never guess from history strings.
+        companyCards = {
+          for (final c in companies)
+            if (holdings[c.id]! > 0) c.id,
+        };
+      } else {
+        final cards = List<String>.from(raw['companyCards'] as List);
+        final knownIds = companies.map((c) => c.id).toSet();
+        if (cards.length > companies.length ||
+            cards.toSet().length != cards.length ||
+            cards.any((id) => !knownIds.contains(id))) {
+          throw const FormatException();
+        }
+        companyCards = cards.toSet();
+        if (companies.any(
+          (c) => holdings[c.id]! > 0 && !companyCards.contains(c.id),
+        )) {
+          throw const FormatException();
+        }
       }
       final dropped = raw['marketDropped'] as bool;
       final paid = raw['dividendPaid'] as bool;
@@ -267,6 +298,7 @@ class PlayerState {
         prices: prices,
         completed: completed,
         answered: answered,
+        companyCards: companyCards,
         marketDropped: dropped,
         dividendPaid: paid,
         history: history,

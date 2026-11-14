@@ -1,5 +1,35 @@
 import 'dart:math';
 
+enum TurnPhase { swap, revert, clear, fall, shuffle }
+
+class TileMotion {
+  const TileMotion(this.type, this.from, this.to);
+  final int type;
+
+  /// Negative indices represent new pieces above the board in their column.
+  final int from, to;
+}
+
+class TurnStep {
+  TurnStep(
+    this.phase,
+    List<int> before,
+    List<int> after, {
+    List<int> cleared = const [],
+    List<TileMotion> motions = const [],
+    this.chain = 0,
+    required this.score,
+    required this.moves,
+  }) : before = List.unmodifiable(before),
+       after = List.unmodifiable(after),
+       cleared = List.unmodifiable(cleared),
+       motions = List.unmodifiable(motions);
+  final TurnPhase phase;
+  final List<int> before, after, cleared;
+  final List<TileMotion> motions;
+  final int chain, score, moves;
+}
+
 /// Pure, deterministic local puzzle. Connected rewards must be server validated.
 class MatchEngine {
   MatchEngine(int level, {int seed = 4701})
@@ -13,6 +43,7 @@ class MatchEngine {
   final Random _random;
   late List<int> board;
   int score = 0;
+  List<TurnStep> lastTurn = const [];
   int moves;
   final int target;
   bool get won => score >= target;
@@ -88,34 +119,96 @@ class MatchEngine {
   }
 
   bool swap(int a, int b) {
+    lastTurn = const [];
     if (won || lost || !adjacent(a, b)) return false;
+    final steps = <TurnStep>[];
+    final original = [...board];
     _exchange(board, a, b);
+    steps.add(
+      TurnStep(
+        TurnPhase.swap,
+        original,
+        board,
+        motions: [TileMotion(original[a], a, b), TileMotion(original[b], b, a)],
+        score: score,
+        moves: moves,
+      ),
+    );
     var matches = findMatches(board);
     if (matches.isEmpty) {
+      final changed = [...board];
       _exchange(board, a, b);
+      steps.add(
+        TurnStep(
+          TurnPhase.revert,
+          changed,
+          board,
+          motions: [TileMotion(changed[a], a, b), TileMotion(changed[b], b, a)],
+          score: score,
+          moves: moves,
+        ),
+      );
+      lastTurn = List.unmodifiable(steps);
       return false;
     }
     moves--;
     var chain = 1;
     while (matches.isNotEmpty) {
+      final before = [...board];
       score += matches.length * 30 * min(chain, 3);
+      final empty = [...board];
+      for (final i in matches) {
+        empty[i] = -1;
+      }
+      steps.add(
+        TurnStep(
+          TurnPhase.clear,
+          before,
+          empty,
+          cleared: matches.toList(),
+          chain: chain,
+          score: score,
+          moves: moves,
+        ),
+      );
+      final motions = <TileMotion>[];
       for (var x = 0; x < 7; x++) {
-        final column = <int>[];
+        final survivors = <int>[];
         for (var y = 6; y >= 0; y--) {
-          final i = y * 7 + x;
-          if (!matches.contains(i)) column.add(board[i]);
+          if (!matches.contains(y * 7 + x)) survivors.add(y * 7 + x);
         }
         for (var y = 6; y >= 0; y--) {
-          final offset = 6 - y;
-          board[y * 7 + x] = offset < column.length
-              ? column[offset]
-              : _random.nextInt(6);
+          final offset = 6 - y, destination = y * 7 + x;
+          final source = offset < survivors.length
+              ? survivors[offset]
+              : x - 7 * (offset - survivors.length + 1);
+          final type = source >= 0 ? before[source] : _random.nextInt(6);
+          board[destination] = type;
+          motions.add(TileMotion(type, source, destination));
         }
       }
+      steps.add(
+        TurnStep(
+          TurnPhase.fall,
+          empty,
+          board,
+          motions: motions,
+          chain: chain,
+          score: score,
+          moves: moves,
+        ),
+      );
       matches = findMatches(board);
       chain++;
     }
-    if (!won && !lost && _findMove(board) == null) board = _newBoard();
+    if (!won && !lost && _findMove(board) == null) {
+      final before = [...board];
+      board = _newBoard();
+      steps.add(
+        TurnStep(TurnPhase.shuffle, before, board, score: score, moves: moves),
+      );
+    }
+    lastTurn = List.unmodifiable(steps);
     return true;
   }
 }

@@ -1,7 +1,7 @@
 name: paco_bourse
 description: Jeu pédagogique mobile PACO Bourse — socle indépendant Flutter et Flame.
 publish_to: none
-version: 0.1.0+1
+version: 0.2.0+2
 environment:
   sdk: '>=3.14.0 <4.0.0'
 dependencies:
@@ -10,6 +10,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   material_ui: 1.11.0
+  audioplayers: 6.8.1
   flame: 1.38.2
   shared_preferences: 2.5.6
 dev_dependencies:
@@ -23,3 +24,4 @@ flutter:
     - assets/paco/
     - assets/buildings/
     - assets/tiles/
+    - assets/audio/

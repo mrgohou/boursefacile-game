@@ -54,4 +54,44 @@ void main() {
       await tester.pump();
     },
   );
+  testWidgets('victory is persisted before leaving the result screen', (
+    tester,
+  ) async {
+    var saves = 0;
+    await tester.runAsync(() async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: buildPacoTheme(),
+          home: PuzzlePage(
+            level: 0,
+            onCompleted: () async {
+              saves++;
+              return true;
+            },
+          ),
+        ),
+      );
+      final game = tester
+          .widget<GameWidget<PacoGame>>(find.byType(GameWidget<PacoGame>))
+          .game!;
+      await game.loaded;
+    });
+    await tester.pump();
+    final game = tester
+        .widget<GameWidget<PacoGame>>(find.byType(GameWidget<PacoGame>))
+        .game!;
+    game.engine.score = game.engine.target - 1;
+    final pair = game.engine.hint()!;
+    game.selectTile(pair[0]);
+    game.selectTile(pair[1]);
+    for (var i = 0; i < 180 && game.isAnimating; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    await tester.pump();
+    expect(saves, 1);
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+    expect(saves, 1);
+    expect(tester.takeException(), isNull);
+  });
 }

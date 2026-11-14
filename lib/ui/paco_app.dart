@@ -1,24 +1,55 @@
+import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:flame/game.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../audio/game_audio.dart';
 import '../data/player_controller.dart';
 import '../data/player_repository.dart';
 import '../domain/lessons.dart';
 import '../domain/player_state.dart';
-import '../game/paco_game.dart';
-import 'paco_theme.dart';
+import 'city_map.dart';
+import 'collection_sheets.dart';
 import 'illustrations.dart';
+import 'paco_theme.dart';
+import 'puzzle_map.dart';
+import 'puzzle_page.dart';
+export 'puzzle_page.dart' show PuzzlePage;
 
 String money(int value) => value.toString().replaceAllMapped(
   RegExp(r'\B(?=(\d{3})+(?!\d))'),
   (_) => '\u202f',
 );
+String companyAsset(String id) =>
+    'assets/buildings/${switch (id) {
+      'cacao' => 'agro',
+      'telecom' => 'telecom',
+      _ => 'banque',
+    }}-1.webp';
 
-class PacoApp extends StatelessWidget {
-  const PacoApp({super.key, required this.repository});
+class PacoApp extends StatefulWidget {
+  const PacoApp({super.key, required this.repository, this.audio});
   final PlayerRepository repository;
+  final GameAudio? audio;
+  @override
+  State<PacoApp> createState() => _PacoAppState();
+}
+
+class _PacoAppState extends State<PacoApp> {
+  late final GameAudio audio;
+  @override
+  void initState() {
+    super.initState();
+    audio = widget.audio ?? PacoAudio();
+    unawaited(audio.initialize());
+  }
+
+  @override
+  void dispose() {
+    if (widget.audio == null) audio.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) => MaterialApp(
     title: 'PACO Bourse',
@@ -28,25 +59,28 @@ class PacoApp extends StatelessWidget {
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
     theme: buildPacoTheme(),
     darkTheme: buildPacoTheme(brightness: Brightness.dark),
-    home: PacoHome(repository: repository),
+    home: PacoHome(repository: widget.repository, audio: audio),
   );
 }
 
 class PacoHome extends StatefulWidget {
-  const PacoHome({super.key, required this.repository});
+  const PacoHome({super.key, required this.repository, required this.audio});
   final PlayerRepository repository;
+  final GameAudio audio;
   @override
   State<PacoHome> createState() => _PacoHomeState();
 }
 
 class _PacoHomeState extends State<PacoHome> {
   late final PlayerController controller;
-  int page = 0;
+  late final Listenable updates;
   @override
   void initState() {
     super.initState();
     controller = PlayerController(widget.repository);
-    controller.load();
+    updates = Listenable.merge([controller, widget.audio]);
+    unawaited(controller.load());
+    unawaited(widget.audio.setScene('city'));
   }
 
   @override
@@ -76,118 +110,521 @@ class _PacoHomeState extends State<PacoHome> {
   }
 
   Future<void> openLesson(int index) async {
-    final s = controller.state;
-    if (controller.busy || index > s.unlockedLevel) return;
-    if (s.completed.contains(index) && !s.answered.contains(index)) {
+    if (controller.busy || index > controller.state.unlockedLevel) return;
+    if (controller.state.completed.contains(index) &&
+        !controller.state.answered.contains(index)) {
       await quiz(index);
       return;
     }
-    final won = await Navigator.of(
-      context,
-    ).push<bool>(MaterialPageRoute(builder: (_) => PuzzlePage(level: index)));
-    if (!mounted || won != true) return;
-    if (await change((s) => s.completeLevel(index))) {
-      if (mounted) {
-        await quiz(index);
-        if (mounted &&
-            controller.state.answered.contains(index) &&
-            [1, 2, 4].contains(index)) {
-          setState(() => page = 1);
-        }
-      }
+    await widget.audio.setScene('puzzle');
+    if (!mounted) return;
+    var completedThisRun = false;
+    final won = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => PuzzlePage(
+          level: index,
+          audio: widget.audio,
+          onCompleted: () async {
+            completedThisRun = await change((s) => s.completeLevel(index));
+            return completedThisRun;
+          },
+        ),
+      ),
+    );
+    unawaited(widget.audio.setScene('city'));
+    if (!mounted || (won != true && !completedThisRun)) return;
+    if (completedThisRun || await change((s) => s.completeLevel(index))) {
+      if (mounted) await quiz(index);
     }
   }
 
   Future<void> quiz(int index) async {
-    if (!mounted) return;
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
       builder: (_) => QuizSheet(
         index: index,
-        onAnswer: () => change((s) => s.answerLesson(index)),
+        onAnswer: () async {
+          final ok = await change((s) => s.answerLesson(index));
+          if (ok) widget.audio.play('ui');
+          return ok;
+        },
       ),
     );
   }
 
-  Future<void> reset() async {
-    final confirmed = await showDialog<bool>(
+  Future<void> sheet(Widget Function(BuildContext, PlayerState) builder) async {
+    widget.audio.play('ui');
+    await showModalBottomSheet<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (sc) => SizedBox(
+        height: MediaQuery.sizeOf(sc).height * .92,
+        child: AnimatedBuilder(
+          animation: updates,
+          builder: (_, _) => builder(sc, controller.state),
+        ),
+      ),
+    );
+  }
+
+  Future<void> puzzleMap() async {
+    widget.audio.play('ui');
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (mc) => PuzzleMapPage(
+          state: controller.state,
+          onLevelTap: (i) {
+            Navigator.pop(mc);
+            unawaited(openLesson(i));
+          },
+        ),
+      ),
+    );
+  }
+
+  void properties() => unawaited(
+    sheet(
+      (sc, s) => PropertiesSheet(
+        state: s,
+        onCompanyTap: (id) {
+          Navigator.pop(sc);
+          company(id);
+        },
+        onOpenGuichet: () {
+          Navigator.pop(sc);
+          guichet();
+        },
+      ),
+    ),
+  );
+  void cards() => unawaited(
+    sheet(
+      (sc, s) => CompanyCardsSheet(
+        state: s,
+        onCompanyTap: (id) {
+          Navigator.pop(sc);
+          company(id);
+        },
+      ),
+    ),
+  );
+  void company(String id) => unawaited(
+    sheet(
+      (sc, s) => scrollSheet(
+        sc,
+        companies.firstWhere((c) => c.id == id).name,
+        companyContent(s, id),
+      ),
+    ),
+  );
+  void guichet() => unawaited(
+    sheet((sc, s) => scrollSheet(sc, 'Le guichet', guichetContent(s))),
+  );
+  void history() => unawaited(
+    sheet(
+      (sc, s) => scrollSheet(
+        sc,
+        'Mon carnet',
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Retrouve tes décisions et les notions explorées. La monnaie et les entreprises sont fictives.',
+            ),
+            const SizedBox(height: 20),
+            for (final h in s.history.reversed)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Text('• $h'),
+              ),
+            if (s.history.isEmpty)
+              const Text('Tes premiers mouvements apparaîtront ici.'),
+            const SizedBox(height: 20),
+            OutlinedButton.icon(
+              onPressed: controller.busy ? null : reset,
+              icon: const Icon(Icons.restart_alt),
+              label: const Text('Recommencer la démo'),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+  Future<void> reset() async {
+    final yes = await showDialog<bool>(
+      context: context,
+      builder: (dc) => AlertDialog(
         title: const Text('Recommencer la démo ?'),
         content: const Text(
-          'Le portefeuille et la progression enregistrés sur cet appareil seront remplacés. Cette action est irréversible.',
+          'Le portefeuille, les cartes et la progression sur cet appareil seront remplacés.',
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => Navigator.pop(dc, false),
             child: const Text('Conserver'),
           ),
           FilledButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.pop(dc, true),
             child: const Text('Recommencer'),
           ),
         ],
       ),
     );
-    if (confirmed != true) return;
+    if (yes != true) return;
     try {
       await controller.reset();
-      if (mounted) setState(() => page = 0);
+      if (mounted) message('Ta nouvelle aventure commence.');
     } catch (_) {
-      message('Impossible de remplacer la sauvegarde. Réessaie.');
+      message('Impossible de sauvegarder. Réessaie.');
     }
   }
 
-  @override
-  Widget build(BuildContext context) => AnimatedBuilder(
-    animation: controller,
-    builder: (context, _) {
-      final s = controller.state;
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('PACO Bourse'),
-          actions: [
-            IconButton(
-              tooltip: 'À propos de cette démo',
-              icon: const Icon(Icons.info_outline),
-              onPressed: () => showDialog<void>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Apprendre avant d’investir'),
-                  content: const SingleChildScrollView(
-                    child: Text(
-                      'Prototype pédagogique indépendant. Entreprises, monnaie et transactions fictives. Aucun achat réel ni conseil financier personnalisé.\n\nLa progression est stockée uniquement sur cet appareil. Aucun compte, classement ou service cloud n’est connecté. Effacer les données de l’application efface cette progression.',
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Compris'),
-                    ),
-                  ],
+  void menu() => unawaited(
+    sheet(
+      (sc, s) => scrollSheet(
+        sc,
+        'Menu de Paco',
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Center(child: PacoMascot(size: 100, pose: 'expliquer')),
+            SwitchListTile.adaptive(
+              title: const Text('Musique'),
+              subtitle: const Text('Ambiance de la ville et des puzzles'),
+              value: widget.audio.musicEnabled,
+              onChanged: (v) => unawaited(widget.audio.setMusicEnabled(v)),
+            ),
+            SwitchListTile.adaptive(
+              title: const Text('Bruitages'),
+              subtitle: const Text('Échanges, cascades et récompenses'),
+              value: widget.audio.sfxEnabled,
+              onChanged: (v) => unawaited(widget.audio.setSfxEnabled(v)),
+            ),
+            if (!widget.audio.ready)
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  'Audio en préparation ou indisponible sur cet appareil. Le jeu reste jouable sans son.',
                 ),
+              ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.menu_book_outlined),
+              title: const Text('Mon carnet'),
+              onTap: () {
+                Navigator.pop(sc);
+                history();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.map_outlined),
+              title: const Text('Parcours de puzzles'),
+              onTap: () {
+                Navigator.pop(sc);
+                unawaited(puzzleMap());
+              },
+            ),
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                'Déplace la ville avec un doigt. Pince pour zoomer, ou utilise les boutons de zoom et de recentrage.\n\nDans les puzzles, glisse une tuile vers une voisine. Deux taps fonctionnent aussi.\n\nDémo locale · FCFA-jeu fictifs · aucun achat réel. La sauvegarde reste sur cet appareil. Les animations suivent le réglage de réduction des mouvements du téléphone.',
               ),
             ),
           ],
         ),
-        body: SafeArea(
-          child: controller.loading
-              ? const Center(child: CircularProgressIndicator())
-              : controller.error != null
-              ? Center(
+      ),
+    ),
+  );
+  Widget scrollSheet(BuildContext sc, String title, Widget content) => SafeArea(
+    child: Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 12, 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(title, style: Theme.of(sc).textTheme.headlineSmall),
+              ),
+              IconButton(
+                tooltip: 'Fermer',
+                onPressed: () => Navigator.pop(sc),
+                icon: const Icon(Icons.close),
+              ),
+            ],
+          ),
+        ),
+        const Divider(height: 1),
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 18, 20, 32),
+            child: content,
+          ),
+        ),
+      ],
+    ),
+  );
+  int fee(int p) => math.max(25, (p + 99) ~/ 100);
+  Widget companyContent(PlayerState s, String id) {
+    final c = companies.firstWhere((c) => c.id == id),
+        price = s.prices[id]!,
+        cost = price + fee(price),
+        held = s.holdings[id]!;
+    final can = s.answered.contains(1) && !controller.busy;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: Image.asset(
+            companyAsset(id),
+            height: 170,
+            fit: BoxFit.contain,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Chip(label: Text(c.sector)),
+        const Text('Entreprise fictive · portefeuille simulé'),
+        const SizedBox(height: 18),
+        Text(
+          '${money(price)} FCFA-jeu / part',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        const SizedBox(height: 6),
+        Text('$held part(s) détenue(s) · épargne ${money(s.cash)} FCFA-jeu'),
+        const SizedBox(height: 12),
+        if (s.companyCards.contains(id))
+          const Chip(
+            avatar: Icon(Icons.check, size: 16),
+            label: Text('Carte dans ma collection'),
+          ),
+        const SizedBox(height: 12),
+        Text(
+          'Acheter une part : ${money(price)} + ${fee(price)} de frais = ${money(cost)} FCFA-jeu.',
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: [
+            FilledButton.icon(
+              onPressed: can && s.cash >= cost
+                  ? () async {
+                      if (await change((s) => s.buy(id))) {
+                        widget.audio.play('win');
+                        message(
+                          'Une part acquise ! Retrouve le bâtiment dans ta ville.',
+                        );
+                      }
+                    }
+                  : null,
+              icon: const Icon(Icons.add_home_outlined),
+              label: const Text('Acquérir une part'),
+            ),
+            OutlinedButton(
+              onPressed: can && held > 0
+                  ? () => change((s) => s.sell(id))
+                  : null,
+              child: Text('Vendre 1 · ${money(price - fee(price))}'),
+            ),
+          ],
+        ),
+        if (!s.answered.contains(1))
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Termine les deux premières étapes pour ouvrir les échanges.',
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    unawaited(puzzleMap());
+                  },
+                  child: const Text('Découvrir les actions'),
+                ),
+              ],
+            ),
+          ),
+        const SizedBox(height: 20),
+        const Text(
+          'Une action est une participation dans une entreprise. Son prix peut monter ou baisser et aucun revenu n’est garanti. Dans PACO, tout est simulé.',
+        ),
+      ],
+    );
+  }
+
+  Widget guichetContent(PlayerState s) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Trois entreprises pour expérimenter. Les prix sont scénarisés ; ils ne suivent pas un marché réel.',
+      ),
+      const SizedBox(height: 20),
+      for (final c in companies)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Card.outlined(
+            child: ListTile(
+              contentPadding: const EdgeInsets.all(12),
+              leading: Image.asset(companyAsset(c.id), width: 64),
+              title: Text(c.name),
+              subtitle: Text(
+                '${money(s.prices[c.id]!)} FCFA-jeu · ${s.holdings[c.id]} part(s)',
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.pop(context);
+                company(c.id);
+              },
+            ),
+          ),
+        ),
+      const SizedBox(height: 14),
+      Text(
+        'Le laboratoire de Paco',
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
+      const SizedBox(height: 10),
+      const Text(
+        'Des scénarios uniques pour comprendre le risque et le dividende.',
+      ),
+      const SizedBox(height: 12),
+      OutlinedButton.icon(
+        onPressed:
+            !controller.busy && s.answered.contains(2) && !s.marketDropped
+            ? () => change((s) => s.dropMarket())
+            : null,
+        icon: Icon(s.marketDropped ? Icons.check : Icons.trending_down),
+        label: Text(
+          s.marketDropped
+              ? 'Baisse déjà observée'
+              : 'Observer la baisse fictive',
+        ),
+      ),
+      const SizedBox(height: 8),
+      OutlinedButton.icon(
+        onPressed:
+            !controller.busy &&
+                s.answered.contains(4) &&
+                s.marketDropped &&
+                !s.dividendPaid &&
+                s.holdings['cacao']! > 0
+            ? () => change((s) => s.payDividend())
+            : null,
+        icon: Icon(s.dividendPaid ? Icons.check : Icons.payments_outlined),
+        label: Text(
+          s.dividendPaid ? 'Dividende déjà démontré' : 'Démontrer le dividende',
+        ),
+      ),
+      const SizedBox(height: 12),
+      const Text(
+        'Pour la démonstration du dividende, termine la cinquième étape, observe la baisse et détiens une part de cacao. Le cours s’ajuste de −100 et l’épargne de +100 par part : aucun gain instantané de valeur totale.',
+      ),
+    ],
+  );
+
+  Widget hudPanel(Widget child) => Material(
+    elevation: 3,
+    shadowColor: const Color(0x3322482D),
+    color: Theme.of(context).colorScheme.surfaceContainerLow,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(22),
+      side: const BorderSide(color: Color(0x55FFFFFF), width: 2),
+    ),
+    child: child,
+  );
+  Widget dockButton(
+    String label,
+    IconData icon,
+    VoidCallback action, {
+    bool primary = false,
+  }) {
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Material(
+          elevation: primary ? 7 : 3,
+          color: primary
+              ? const Color(0xFF225A3C)
+              : Theme.of(context).colorScheme.surfaceContainerLow,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(primary ? 25 : 19),
+            side: BorderSide(
+              color: primary
+                  ? const Color(0xFFECF8A3)
+                  : const Color(0xFFDCE6CD),
+              width: 2,
+            ),
+          ),
+          child: SizedBox(
+            width: primary ? 66 : 56,
+            height: primary ? 66 : 56,
+            child: Icon(
+              icon,
+              size: primary ? 33 : 26,
+              color: primary
+                  ? const Color(0xFFECF8A3)
+                  : Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          style: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w800,
+            color: Color(0xFF163C32),
+            shadows: [Shadow(color: Colors.white, blurRadius: 5)],
+          ),
+        ),
+      ],
+    );
+    return Expanded(
+      child: Semantics(
+        button: true,
+        label: label,
+        excludeSemantics: true,
+        child: GestureDetector(
+          key: ValueKey('dock-$label'),
+          behavior: HitTestBehavior.opaque,
+          onTap: controller.busy ? null : action,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: content,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: updates,
+    builder: (context, _) {
+      final s = controller.state;
+      return Scaffold(
+        backgroundColor: const Color(0xFFDDECCE),
+        body: controller.loading
+            ? const Center(child: CircularProgressIndicator())
+            : controller.error != null
+            ? SafeArea(
+                child: Center(
                   child: Padding(
                     padding: const EdgeInsets.all(24),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.save_outlined, size: 48),
-                        const SizedBox(height: 16),
-                        Text(controller.error!, textAlign: TextAlign.center),
+                        Text(controller.error!),
                         const SizedBox(height: 16),
                         FilledButton(
-                          onPressed: controller.busy ? null : controller.load,
+                          onPressed: controller.load,
                           child: const Text('Réessayer'),
                         ),
                         TextButton(
@@ -197,703 +634,240 @@ class _PacoHomeState extends State<PacoHome> {
                       ],
                     ),
                   ),
-                )
-              : Align(
-                  alignment: Alignment.topCenter,
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 860),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
-                          child: Wrap(
-                            alignment: WrapAlignment.spaceBetween,
-                            spacing: 16,
-                            runSpacing: 6,
-                            children: [
-                              const Chip(
-                                avatar: Icon(Icons.science_outlined, size: 18),
-                                label: Text('Démo locale · argent fictif'),
-                              ),
-                              Chip(
-                                avatar: const Icon(
-                                  Icons.savings_outlined,
-                                  size: 18,
-                                ),
-                                label: Text('${money(s.cash)} FCFA-jeu'),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (controller.busy)
-                          const LinearProgressIndicator(minHeight: 2),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            key: PageStorageKey(page),
-                            padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-                            child: switch (page) {
-                              0 => adventure(s),
-                              1 => city(s),
-                              _ => journal(s),
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
-        ),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: page,
-          onDestinationSelected: controller.busy
-              ? null
-              : (i) => setState(() => page = i),
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.explore_outlined),
-              selectedIcon: Icon(Icons.explore),
-              label: 'Aventure',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.location_city_outlined),
-              selectedIcon: Icon(Icons.location_city),
-              label: 'Ma ville',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.menu_book_outlined),
-              selectedIcon: Icon(Icons.menu_book),
-              label: 'Carnet',
-            ),
-          ],
-        ),
-      );
-    },
-  );
-
-  Widget adventure(PlayerState s) {
-    final colors = Theme.of(context).colorScheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Card.filled(
-          color: colors.primaryContainer,
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'LES FONDATIONS',
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Fais grandir ta ville.\nEt tes connaissances.',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  'Un puzzle, une découverte et un pas de plus. Sans argent réel, à ton rythme.',
-                ),
-                CityIllustration(
-                  height: 160,
-                  ownedSectors: s.holdings.values.where((v) => v > 0).length,
-                  ownedCompanyIds: s.holdings.entries
-                      .where((e) => e.value > 0)
-                      .map((e) => e.key)
-                      .toList(),
-                ),
-                FilledButton.icon(
-                  onPressed: controller.busy
-                      ? null
-                      : () => openLesson(math.min(s.unlockedLevel, 5)),
-                  icon: const Icon(Icons.arrow_forward),
-                  label: Text(
-                    s.unlockedLevel == 0
-                        ? 'Commencer'
-                        : s.unlockedLevel == 6
-                        ? 'Rejouer pour s’entraîner'
-                        : 'Continuer l’aventure',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 24),
-        Text(
-          'Ton parcours découverte',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const SizedBox(height: 8),
-        Text('${s.unlockedLevel} / 6 étapes explorées'),
-        const SizedBox(height: 10),
-        LinearProgressIndicator(
-          value: s.unlockedLevel / 6,
-          semanticsLabel:
-              'Progression pédagogique, ${s.unlockedLevel} étapes sur 6',
-        ),
-        const SizedBox(height: 18),
-        for (var i = 0; i < lessons.length; i++)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Card.outlined(
-              margin: EdgeInsets.zero,
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                leading: CircleAvatar(
-                  backgroundColor: i > s.unlockedLevel
-                      ? colors.surfaceContainerHighest
-                      : colors.secondaryContainer,
-                  child: i > s.unlockedLevel
-                      ? Icon(Icons.lock_outline, color: colors.onSurfaceVariant)
-                      : s.answered.contains(i)
-                      ? Icon(Icons.check, color: colors.onSecondaryContainer)
-                      : Text('${i + 1}'),
-                ),
-                title: Text(lessons[i].title),
-                subtitle: Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text(
-                    i > s.unlockedLevel
-                        ? 'Termine l’étape précédente pour débloquer.'
-                        : s.completed.contains(i) && !s.answered.contains(i)
-                        ? 'Puzzle réussi · question à découvrir'
-                        : lessons[i].topic,
-                  ),
-                ),
-                trailing: i > s.unlockedLevel
-                    ? null
-                    : const Icon(Icons.chevron_right),
-                enabled: i <= s.unlockedLevel && !controller.busy,
-                onTap: i > s.unlockedLevel ? null : () => openLesson(i),
-              ),
-            ),
-          ),
-        const SizedBox(height: 8),
-        pacoTip(
-          s.unlockedLevel == 6
-              ? 'Les bases sont posées. Explore ta ville et reviens sur les notions dans ton carnet.'
-              : 'Tu peux te tromper et recommencer. Une question comprise débloque la suite.',
-        ),
-      ],
-    );
-  }
-
-  Widget pacoTip(String text) => Card.filled(
-    child: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const PacoMascot(size: 64),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Un mot de Paco',
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-                const SizedBox(height: 6),
-                Text(text),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-
-  Widget city(PlayerState s) {
-    final canTrade = s.answered.contains(1) && !controller.busy;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Ta ville, tes décisions.',
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Les trois entreprises sont inventées. Les prix suivent un scénario pédagogique.',
-        ),
-        CityIllustration(
-          height: 180,
-          ownedSectors: s.holdings.values.where((n) => n > 0).length,
-          ownedCompanyIds: s.holdings.entries
-              .where((e) => e.value > 0)
-              .map((e) => e.key)
-              .toList(),
-        ),
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: [
-            metric('Participations', '${money(s.holdingsValue)} FCFA-jeu'),
-            metric('Valeur totale', '${money(s.totalValue)} FCFA-jeu'),
-            metric(
-              'Secteurs détenus',
-              '${s.holdings.values.where((n) => n > 0).length} / 3',
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        const Text(
-          'Valeur totale = épargne + participations, avant frais de vente.',
-        ),
-        const SizedBox(height: 24),
-        Text('Le guichet', style: Theme.of(context).textTheme.titleLarge),
-        const SizedBox(height: 8),
-        Text(
-          canTrade
-              ? 'Dans cette démo : frais de 1 %, minimum 25 FCFA-jeu par opération.'
-              : 'Termine les deux premières étapes pour ouvrir le guichet.',
-        ),
-        const SizedBox(height: 16),
-        for (final c in companies)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 14),
-            child: Card.outlined(
-              margin: EdgeInsets.zero,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          c.id == 'cacao'
-                              ? Icons.eco_outlined
-                              : c.id == 'telecom'
-                              ? Icons.cell_tower
-                              : Icons.account_balance_outlined,
-                          color: Color(c.colorValue),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            c.name,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Text(c.sector),
-                    const SizedBox(height: 14),
-                    Text(
-                      '${money(s.prices[c.id]!)} FCFA-jeu / part',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      '${s.holdings[c.id]} part(s) détenue(s) · frais ${fee(s.prices[c.id]!)}',
-                    ),
-                    const SizedBox(height: 16),
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: [
-                        FilledButton(
-                          onPressed:
-                              canTrade &&
-                                  s.cash >=
-                                      s.prices[c.id]! + fee(s.prices[c.id]!)
-                              ? () => change((s) => s.buy(c.id))
-                              : null,
-                          child: Text(
-                            'Acheter 1 · ${money(s.prices[c.id]! + fee(s.prices[c.id]!))}',
-                          ),
-                        ),
-                        OutlinedButton(
-                          onPressed: canTrade && s.holdings[c.id]! > 0
-                              ? () => change((s) => s.sell(c.id))
-                              : null,
-                          child: Text(
-                            'Vendre 1 · ${money(s.prices[c.id]! - fee(s.prices[c.id]!))}',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        const SizedBox(height: 10),
-        Text(
-          'Le laboratoire de Paco',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Chaque événement se produit une seule fois. Il ne prédit aucun marché réel.',
-        ),
-        const SizedBox(height: 16),
-        OutlinedButton.icon(
-          onPressed:
-              !controller.busy && s.answered.contains(2) && !s.marketDropped
-              ? () => change((s) => s.dropMarket())
-              : null,
-          icon: Icon(s.marketDropped ? Icons.check : Icons.trending_down),
-          label: Text(
-            s.marketDropped
-                ? 'Baisse déjà observée'
-                : 'Observer la baisse fictive',
-          ),
-        ),
-        const SizedBox(height: 8),
-        OutlinedButton.icon(
-          onPressed:
-              !controller.busy &&
-                  s.answered.contains(4) &&
-                  s.marketDropped &&
-                  !s.dividendPaid &&
-                  s.holdings['cacao']! > 0
-              ? () => change((s) => s.payDividend())
-              : null,
-          icon: Icon(s.dividendPaid ? Icons.check : Icons.payments_outlined),
-          label: Text(
-            s.dividendPaid
-                ? 'Dividende déjà démontré'
-                : 'Démontrer le dividende',
-          ),
-        ),
-        const SizedBox(height: 12),
-        const Text(
-          'Dividende : après la cinquième question, observe la baisse et détiens une part de cacao. Le jeu regroupe détachement et paiement : −100 sur le cours et +100 d’épargne par part. La valeur totale ne change pas à cet instant.',
-        ),
-        const SizedBox(height: 20),
-        pacoTip(
-          'Diversifier réduit certaines dépendances. Cela ne supprime ni les risques ni la possibilité de perdre.',
-        ),
-      ],
-    );
-  }
-
-  int fee(int p) => math.max(25, (p + 99) ~/ 100);
-  Widget metric(String label, String value) => Card.filled(
-    margin: EdgeInsets.zero,
-    child: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label),
-          const SizedBox(height: 6),
-          Text(value, style: Theme.of(context).textTheme.titleMedium),
-        ],
-      ),
-    ),
-  );
-
-  Widget journal(PlayerState s) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text('Ton carnet', style: Theme.of(context).textTheme.headlineMedium),
-      const SizedBox(height: 8),
-      const Text(
-        'Retrouve les notions explorées. Ce parcours n’est pas une certification financière.',
-      ),
-      const SizedBox(height: 20),
-      for (var i = 0; i < lessons.length; i++)
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Card.outlined(
-            margin: EdgeInsets.zero,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              )
+            : Stack(
                 children: [
-                  Row(
-                    children: [
-                      Icon(
-                        s.answered.contains(i)
-                            ? Icons.check_circle_outline
-                            : Icons.lock_outline,
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          lessons[i].topic,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    s.answered.contains(i)
-                        ? lessons[i].explanation
-                        : 'Cette notion se découvre pendant l’aventure.',
-                  ),
-                  if (s.completed.contains(i))
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: TextButton(
-                        onPressed: controller.busy ? null : () => quiz(i),
-                        child: const Text('Revoir la question'),
+                  Positioned.fill(
+                    child: MediaQuery.withClampedTextScaling(
+                      minScaleFactor: 1,
+                      maxScaleFactor: 1.15,
+                      child: CityMap(
+                        state: s,
+                        onBuildingTap: company,
+                        onGuichetTap: guichet,
+                        reducedMotion: MediaQuery.disableAnimationsOf(context),
+                        controlsBottomInset:
+                            MediaQuery.sizeOf(context).height > 700 ? 210 : 170,
                       ),
                     ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      const SizedBox(height: 16),
-      Text('Historique local', style: Theme.of(context).textTheme.titleLarge),
-      const SizedBox(height: 12),
-      if (s.history.isEmpty)
-        const Text('Tes premiers mouvements apparaîtront ici.'),
-      for (final entry in s.history.reversed.take(20))
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Text('• $entry'),
-        ),
-      const SizedBox(height: 24),
-      OutlinedButton.icon(
-        onPressed: controller.busy ? null : reset,
-        icon: const Icon(Icons.restart_alt),
-        label: const Text('Recommencer la démo'),
-      ),
-      const SizedBox(height: 16),
-      const Text(
-        'Sauvegarde sur cet appareil uniquement. Aucun compte cloud connecté.',
-      ),
-    ],
-  );
-}
-
-class PuzzlePage extends StatefulWidget {
-  const PuzzlePage({super.key, required this.level});
-  final int level;
-  @override
-  State<PuzzlePage> createState() => _PuzzlePageState();
-}
-
-class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
-  PacoGame? game;
-  final stats = ValueNotifier<(int, int, int)>((0, 24, 650));
-  bool won = false, lost = false;
-  int attempt = 0;
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    game ??= createGame();
-  }
-
-  PacoGame createGame() => PacoGame(
-    level: widget.level,
-    reducedMotion: MediaQuery.disableAnimationsOf(context),
-    onUpdate: (score, moves, target) => stats.value = (score, moves, target),
-    onWin: () {
-      if (mounted) setState(() => won = true);
-    },
-    onLose: () {
-      if (mounted) setState(() => lost = true);
-    },
-  );
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      game?.resumeEngine();
-    } else {
-      game?.pauseEngine();
-    }
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    stats.dispose();
-    super.dispose();
-  }
-
-  Widget puzzleBoard() => LayoutBuilder(
-    builder: (context, constraints) {
-      final side = math.max(336.0, constraints.maxWidth);
-      return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SizedBox(
-          width: side,
-          height: side,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Stack(
-              children: [
-                ExcludeSemantics(
-                  child: GameWidget<PacoGame>(
-                    key: ValueKey(attempt),
-                    game: game!,
                   ),
-                ),
-                Positioned.fill(
-                  child: ValueListenableBuilder<int>(
-                    valueListenable: game!.revision,
-                    builder: (context, revision, child) => Column(
-                      children: [
-                        for (var y = 0; y < 7; y++)
-                          Expanded(
-                            child: Row(
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: SafeArea(
+                      bottom: false,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+                        child: Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                for (var x = 0; x < 7; x++)
-                                  Expanded(
-                                    child: Semantics(
-                                      button: true,
-                                      selected: game!.selectedTile == y * 7 + x,
-                                      label:
-                                          'Ligne ${y + 1}, colonne ${x + 1}, ${PacoGame.symbolNames[game!.engine.board[y * 7 + x]]}${game!.isHinted(y * 7 + x) ? ', indice' : ''}',
-                                      onTap: won || lost
-                                          ? null
-                                          : () => game!.selectTile(y * 7 + x),
-                                      child: const SizedBox.expand(),
+                                Expanded(
+                                  child: hudPanel(
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 9,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const PacoMascot(size: 42),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Ma ville',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleMedium,
+                                                ),
+                                                Text(
+                                                  '${s.answered.length}/6 notions',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelSmall,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
+                                ),
+                                const SizedBox(width: 10),
+                                hudPanel(
+                                  IconButton(
+                                    tooltip: 'Menu et options',
+                                    onPressed: menu,
+                                    icon: const Icon(Icons.menu_rounded),
+                                  ),
+                                ),
                               ],
                             ),
-                          ),
-                      ],
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: hudPanel(
+                                    InkWell(
+                                      borderRadius: BorderRadius.circular(22),
+                                      onTap: guichet,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 14,
+                                          vertical: 9,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.savings_rounded,
+                                              color: Color(0xFFB78423),
+                                              size: 21,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                '${money(s.cash)} FCFA-jeu',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelLarge,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                if (MediaQuery.textScalerOf(context).scale(14) <
+                                    21) ...[
+                                  const SizedBox(width: 12),
+                                  const Icon(
+                                    Icons.cloud_off_rounded,
+                                    size: 16,
+                                    color: Color(0xFF34583E),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  const Text(
+                                    'Fictif',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Color(0xFF34583E),
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                            if (controller.busy)
+                              const Padding(
+                                padding: EdgeInsets.only(top: 6),
+                                child: LinearProgressIndicator(minHeight: 3),
+                              ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: SafeArea(
+                      top: false,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (MediaQuery.sizeOf(context).height > 700 &&
+                                MediaQuery.textScalerOf(context).scale(14) < 20)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: GestureDetector(
+                                  onTap: () => unawaited(puzzleMap()),
+                                  child: hudPanel(
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                        8,
+                                        8,
+                                        14,
+                                        8,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const PacoMascot(
+                                            size: 52,
+                                            pose: 'expliquer',
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              s.unlockedLevel == 0
+                                                  ? 'Ta ville commence ici. Joue pour découvrir ta première participation.'
+                                                  : s.holdings.values.every(
+                                                      (v) => v == 0,
+                                                    )
+                                                  ? 'Le guichet t’attend. Une première part donne vie à ton bâtiment.'
+                                                  : 'Touche un bâtiment pour voir tes parts, ou poursuis l’aventure.',
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall,
+                                            ),
+                                          ),
+                                          const Icon(
+                                            Icons.chevron_right_rounded,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                dockButton(
+                                  'Propriétés',
+                                  Icons.cottage_rounded,
+                                  properties,
+                                ),
+                                dockButton(
+                                  'Mes cartes',
+                                  Icons.style_rounded,
+                                  cards,
+                                ),
+                                dockButton(
+                                  'Jouer',
+                                  Icons.play_arrow_rounded,
+                                  () => unawaited(puzzleMap()),
+                                  primary: true,
+                                ),
+                                dockButton(
+                                  'Guichet',
+                                  Icons.storefront_rounded,
+                                  guichet,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
       );
     },
-  );
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text('Puzzle ${widget.level + 1} / 6')),
-    body: SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 520),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  lessons[widget.level].title,
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                const SizedBox(height: 8),
-                Text(lessons[widget.level].description),
-                const SizedBox(height: 12),
-                const Text(
-                  'Touche deux cases voisines pour aligner au moins 3 symboles identiques. Un échange sans alignement ne coûte aucun coup.',
-                ),
-                const SizedBox(height: 16),
-                ValueListenableBuilder<(int, int, int)>(
-                  valueListenable: stats,
-                  builder: (context, v, _) => Semantics(
-                    liveRegion: true,
-                    label: 'Score ${v.$1} sur ${v.$3}, ${v.$2} coups restants',
-                    child: ExcludeSemantics(
-                      child: Wrap(
-                        spacing: 12,
-                        runSpacing: 8,
-                        children: [
-                          Chip(label: Text('Score : ${v.$1} / ${v.$3}')),
-                          Chip(label: Text('${v.$2} coups restants')),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                puzzleBoard(),
-                const SizedBox(height: 16),
-                if (won)
-                  Card.filled(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          const Icon(Icons.celebration_outlined, size: 32),
-                          const SizedBox(height: 10),
-                          Semantics(
-                            liveRegion: true,
-                            child: Text(
-                              'Puzzle réussi !',
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'La première réussite rapporte 1 500 FCFA-jeu. Rejouer permet de s’entraîner.',
-                          ),
-                          const SizedBox(height: 16),
-                          FilledButton(
-                            onPressed: () => Navigator.pop(context, true),
-                            child: const Text('Comprendre avec Paco'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                else if (lost)
-                  Card.filled(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          Semantics(
-                            liveRegion: true,
-                            child: const Text(
-                              'Un nouvel essai ? Tu ne perds ni épargne ni progression.',
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          FilledButton.icon(
-                            onPressed: () {
-                              setState(() {
-                                attempt++;
-                                won = false;
-                                lost = false;
-                                game = createGame();
-                              });
-                            },
-                            icon: const Icon(Icons.refresh),
-                            label: const Text('Réessayer'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                else
-                  OutlinedButton.icon(
-                    onPressed: () => game?.hint(),
-                    icon: const Icon(Icons.lightbulb_outline),
-                    label: const Text('Montrer un échange possible'),
-                  ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Le puzzle fonctionne sans connexion. Aucun argent réel n’est en jeu.',
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    ),
   );
 }
 
