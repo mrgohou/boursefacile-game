@@ -348,7 +348,9 @@ class _LevelButtonState extends State<_LevelButton> with SingleTickerProviderSta
     } else {
       _pulse.stop();
     }
-    final bg = !open ? scheme.surfaceContainerHighest : (st > 0 ? Brand.ink : Brand.lime);
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final doneColor = dark ? const Color(0xFF2F6B4F) : Brand.ink;
+    final bg = !open ? scheme.surfaceContainerHighest : (st > 0 ? doneColor : Brand.lime);
     final fg = !open ? scheme.onSurfaceVariant : (st > 0 ? Colors.white : Brand.ink);
     return Semantics(
       button: true,
@@ -404,7 +406,7 @@ class _QuizButton extends StatelessWidget {
         child: Column(
           children: [
             Material(
-              color: done ? Brand.ink : (ready ? const Color(0xFFFFC94D) : scheme.surfaceContainerHighest),
+              color: done ? (Theme.of(context).brightness == Brightness.dark ? const Color(0xFF2F6B4F) : Brand.ink) : (ready ? const Color(0xFFFFC94D) : scheme.surfaceContainerHighest),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
                 side: BorderSide(color: current ? Colors.white : Colors.transparent, width: 4),

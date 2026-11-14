@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
   }
 
-  void _recenter(Size size) => _view.value = CityMap.focus(size, plaza.center.translate(0, 40), .62);
+  void _recenter(Size size) => _view.value = CityMap.focus(size, plaza.center.translate(0, 40), .5);
 
   @override
   Widget build(BuildContext context) {

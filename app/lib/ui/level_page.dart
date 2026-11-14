@@ -10,7 +10,6 @@ import '../services/audio.dart';
 import 'format.dart';
 import 'paco.dart';
 import 'scope.dart';
-import 'stars.dart';
 
 const _labels = {
   'cacao': 'cacao',

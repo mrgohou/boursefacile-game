@@ -45,7 +45,7 @@ jobs:
         timeout-minutes: 5
         continue-on-error: true
         run: |
-          set -o pipefail
+          set +e -o pipefail
           flutter analyze --no-fatal-infos 2>&1 | tee ../ci-out/analyze.txt; echo "analyze=$?" >> ../ci-out/status.txt
 
       - name: Tests du moteur

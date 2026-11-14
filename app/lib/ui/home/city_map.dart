@@ -93,7 +93,7 @@ class _CityMapState extends State<CityMap> {
     return LayoutBuilder(builder: (context, box) {
       if (!_framed) {
         _framed = true;
-        widget.controller.value = CityMap.focus(box.biggest, plaza.center.translate(0, 40), .62);
+        widget.controller.value = CityMap.focus(box.biggest, plaza.center.translate(0, 40), .5);
       }
       return InteractiveViewer(
         transformationController: widget.controller,
