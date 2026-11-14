@@ -1,0 +1,11 @@
+{
+  "version": "0.5.0+6",
+  "androidVersionCode": 2006,
+  "abi": "arm64-v8a",
+  "mode": "profile/AOT",
+  "minSdk": 24,
+  "targetSdk": 36,
+  "sourceCommit": "89b6c3610d4b2cb0c66f96be05d5421cfe859665",
+  "bytes": 32899734,
+  "sha256": "8b45937552016bba2bf78915718787da3991289d3d2a37cdcc61f8bfdf87b399"
+}
