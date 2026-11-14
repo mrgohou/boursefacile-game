@@ -1,0 +1,12 @@
+{
+  "version": "0.2.1+3",
+  "androidVersionCode": 2003,
+  "mode": "profile/AOT",
+  "abi": "arm64-v8a",
+  "renderer": "Skia (Impeller disabled)",
+  "bytes": 37471238,
+  "sha256": "a32b19867cb610334de52f9afa530d25305e394ee83b6bf17b4f09d8551df02a",
+  "sourceCommit": "55b59a0eb4228e9e15d849a0f1c7d6c6fb2915f5",
+  "minSdk": 24,
+  "targetSdk": 36
+}
