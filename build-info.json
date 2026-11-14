@@ -1,0 +1,19 @@
+{
+  "applicationId": "ci.paco.bourse.kotlin",
+  "versionName": "1.0.0-kotlin-alpha",
+  "versionCode": 1,
+  "architecture": "Kotlin + Jetpack Compose + MVVM + native Canvas",
+  "flutterRuntime": false,
+  "unityRuntime": false,
+  "minSdk": 24,
+  "targetSdk": 36,
+  "abis": [
+    "arm64-v8a",
+    "armeabi-v7a",
+    "x86",
+    "x86_64"
+  ],
+  "bytes": 16985502,
+  "sha256": "c206b95a5a12335ac9cb18fd454d7f2e437c7a16b8a433977949660ff02e7632",
+  "sourceCommit": "fd122d685d620353477e78fc7606d802ba8f51da"
+}

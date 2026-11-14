@@ -1,0 +1,20 @@
+{
+  "tests": [
+    {
+      "name": "ci.paco.bourse.NativeUiTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0"
+    },
+    {
+      "name": "ci.paco.bourse.DomainTest",
+      "tests": "12",
+      "failures": "0",
+      "errors": "0"
+    }
+  ],
+  "lintErrors": 0,
+  "lintWarnings": 15,
+  "environment": "Robolectric API 35, native graphics, JDK 21",
+  "physicalDeviceTested": false
+}
