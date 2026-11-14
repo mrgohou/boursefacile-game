@@ -1,0 +1,29 @@
+{
+  "applicationId": "ci.paco.bourse.kotlin",
+  "versionName": "1.1.0-kotlin-alpha",
+  "versionCode": 2,
+  "minSdk": 24,
+  "targetSdk": 36,
+  "abis": [
+    "arm64-v8a",
+    "armeabi-v7a",
+    "x86",
+    "x86_64"
+  ],
+  "playableStages": 30,
+  "chapters": 5,
+  "learningQuizzes": 30,
+  "saveFormat": 4,
+  "legacySaveVersions": [
+    1,
+    2,
+    3
+  ],
+  "sourceCommit": "4db3e45ffa0b16e5a64828fa63543cae58ca0733",
+  "sourceBranch": "native/30-stages-v1.1.0",
+  "stageCatalogSHA256": "417c580ab30f2dbfda25ab53457709e9f0de4c30e0f83398d48c8ec45b97c555",
+  "bytes": 16682686,
+  "sha256": "10c442b53c1b43fb0f10488de577f1274ed1d098f1752708987fb744fded48e4",
+  "certificateSHA256": "2e4c05f6df6c334f7bd806f7df7ffb220506d1836bc8791f057ea0a37388c4f0",
+  "buildMode": "debug / Kotlin Compose"
+}

@@ -1,0 +1,12 @@
+{
+  "physicalDeviceTested": false,
+  "allThirtyStagesSolvedByLegalMoves": true,
+  "legacySaveMigrationVerified": true,
+  "stageThirtyNavigationVerified": true,
+  "testsPassed": 19,
+  "domainTests": 14,
+  "nativeUiTests": 5,
+  "lintErrors": 0,
+  "lintWarnings": 15,
+  "environment": "Robolectric API 35 / native graphics"
+}
