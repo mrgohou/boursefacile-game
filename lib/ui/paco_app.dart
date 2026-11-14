@@ -149,7 +149,7 @@ class _PacoHomeState extends State<PacoHome> {
       ),
     );
     unawaited(widget.audio.setScene('city'));
-    if (!mounted || (won != true && !completedThisRun)) return;
+    if (!mounted || won == false || (won != true && !completedThisRun)) return;
     if (completedThisRun || await change((s) => s.completeLevel(index))) {
       if (mounted) await quiz(index);
     }
@@ -495,15 +495,28 @@ class _PacoHomeState extends State<PacoHome> {
                     }
                   : null,
               icon: const Icon(Icons.add_home_outlined),
-              label: const Text('Acquérir une part'),
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF196B45),
+                foregroundColor: Colors.white,
+              ),
+              label: Text(held > 0 ? 'Acheter plus' : 'Acheter une part'),
             ),
-            OutlinedButton(
+            FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFFA33350),
+                foregroundColor: Colors.white,
+              ),
+              icon: const Icon(Icons.sell_outlined),
               onPressed: can && held > 0
                   ? () => change((s) => s.sell(id))
                   : null,
-              child: Text('Vendre 1 · ${money(price - fee(price))}'),
+              label: const Text('Vendre'),
             ),
           ],
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'Vendre une part : ${money(price - fee(price))} FCFA-jeu nets, après ${fee(price)} de frais.',
         ),
         if (!s.answered.contains(1))
           Padding(

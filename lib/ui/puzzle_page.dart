@@ -6,6 +6,8 @@ import 'package:material_ui/material_ui.dart';
 
 import '../audio/game_audio.dart';
 import '../domain/lessons.dart';
+import '../domain/puzzle_clock.dart';
+import 'clay_heading.dart';
 import '../game/paco_game.dart';
 import 'illustrations.dart';
 import 'game_chrome.dart';
@@ -16,8 +18,10 @@ class PuzzlePage extends StatefulWidget {
     required this.level,
     this.audio,
     this.onCompleted,
+    this.now,
   });
   final int level;
+  final DateTime Function()? now;
   final GameAudio? audio;
   final Future<bool> Function()? onCompleted;
   @override
@@ -31,6 +35,12 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
   bool won = false, lost = false;
   bool _winSaving = false, _winSaved = false;
   int attempt = 0;
+  int _lastShown = 0;
+  late PuzzleClock clock;
+  Timer? _timer;
+  bool _started = false, _instructionOpen = false, _resultOpen = false;
+  bool _timedOut = false;
+  final _dialogRevision = ValueNotifier<int>(0);
 
   @override
   void initState() {
@@ -39,6 +49,10 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
     audio = widget.audio ?? SilentGameAudio();
     if (widget.audio == null) unawaited(audio.initialize());
     unawaited(audio.setScene('puzzle'));
+    clock = PuzzleClock(puzzleSeconds(widget.level), now: widget.now);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) unawaited(instructions(initial: true));
+    });
   }
 
   @override
@@ -47,26 +61,185 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
     game ??= createGame();
   }
 
-  PacoGame createGame() => PacoGame(
-    level: widget.level,
-    reducedMotion: MediaQuery.disableAnimationsOf(context),
-    onAudio: (event, chain) => audio.play(event, chain: math.max(1, chain)),
-    onUpdate: (score, moves, target) {
-      if (mounted) stats.value = (score, moves, target);
-    },
-    onWin: () {
-      if (mounted) {
-        setState(() => won = true);
-        unawaited(_saveWin());
-      }
-    },
-    onLose: () {
-      if (mounted) setState(() => lost = true);
-    },
-  );
+  PacoGame createGame() =>
+      PacoGame(
+          level: widget.level,
+          reducedMotion: MediaQuery.disableAnimationsOf(context),
+          canAcceptInput: () =>
+              _started && !won && !lost && clock.remaining > 0,
+          onAudio: (event, chain) =>
+              audio.play(event, chain: math.max(1, chain)),
+          onUpdate: (score, moves, target) {
+            if (mounted) stats.value = (score, moves, target);
+          },
+          onWin: () => finish(true),
+          onLose: () => finish(false),
+        )
+        ..inputEnabled = false
+        ..pauseEngine();
+
+  void tick() {
+    if (!mounted || !_started || won || lost) return;
+    if (clock.remaining == 0) {
+      // A move accepted before the deadline resolves atomically in the engine.
+      // If that move achieved the goal, its remaining animation cannot steal it.
+      final achieved = game!.engine.won;
+      audio.play(achieved ? 'win' : 'lose');
+      finish(achieved, timeout: !achieved);
+    } else if (clock.remaining != _lastShown) {
+      setState(() => _lastShown = clock.remaining);
+    }
+  }
+
+  void finish(bool success, {bool timeout = false}) {
+    if (!mounted || won || lost) return;
+    _timer?.cancel();
+    setState(() {
+      won = success;
+      lost = !success;
+      _timedOut = timeout;
+    });
+    if (game != null) {
+      stats.value = (
+        game!.engine.score,
+        game!.engine.moves,
+        game!.engine.target,
+      );
+    }
+    game?.endRound();
+    if (success) unawaited(_saveWin());
+    unawaited(showResult());
+  }
+
+  Future<void> startRound() async {
+    if (!mounted || won || lost || _started) return;
+    if (!game!.isLoaded) await game!.loaded;
+    if (!mounted || won || lost) return;
+    setState(() {
+      _started = true;
+      clock.start();
+    });
+    game!.inputEnabled = true;
+    game!.resumeEngine();
+    _timer = Timer.periodic(const Duration(milliseconds: 250), (_) => tick());
+  }
+
+  Future<void> showResult() async {
+    if (_resultOpen) return;
+    _resultOpen = true;
+    // Never stack a result behind the help/instruction route.
+    if (_instructionOpen) {
+      _instructionOpen = false;
+      Navigator.of(context).pop(false);
+    }
+    final action = await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dc) => PopScope(
+        canPop: false,
+        child: Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.all(16),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClayHeading(won: won),
+                const SizedBox(height: 22),
+                GamePanel(
+                  color: const Color(0xFFFFF1D4),
+                  child: Padding(
+                    padding: const EdgeInsets.all(22),
+                    child: ValueListenableBuilder<int>(
+                      valueListenable: _dialogRevision,
+                      builder: (context, revision, child) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          PacoMascot(
+                            size: 95,
+                            pose: won ? 'reussir' : 'reconfort',
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            won
+                                ? 'Objectif atteint !'
+                                : _timedOut
+                                ? 'Le temps est écoulé.'
+                                : 'Tu n’as plus de coups.',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            won
+                                ? (_winSaving
+                                      ? 'Enregistrement de ta réussite…'
+                                      : _winSaved
+                                      ? 'Ta réussite est enregistrée. Retrouve Paco pour valider la notion. La récompense de première victoire n’est versée qu’une fois.'
+                                      : 'Enregistrement impossible. Réessaie avant de continuer.')
+                                : 'Tu conserves ton épargne et tes acquis. Prêt pour une nouvelle tentative ?',
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 18),
+                          if (won)
+                            FilledButton.icon(
+                              onPressed: _winSaving
+                                  ? null
+                                  : _winSaved
+                                  ? () => Navigator.pop(dc, 'lesson')
+                                  : _saveWin,
+                              icon: Icon(
+                                _winSaved
+                                    ? Icons.school_rounded
+                                    : Icons.save_outlined,
+                              ),
+                              label: Text(
+                                _winSaving
+                                    ? 'Enregistrement…'
+                                    : _winSaved
+                                    ? 'Comprendre avec Paco'
+                                    : 'Réessayer l’enregistrement',
+                              ),
+                            )
+                          else
+                            FilledButton.icon(
+                              onPressed: () => Navigator.pop(dc, 'retry'),
+                              icon: const Icon(Icons.replay_rounded),
+                              label: const Text('Rejouer'),
+                            ),
+                          const SizedBox(height: 10),
+                          OutlinedButton.icon(
+                            onPressed: _winSaving
+                                ? null
+                                : () => Navigator.pop(dc, 'home'),
+                            icon: const Icon(Icons.home_rounded),
+                            label: const Text('Menu principal'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    _resultOpen = false;
+    if (!mounted) return;
+    if (action == 'retry') {
+      retry();
+    } else {
+      Navigator.pop(context, action == 'lesson');
+    }
+  }
+
   Future<void> _saveWin() async {
     if (_winSaving || _winSaved) return;
     setState(() => _winSaving = true);
+    _dialogRevision.value++;
     var saved = false;
     try {
       saved = widget.onCompleted == null || await widget.onCompleted!();
@@ -78,13 +251,15 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
         _winSaving = false;
         _winSaved = saved;
       });
+      _dialogRevision.value++;
     }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      game?.resumeEngine();
+      tick();
+      if (_started && !won && !lost) game?.resumeEngine();
     } else {
       game?.pauseEngine();
     }
@@ -93,36 +268,89 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _timer?.cancel();
+    _dialogRevision.dispose();
     stats.dispose();
     if (widget.audio == null) audio.dispose();
     super.dispose();
   }
 
-  void retry() => setState(() {
-    attempt++;
-    won = false;
-    lost = false;
-    game = createGame();
-  });
-  void help() => unawaited(
-    showDialog<void>(
+  void retry() {
+    _timer?.cancel();
+    setState(() {
+      attempt++;
+      won = false;
+      lost = false;
+      _winSaving = false;
+      _winSaved = false;
+      _timedOut = false;
+      _started = false;
+      clock = PuzzleClock(puzzleSeconds(widget.level), now: widget.now);
+      game = createGame();
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) unawaited(instructions(initial: true));
+    });
+  }
+
+  void help() => unawaited(instructions());
+  Future<void> instructions({bool initial = false}) async {
+    if (!mounted || _instructionOpen || won || lost) return;
+    _instructionOpen = true;
+    await showDialog<bool>(
       context: context,
-      builder: (dc) => AlertDialog(
-        title: Text(lessons[widget.level].topic),
-        content: SingleChildScrollView(
-          child: Text(
-            '${lessons[widget.level].description}\n\n${lessons[widget.level].task}\n\nGlisse une tuile vers une case voisine, ou touche deux cases voisines. Une permutation sans alignement revient en place sans consommer de coup.',
+      barrierDismissible: false,
+      builder: (dc) => PopScope(
+        canPop: false,
+        child: AlertDialog(
+          title: Text(
+            'Mission ${widget.level + 1} · ${lessons[widget.level].topic}',
           ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Center(child: PacoMascot(size: 85, pose: 'expliquer')),
+                Text(
+                  'Objectif : ${game!.engine.target} points en ${puzzleSeconds(widget.level)} secondes et ${game!.engine.moves} coups maximum.',
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Glisse une pièce vers une voisine pour aligner au moins 3 symboles. Tu peux aussi toucher deux cases voisines. Un échange sans alignement revient en place sans utiliser de coup.',
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  initial
+                      ? 'Le chrono démarre quand tu touches « C’est parti ». Ensuite, il continue même si tu quittes temporairement l’application ou relis cette consigne.'
+                      : 'Le chrono continue pendant la lecture de cette aide.',
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            if (initial)
+              TextButton(
+                onPressed: () {
+                  _instructionOpen = false;
+                  Navigator.pop(dc, false);
+                  Navigator.pop(context, false);
+                },
+                child: const Text('Menu principal'),
+              ),
+            FilledButton(
+              onPressed: () {
+                _instructionOpen = false;
+                Navigator.pop(dc, true);
+                if (initial) unawaited(startRound());
+              },
+              child: Text(initial ? 'C’est parti' : 'Reprendre'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dc),
-            child: const Text('C’est parti'),
-          ),
-        ],
       ),
-    ),
-  );
+    );
+  }
 
   Widget accessibleGrid() => ValueListenableBuilder<int>(
     valueListenable: game!.revision,
@@ -139,7 +367,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
                       selected: game!.selectedTile == y * 7 + x,
                       label:
                           'Ligne ${y + 1}, colonne ${x + 1}, ${PacoGame.symbolNames[game!.tileType(y * 7 + x)]}${game!.isHinted(y * 7 + x) ? ', indice' : ''}',
-                      onTap: won || lost || game!.isAnimating
+                      onTap: !_started || won || lost || game!.isAnimating
                           ? null
                           : () => game!.selectTile(y * 7 + x),
                       child: const SizedBox.expand(),
@@ -311,57 +539,6 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
     },
   );
 
-  Widget result() => Card.filled(
-    color: const Color(0xFFFDF8E6),
-    child: Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Semantics(
-            liveRegion: true,
-            child: Text(
-              won ? 'Bien joué !' : 'On réessaie ?',
-              style: Theme.of(context).textTheme.headlineSmall
-                  ?.copyWith(color: const Color(0xFF7551B5)),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            won
-                ? (_winSaving
-                      ? 'Ta réussite est en cours d’enregistrement.'
-                      : _winSaved
-                      ? 'Première réussite : 1 500 FCFA-jeu. Rejouer permet de s’entraîner.'
-                      : 'La sauvegarde a échoué. Réessaie de l’enregistrer.')
-                : 'Tu ne perds ni épargne ni progression.',
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Color(0xFF594D70)),
-          ),
-          const SizedBox(height: 14),
-          FilledButton.icon(
-            onPressed: _winSaving
-                ? null
-                : won
-                ? (_winSaved ? () => Navigator.pop(context, true) : _saveWin)
-                : retry,
-            icon: Icon(
-              won ? Icons.arrow_forward_rounded : Icons.refresh_rounded,
-            ),
-            label: Text(
-              _winSaving
-                  ? 'Enregistrement…'
-                  : won
-                  ? (_winSaved
-                        ? 'Comprendre avec Paco'
-                        : 'Réessayer l’enregistrement')
-                  : 'Réessayer',
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-
   @override
   Widget build(BuildContext context) {
     final header = Padding(
@@ -385,10 +562,6 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
                   lessons[widget.level].topic,
                   style: Theme.of(context).textTheme.titleLarge
                       ?.copyWith(color: const Color(0xFF4B3478)),
-                ),
-                const Text(
-                  'Aligne au moins 3 symboles.',
-                  style: TextStyle(color: Color(0xFF594D70)),
                 ),
               ],
             ),
@@ -429,24 +602,45 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
           ),
         ),
         const SizedBox(height: 16),
-        board(),
-        const SizedBox(height: 16),
-        if (won || lost) result() else actions,
-        const SizedBox(height: 14),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          child: Text(
-            'Glisse une pièce vers sa voisine. Deux taps fonctionnent aussi.\nFCFA-jeu fictifs · aucun argent réel.',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Color(0xFF68547F), fontSize: 12),
+        Semantics(
+          liveRegion: clock.remaining <= 10,
+          child: GamePanel(
+            color: clock.remaining <= 10
+                ? const Color(0xFFFFD8D3)
+                : const Color(0xFFE5F4FF),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  const Icon(Icons.timer_outlined),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Temps restant : ${clock.remaining ~/ 60}:${(clock.remaining % 60).toString().padLeft(2, '0')}',
+                      style: const TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
+        const SizedBox(height: 12),
+        AbsorbPointer(absorbing: !_started || won || lost, child: board()),
+        const SizedBox(height: 16),
+        if (!won && !lost) actions,
+        const SizedBox(height: 14),
       ],
     );
     return Scaffold(
       backgroundColor: const Color(0xFFF1E9FB),
       appBar: AppBar(
         backgroundColor: const Color(0xFFF1E9FB),
+        leading: IconButton(
+          tooltip: 'Menu principal',
+          onPressed: () => Navigator.pop(context, false),
+          icon: const Icon(Icons.home_rounded),
+        ),
         title: Text('Niveau ${widget.level + 1}'),
         actions: [
           soundControls(),

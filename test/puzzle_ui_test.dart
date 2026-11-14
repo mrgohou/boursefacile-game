@@ -26,6 +26,8 @@ void main() {
             .game!;
         await game.loaded;
       });
+      await tester.pump();
+      await tester.tap(find.text('C’est parti'));
       await tester.pump(const Duration(milliseconds: 100));
       expect(game.engine.board.length, 49);
       expect(
@@ -76,6 +78,8 @@ void main() {
           .game!;
       await game.loaded;
     });
+    await tester.pump();
+    await tester.tap(find.text('C’est parti'));
     await tester.pump();
     final game = tester
         .widget<GameWidget<PacoGame>>(find.byType(GameWidget<PacoGame>))

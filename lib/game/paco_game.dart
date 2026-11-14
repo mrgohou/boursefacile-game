@@ -16,10 +16,25 @@ class PacoGame extends FlameGame {
     required this.onLose,
     this.reducedMotion = false,
     this.onAudio,
+    this.canAcceptInput,
   }) : engine = MatchEngine(level) {
     _visible = List.of(engine.board);
   }
   final MatchEngine engine;
+  bool inputEnabled = true;
+  final bool Function()? canAcceptInput;
+  bool get acceptsInput => inputEnabled && (canAcceptInput?.call() ?? true);
+  void endRound() {
+    inputEnabled = false;
+    _completed = true;
+    _timeline = [];
+    _selected = null;
+    _hint = [];
+    _visible = List.of(engine.board);
+    _announce();
+    pauseEngine();
+  }
+
   final void Function(int score, int moves, int target) onUpdate;
   final VoidCallback onWin, onLose;
   final void Function(String event, int chain)? onAudio;
@@ -108,13 +123,15 @@ class PacoGame extends FlameGame {
   }
 
   void hint() {
-    if (_removed || _completed || isAnimating) return;
+    if (!acceptsInput) return;
+    if (!acceptsInput || _removed || _completed || isAnimating) return;
     _selected = null;
     _hint = engine.hint() ?? [];
     _announce();
   }
 
   void selectTile(int index) {
+    if (!acceptsInput) return;
     if (index < 0 ||
         index >= 49 ||
         _removed ||
@@ -146,7 +163,7 @@ class PacoGame extends FlameGame {
   }
 
   void _exchange(int a, int b) {
-    if (_removed || _completed || isAnimating) return;
+    if (!acceptsInput || _removed || _completed || isAnimating) return;
     _selected = null;
     _hint = [];
     engine.swap(a, b);

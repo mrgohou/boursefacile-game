@@ -73,6 +73,7 @@ void main() {
       await Future<void>.delayed(const Duration(milliseconds: 250));
     });
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
     final boundary =
         key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
     await tester.runAsync(() async {
@@ -160,6 +161,56 @@ void main() {
     await capture(tester, key, 'companion-journey');
     expect(tester.takeException(), isNull);
   });
+  testWidgets('capture timeout result', (tester) async {
+    viewport(tester);
+    final key = GlobalKey();
+    var now = DateTime.utc(2026);
+    await tester.runAsync(() async {
+      await tester.pumpWidget(
+        RepaintBoundary(
+          key: key,
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: buildPacoTheme(),
+            home: PuzzlePage(level: 0, now: () => now),
+          ),
+        ),
+      );
+      await tester
+          .widget<GameWidget<PacoGame>>(find.byType(GameWidget<PacoGame>))
+          .game!
+          .loaded;
+    });
+    await tester.pump();
+    await tester.tap(find.text('C’est parti'));
+    await tester.pump();
+    now = now.add(const Duration(seconds: 61));
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pumpAndSettle();
+    await capture(tester, key, 'puzzle-lose');
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('capture owned share controls', (tester) async {
+    viewport(tester);
+    final key = GlobalKey();
+    await tester.pumpWidget(
+      RepaintBoundary(
+        key: key,
+        child: PacoApp(
+          repository: PreviewRepository(),
+          audio: SilentGameAudio(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('dock-Propriétés')));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Cacao des Lagunes'));
+    await tester.tap(find.text('Cacao des Lagunes'));
+    await tester.pumpAndSettle();
+    await capture(tester, key, 'share-controls');
+    expect(tester.takeException(), isNull);
+  });
   testWidgets('capture animated puzzle layout', (tester) async {
     viewport(tester);
     final key = GlobalKey();
@@ -180,7 +231,23 @@ void main() {
       await game.loaded;
     });
     await tester.pump(const Duration(milliseconds: 200));
+    await capture(tester, key, 'puzzle-instructions');
+    await tester.tap(find.text('C’est parti'));
+    await tester.pump(const Duration(milliseconds: 300));
     await capture(tester, key, 'puzzle');
+    final game = tester
+        .widget<GameWidget<PacoGame>>(find.byType(GameWidget<PacoGame>))
+        .game!;
+    game.engine.score = game.engine.target - 1;
+    final pair = game.engine.hint()!;
+    game.selectTile(pair[0]);
+    game.selectTile(pair[1]);
+    for (var i = 0; i < 200 && game.isAnimating; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+    await capture(tester, key, 'puzzle-win');
     expect(tester.takeException(), isNull);
   });
 }

@@ -23,6 +23,49 @@ void motionOff(WidgetTester tester) {
 }
 
 void main() {
+  testWidgets('owned shares expose distinct buy-more and sell buttons', (
+    tester,
+  ) async {
+    motionOff(tester);
+    final repo = TestRepository()
+      ..value = PlayerState.initial()
+          .completeLevel(0)
+          .answerLesson(0)
+          .completeLevel(1)
+          .answerLesson(1)
+          .buy('cacao');
+    final cash = repo.value.cash;
+    await tester.pumpWidget(
+      PacoApp(repository: repo, audio: SilentGameAudio()),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('dock-Propriétés')));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Cacao des Lagunes'));
+    await tester.tap(find.text('Cacao des Lagunes'));
+    await tester.pumpAndSettle();
+    final buy = find.widgetWithText(FilledButton, 'Acheter plus');
+    final sell = find.widgetWithText(FilledButton, 'Vendre');
+    await tester.ensureVisible(buy);
+    expect(
+      tester.widget<FilledButton>(buy).style!.backgroundColor!.resolve({}),
+      isNot(
+        equals(
+          tester.widget<FilledButton>(sell).style!.backgroundColor!.resolve({}),
+        ),
+      ),
+    );
+    await tester.tap(buy);
+    await tester.pumpAndSettle();
+    expect(repo.value.holdings['cacao'], 2);
+    await tester.ensureVisible(sell);
+    await tester.tap(sell);
+    await tester.pumpAndSettle();
+    expect(repo.value.holdings['cacao'], 1);
+    expect(repo.value.cash, cash - 50);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets(
     'land purchase and construction persist and appear in properties',
     (tester) async {
@@ -197,8 +240,8 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Cacao des Lagunes'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Acquérir une part'));
-    await tester.tap(find.text('Acquérir une part'));
+    await tester.ensureVisible(find.text('Acheter une part'));
+    await tester.tap(find.text('Acheter une part'));
     await tester.pumpAndSettle();
     expect(repo.value.holdings['cacao'], 1);
     expect(repo.value.companyCards, contains('cacao'));
