@@ -53,7 +53,7 @@ void main() {
     expect(migrated.completed, {0});
     expect(migrated.ownedPlots, isEmpty);
     expect(migrated.journeyAnswers, isEmpty);
-    expect(migrated.toJson()['version'], 3);
+    expect(migrated.toJson()['version'], 4);
   });
   test('invalid expansion data and insufficient budget are rejected', () {
     final s = PlayerState.initial().completeLevel(0);

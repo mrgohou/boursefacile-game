@@ -14,7 +14,10 @@ class PuzzleMapPage extends StatelessWidget {
   });
   final PlayerState state;
   final ValueChanged<int> onLevelTap;
-  static const positions = [.28, .67, .37, .72, .31, .62];
+  static final positions = List.generate(
+    lessons.length,
+    (i) => const [.28, .67, .37, .72, .31, .62][i % 6],
+  );
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: const Color(0xFFECE5FB),
@@ -58,22 +61,43 @@ class PuzzleMapPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Wrap(
+                    spacing: 16,
+                    runSpacing: 8,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Text(
-                        '${state.unlockedLevel} / 6 étapes',
+                        '${state.unlockedLevel} / ${lessons.length} étapes',
                         style: const TextStyle(color: Color(0xFF34583E)),
                       ),
                       const Chip(label: Text('Sans vies limitées')),
                     ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: state.unlockedLevel < lessons.length
+                          ? () => onLevelTap(state.unlockedLevel)
+                          : null,
+                      child: Text(
+                        state.unlockedLevel < lessons.length
+                            ? 'Continuer · étape ${state.unlockedLevel + 1}'
+                            : '${lessons.length} étapes terminées',
+                      ),
+                    ),
+                  ),
+                ),
                 LayoutBuilder(
                   builder: (context, c) {
                     const step = 148.0;
                     return SizedBox(
-                      height: step * 6 + 60,
+                      height: step * lessons.length + 60,
                       child: Stack(
                         children: [
                           Positioned.fill(
@@ -81,7 +105,7 @@ class PuzzleMapPage extends StatelessWidget {
                               painter: _JourneyPainter(positions),
                             ),
                           ),
-                          for (var i = 0; i < 6; i++)
+                          for (var i = 0; i < lessons.length; i++)
                             Positioned(
                               left: (c.maxWidth - 112) * positions[i],
                               top: 28 + i * step,
@@ -91,7 +115,7 @@ class PuzzleMapPage extends StatelessWidget {
                                   Semantics(
                                     button: true,
                                     label:
-                                        'Niveau ${i + 1}, ${lessons[i].topic}, ${i > state.unlockedLevel
+                                        'Chapitre ${i ~/ 6 + 1}, niveau ${i + 1}, ${lessons[i].topic}, ${i > state.unlockedLevel
                                             ? 'verrouillé'
                                             : state.answered.contains(i)
                                             ? 'terminé'
@@ -219,7 +243,7 @@ class _JourneyPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final path = Path();
     final points = List.generate(
-      6,
+      positions.length,
       (i) => Offset((size.width - 112) * positions[i] + 56, 67 + i * 148.0),
     );
     path.moveTo(points.first.dx, points.first.dy);

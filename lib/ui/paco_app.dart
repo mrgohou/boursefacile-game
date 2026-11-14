@@ -720,7 +720,7 @@ class _PacoHomeState extends State<PacoHome> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  '${s.answered.length}/6 notions',
+                                                  '${s.answered.length}/${lessons.length} notions',
                                                   style: const TextStyle(
                                                     fontSize: 12,
                                                     color: Color(0xFF48626E),
@@ -851,7 +851,7 @@ class _PacoHomeState extends State<PacoHome> {
                                           const SizedBox(width: 8),
                                           Expanded(
                                             child: Text(
-                                              'Prochaine étape · ${math.min(s.unlockedLevel + 1, 6)}/6',
+                                              'Prochaine étape · ${math.min(s.unlockedLevel + 1, lessons.length)}/${lessons.length}',
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w800,
                                                 color: Color(0xFF345065),

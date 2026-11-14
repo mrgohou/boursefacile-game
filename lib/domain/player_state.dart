@@ -1,4 +1,5 @@
 import 'city_growth.dart';
+import 'stage_catalog.dart';
 
 class Company {
   final String id, name, sector;
@@ -88,7 +89,9 @@ class PlayerState {
   int get totalValue => cash + holdingsValue;
   int get unlockedLevel {
     var level = 0;
-    while (level < 6 && completed.contains(level) && answered.contains(level)) {
+    while (level < stageCount &&
+        completed.contains(level) &&
+        answered.contains(level)) {
       level++;
     }
     return level;
@@ -130,7 +133,9 @@ class PlayerState {
   }
 
   PlayerState completeLevel(int level) {
-    if (level < 0 || level >= 6) throw ArgumentError('Leçon inconnue.');
+    if (level < 0 || level >= stageCount) {
+      throw ArgumentError('Leçon inconnue.');
+    }
     if (completed.contains(level)) return this;
     if (level != unlockedLevel) {
       throw StateError('Termine la leçon précédente.');
@@ -290,7 +295,7 @@ class PlayerState {
   }
 
   Map<String, dynamic> toJson() => {
-    'version': 3,
+    'version': 4,
     'ownedPlots': ownedPlots.toList()..sort(),
     'townBuildings': Map<String, String>.from(townBuildings),
     'journeyAnswers': journeyAnswers.toList()..sort(),
@@ -307,7 +312,10 @@ class PlayerState {
 
   factory PlayerState.fromJson(Map<String, dynamic> raw) {
     try {
-      if ((raw['version'] != 1 && raw['version'] != 2 && raw['version'] != 3) ||
+      if ((raw['version'] != 1 &&
+              raw['version'] != 2 &&
+              raw['version'] != 3 &&
+              raw['version'] != 4) ||
           raw['cash'] is! int ||
           raw['cash'] < 0 ||
           raw['cash'] > _limit ||
@@ -360,9 +368,10 @@ class PlayerState {
       }
       Set<int> levels(dynamic value) {
         final list = List<int>.from(value as List);
-        if (list.length > 6 ||
+        final limit = raw['version'] >= 4 ? stageCount : 6;
+        if (list.length > limit ||
             list.toSet().length != list.length ||
-            list.any((n) => n < 0 || n >= 6)) {
+            list.any((n) => n < 0 || n >= limit)) {
           throw const FormatException();
         }
         return list.toSet();
@@ -385,13 +394,13 @@ class PlayerState {
       if (history.length > 50 || history.any((s) => s.length > 500)) {
         throw const FormatException();
       }
-      final plots = raw['version'] == 3
+      final plots = raw['version'] >= 3
           ? List<String>.from(raw['ownedPlots'] as List)
           : <String>[];
-      final buildings = raw['version'] == 3
+      final buildings = raw['version'] >= 3
           ? Map<String, String>.from(raw['townBuildings'] as Map)
           : <String, String>{};
-      final journey = raw['version'] == 3
+      final journey = raw['version'] >= 3
           ? List<int>.from(raw['journeyAnswers'] as List)
           : <int>[];
       if (plots.toSet().length != plots.length ||

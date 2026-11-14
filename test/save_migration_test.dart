@@ -29,7 +29,7 @@ void main() {
     expect(migrated.answered, {0, 1});
     expect(migrated.unlockedLevel, 2);
     final encoded = migrated.toJson();
-    expect(encoded['version'], 3);
+    expect(encoded['version'], 4);
     expect(encoded['companyCards'], ['banque', 'cacao']);
     expect(PlayerState.fromJson(encoded).toJson(), encoded);
   });
@@ -110,7 +110,7 @@ void main() {
           ...valid,
           'companyCards': ['cacao', 'banque', 'telecom', 'unknown'],
         },
-        {...valid, 'version': 4},
+        {...valid, 'version': 5},
       ]) {
         expect(() => PlayerState.fromJson(bad), throwsFormatException);
       }

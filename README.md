@@ -25,15 +25,19 @@ Six quartiers à acheter, sept types de bâtiments et un Voyage de 15 destinatio
 
 Puzzles chronométrés (60 s, puis 70/75/90 s selon difficulté), consignes et résultats en fenêtres dédiées, titres argile en rebond, retour au menu principal. Les fiches d’actions distinguent Acheter plus et Vendre. Voir `docs/RULES-0.5.md`.
 
+## Parcours 0.6.0
+
+30 étapes jouables et 30 leçons, en cinq chapitres. Les six premières sont conservées ; 24 nouvelles étapes prolongent le parcours, avec accès direct au prochain puzzle et reprise des anciennes sauvegardes. Voir [PROGRESSION-30.md](docs/PROGRESSION-30.md).
+
 ## Ce qui fonctionne
 
 - Accueil sur une ville isométrique : déplacement et zoom tactiles, bâtiments acquis, routes, rivière, passants et véhicules animés.
 - Accès direct aux propriétés, cartes de collection permanentes, parcours de puzzles et guichet.
-- Six puzzles 7×7 en Dart/Flame : glissement tactile ou deux taps, échanges animés, chutes, cascades, particules, indice et mélange.
+- Trente puzzles 7×7 en Dart/Flame : glissement tactile ou deux taps, échanges animés, chutes, cascades, particules, indice et mélange.
 - Deux musiques originales et neuf bruitages ; réglages indépendants et pause en arrière-plan.
-- Six questions pédagogiques ; seule la réussite du puzzle et de sa question débloque l'étape suivante.
+- Trente questions pédagogiques ; seule la réussite du puzzle et de sa question débloque l'étape suivante.
 - Trois entreprises inventées, achats/ventes fictifs, frais, baisse et démonstration de dividende.
-- Sauvegarde locale v2 compatible v1 ; cartes conservées après vente, victoire enregistrée dès sa validation, remise à zéro confirmée.
+- Sauvegarde locale v4 compatible v1/v2/v3 ; cartes conservées après vente, victoire enregistrée dès sa validation, remise à zéro confirmée.
 - UI testée à 360 dp et à 320 dp avec texte à 200 %. Plateau avec cibles d'au moins 48 dp et actions sémantiques par tuile.
 
 **Le démarrage est explicitement une démo locale.** Pas de compte Firebase, synchronisation, argent réel ou classement. Les données locales ne constituent jamais une preuve de gain pour un serveur.

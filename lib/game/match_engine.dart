@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import '../domain/stage_catalog.dart';
+
 enum TurnPhase { swap, revert, clear, fall, shuffle }
 
 class TileMotion {
@@ -34,8 +36,8 @@ class TurnStep {
 class MatchEngine {
   MatchEngine(int level, {int seed = 4701})
     : _random = Random(seed + level * 137),
-      moves = 24 - level.clamp(0, 5),
-      target = 650 + level.clamp(0, 5) * 140 {
+      moves = stageSpecs[level].moves,
+      target = stageSpecs[level].target {
     board = _newBoard();
   }
 

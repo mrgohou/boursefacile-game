@@ -1,10 +1,7 @@
+import 'stage_catalog.dart';
+
 /// Active rounds use a deadline, so backgrounding never grants extra seconds.
-int puzzleSeconds(int level) => switch (level) {
-  0 || 1 => 60,
-  2 => 70,
-  3 || 4 => 75,
-  _ => 90,
-};
+int puzzleSeconds(int level) => stageSpecs[level].seconds;
 
 class PuzzleClock {
   PuzzleClock(this.seconds, {DateTime Function()? now})

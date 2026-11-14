@@ -1,3 +1,5 @@
+import 'stage_catalog.dart';
+
 class Lesson {
   final String title, topic, description, question, explanation, task;
   final List<String> options;
@@ -14,7 +16,7 @@ class Lesson {
   });
 }
 
-const lessons = <Lesson>[
+final lessons = <Lesson>[
   Lesson(
     title: 'Bienvenue à PACO',
     topic: 'Épargner',
@@ -99,4 +101,18 @@ const lessons = <Lesson>[
     explanation: 'Même sans variation de cours, les deux opérations ont des frais. Compare le cash et la valeur des parts pour faire le bilan.',
     task: 'Observe ton bilan final : cash + valeur des parts = valeur totale.',
   ),
+  ...stageSpecs
+      .skip(6)
+      .map(
+        (s) => Lesson(
+          title: 'Étape ${stageSpecs.indexOf(s) + 1} · ${s.topic}',
+          topic: s.topic,
+          description: s.explanation,
+          question: s.question,
+          options: s.options,
+          answer: s.answer,
+          explanation: s.explanation,
+          task: 'Réussis le puzzle, puis vérifie la notion avec Paco.',
+        ),
+      ),
 ];
