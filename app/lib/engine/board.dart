@@ -236,6 +236,25 @@ class Board {
     return groups;
   }
 
+  /// Un coup jouable (pour l'indice de Paco), sans toucher au hasard du plateau.
+  (Pos, Pos)? findMove() {
+    for (var r = 0; r < boardSize; r++) {
+      for (var c = 0; c < boardSize; c++) {
+        final t = grid[r][c];
+        for (final d in const [Pos(0, 1), Pos(1, 0)]) {
+          final a = Pos(r, c), b = Pos(r + d.r, c + d.c);
+          if (!b.inside || !canSwap(a, b)) continue;
+          if (t?.special == Special.diversif || at(b)?.special == Special.diversif) return (a, b);
+          _rawSwap(a, b);
+          final ok = findGroups().isNotEmpty;
+          _rawSwap(a, b);
+          if (ok) return (a, b);
+        }
+      }
+    }
+    return null;
+  }
+
   bool hasMove() {
     for (var r = 0; r < boardSize; r++) {
       for (var c = 0; c < boardSize; c++) {

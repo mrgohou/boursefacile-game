@@ -53,7 +53,7 @@ jobs:
         continue-on-error: true
         run: |
           set -o pipefail
-          flutter test --timeout=120s test/engine_test.dart test/market_test.dart 2>&1 | tee ../ci-out/test-engine.txt; echo "engine=$?" >> ../ci-out/status.txt
+          flutter test --timeout=120s test/engine_test.dart test/market_test.dart test/city_layout_test.dart 2>&1 | tee ../ci-out/test-engine.txt; echo "engine=$?" >> ../ci-out/status.txt
 
       - name: Tests des écrans et captures
         timeout-minutes: 8
@@ -62,6 +62,13 @@ jobs:
           set -o pipefail
           PACO_SHOTS=1 flutter test --timeout=180s --update-goldens test/screens_test.dart 2>&1 | tee ../ci-out/test-screens.txt; echo "screens=$?" >> ../ci-out/status.txt
           mkdir -p ../ci-out/goldens && cp -r test/goldens/. ../ci-out/goldens/ 2>/dev/null || true
+
+      - name: Capture du plateau (informatif)
+        timeout-minutes: 5
+        continue-on-error: true
+        run: |
+          PACO_SHOTS=1 flutter test --timeout=120s --update-goldens test/level_test.dart 2>&1 | tail -60 > ../ci-out/test-level.txt || true
+          cp test/goldens/10-*.png ../ci-out/goldens/ 2>/dev/null || true
 
       - name: Build web
         timeout-minutes: 10

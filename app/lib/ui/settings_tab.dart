@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'scope.dart';
 
-/// Onglet Moi : titre, apparence (clair / sombre / comme le téléphone), son, Paco discret.
+/// Moi : titre, apparence (clair / sombre / comme le téléphone), sons, musique, Paco discret.
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('Moi')), body: const SettingsTab());
+}
+
 class SettingsTab extends StatelessWidget {
   const SettingsTab({super.key});
 
@@ -14,8 +21,6 @@ class SettingsTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
       children: [
-        Text('Moi', style: text.headlineMedium),
-        const SizedBox(height: 12),
         Card(
           child: ListTile(
             leading: const Icon(Icons.emoji_events_outlined),
@@ -41,9 +46,17 @@ class SettingsTab extends StatelessWidget {
           child: Column(
             children: [
               SwitchListTile(
-                title: const Text('Sons et musique'),
+                secondary: const Icon(Icons.volume_up_outlined),
+                title: const Text('Bruitages'),
                 value: settings.sound,
                 onChanged: settings.setSound,
+              ),
+              const Divider(height: 1),
+              SwitchListTile(
+                secondary: const Icon(Icons.music_note_outlined),
+                title: const Text('Musique'),
+                value: settings.music,
+                onChanged: settings.setMusic,
               ),
               const Divider(height: 1),
               SwitchListTile(

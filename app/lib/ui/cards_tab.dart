@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../engine/city.dart';
 import 'scope.dart';
-import 'ville_tab.dart' show showCompanySheet;
+import 'market_pages.dart' show showCompanySheet;
 
-/// Collection de cartes entreprises, rangées par familles de secteurs.
+/// Mes cartes : collection d'entreprises, rangées par familles de secteurs.
+class CardsPage extends StatelessWidget {
+  const CardsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('Mes cartes')), body: const CardsTab());
+}
+
 class CardsTab extends StatelessWidget {
   const CardsTab({super.key});
 
@@ -17,7 +24,6 @@ class CardsTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
       children: [
-        Text('Mes cartes', style: text.headlineMedium),
         Text('${game.cards.length} / ${companies.length} entreprises de la BRVM', style: text.bodyMedium),
         const SizedBox(height: 4),
         Text('Gagne une carte en gardant une part 10 séances, ou avec un quiz de Paco sans faute.', style: text.bodySmall),

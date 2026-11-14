@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   flame: ^1.18.0
+  flame_audio: ^2.10.0
   shared_preferences: ^2.3.0
   http: ^1.2.0
 
@@ -36,3 +37,4 @@ flutter:
     - assets/paco/
     - assets/tiles/
     - assets/buildings/
+    - assets/audio/

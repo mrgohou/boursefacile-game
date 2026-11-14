@@ -7,6 +7,19 @@ import 'quiz_page.dart';
 import 'stars.dart';
 import 'scope.dart';
 
+/// Quiz de validation d'une ville, puis avis du testeur.
+Future<void> openCityQuiz(BuildContext context, int city) async {
+  final game = GameScope.read(context);
+  final c = game.content.cities[city - 1];
+  final score = await Navigator.of(context).push<int>(MaterialPageRoute(builder: (_) => QuizPage(city: city)));
+  if (score == null || !context.mounted) return;
+  final card = game.finishQuiz(city, score);
+  if (card != null) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Nouvelle carte : $card !')));
+  }
+  if (score >= 2 && !game.feedback.containsKey(city)) await showFeedbackSheet(context, city, c.name);
+}
+
 /// Une ville : présentation par Paco, 3 niveaux, quiz de validation.
 class CityPage extends StatelessWidget {
   const CityPage({super.key, required this.city});
@@ -22,15 +35,7 @@ class CityPage extends StatelessWidget {
     final done = game.cityStars(city) >= 5;
     final validated = game.cityValidated(city);
 
-    Future<void> openQuiz() async {
-      final score = await Navigator.of(context).push<int>(MaterialPageRoute(builder: (_) => QuizPage(city: city)));
-      if (score == null || !context.mounted) return;
-      final card = game.finishQuiz(city, score);
-      if (card != null) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Nouvelle carte : $card !')));
-      }
-      if (score >= 2 && !game.feedback.containsKey(city)) await showFeedbackSheet(context, city, c.name);
-    }
+    Future<void> openQuiz() => openCityQuiz(context, city);
 
     return Scaffold(
       appBar: AppBar(title: Text('${c.n}. ${c.name}')),

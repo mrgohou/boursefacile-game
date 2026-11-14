@@ -65,10 +65,10 @@ void main() {
 
       await tester.tap(find.text('Jouer'));
       await tester.pumpAndSettle();
-      expect(find.text('Abidjan'), findsOneWidget);
-      await shot(tester, '02-carte-$mode');
+      expect(find.text('Place de la Bourse'), findsOneWidget);
+      await shot(tester, '02-ville-debut-$mode');
 
-      // Simule une partie avancée pour montrer Ma Ville et les cartes.
+      // Simule une partie avancée : bâtiments, cartes, quartiers débloqués.
       for (var c = 1; c <= 3; c++) {
         for (var l = 1; l <= 3; l++) {
           game.stars['c$c-l$l'] = 3;
@@ -76,37 +76,39 @@ void main() {
         game.quiz[c] = 3;
         game.seenIntro.add(c);
       }
-      game.savings = 60000;
-      for (final s in ['SNTS', 'ETIT', 'FTSC', 'CIEC', 'PALC']) {
+      game.savings = 90000;
+      for (final s in ['SNTS', 'ETIT', 'FTSC', 'CIEC', 'PALC', 'SGBC', 'SIBC', 'NTLC']) {
         game.buyOne(s);
       }
       for (var i = 0; i < 12; i++) {
         game.winLevel(game.content.levels.first, 3, 0);
       }
       await tester.pumpAndSettle();
+      await shot(tester, '03-ville-$mode');
 
-      await tester.tap(find.text('Ma Ville').last);
+      Future<void> visit(Finder button, String name) async {
+        await tester.tap(button);
+        await tester.pumpAndSettle();
+        await shot(tester, name);
+        await tester.pageBack();
+        await tester.pumpAndSettle();
+      }
+
+      await visit(find.text('Propriétés'), '04-proprietes-$mode');
+      await visit(find.text('Guichet'), '05-guichet-sgi-$mode');
+      await visit(find.text('Cartes'), '06-cartes-$mode');
+      await visit(find.text('Moi'), '07-reglages-$mode');
+
+      await tester.tap(find.byIcon(Icons.play_arrow_rounded));
       await tester.pumpAndSettle();
-      expect(find.text('Score PACO'), findsWidgets);
-      await shot(tester, '03-ma-ville-$mode');
+      expect(find.text('La route des villes'), findsOneWidget);
+      await shot(tester, '08-route-$mode');
 
-      await tester.tap(find.text('Guichet SGI'));
-      await tester.pumpAndSettle();
-      await shot(tester, '04-guichet-sgi-$mode');
-
-      await tester.tap(find.text('Cartes'));
-      await tester.pumpAndSettle();
-      await shot(tester, '05-cartes-$mode');
-
-      await tester.tap(find.text('Moi'));
-      await tester.pumpAndSettle();
-      await shot(tester, '06-reglages-$mode');
-
-      await tester.tap(find.text('Jouer'));
+      await tester.ensureVisible(find.text('Cotonou'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Cotonou'));
       await tester.pumpAndSettle();
-      await shot(tester, '07-ville-$mode');
+      await shot(tester, '09-ville-cotonou-$mode');
 
       await tester.runAsync(game.flush);
     });
@@ -119,6 +121,10 @@ void main() {
       game.stars['c1-l$l'] = 2;
     }
     await tester.pumpWidget(PacoApp(state: game, settings: settings));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.play_arrow_rounded));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Abidjan'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Abidjan'));
     await tester.pumpAndSettle();

@@ -6,18 +6,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/content.dart';
 import 'services/game_state.dart';
+import 'services/audio.dart';
 import 'services/market.dart';
 import 'services/settings.dart';
 import 'ui/brand_theme.dart';
 import 'ui/scope.dart';
-import 'ui/shell.dart';
+import 'ui/home/home_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   final content = await Content.load(rootBundle);
   final state = GameState(content, prefs);
-  runApp(PacoApp(state: state, settings: Settings(prefs)));
+  final settings = Settings(prefs);
+  runApp(PacoApp(state: state, settings: settings));
+  unawaited(GameAudio.instance.init());
   // Cours du jour en arrière-plan : le jeu démarre tout de suite, même hors ligne.
   unawaited(fetchMarket(prefs).then((m) {
     if (m != null) state.applyMarket(m);
@@ -66,7 +69,7 @@ class _PacoAppState extends State<PacoApp> with WidgetsBindingObserver {
             theme: Brand.theme(Brightness.light),
             darkTheme: Brand.theme(Brightness.dark),
             themeMode: widget.settings.themeMode,
-            home: const Shell(),
+            home: const HomeScreen(),
           ),
         ),
       ),

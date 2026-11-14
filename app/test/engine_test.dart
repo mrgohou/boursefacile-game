@@ -68,6 +68,15 @@ void main() {
       expect(b.findGroups(), isEmpty);
     });
 
+    test('l’indice de Paco propose toujours un coup accepté', () {
+      for (final l in loadLevels()) {
+        final b = Board.forLevel(l);
+        final m = b.findMove();
+        expect(m, isNotNull, reason: l.id);
+        expect(b.play(m!.$1, m.$2), isNotNull, reason: l.id);
+      }
+    });
+
     test('4 alignées créent une tuile Dividende', () {
       final b = Board(tiles: tileTypes, seed: 42);
       final g = b.grid;
