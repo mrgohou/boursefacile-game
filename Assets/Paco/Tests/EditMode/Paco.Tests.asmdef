@@ -1,0 +1,12 @@
+{
+  "name": "Paco.Tests",
+  "references": [
+    "Paco.Domain"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

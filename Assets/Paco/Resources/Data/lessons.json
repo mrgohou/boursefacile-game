@@ -1,0 +1,544 @@
+{
+  "lessons": [
+    {
+      "id": "paco-001",
+      "index": 0,
+      "chapter": 1,
+      "target": 650,
+      "moves": 24,
+      "seconds": 60,
+      "legacy": true,
+      "topic": "Épargner",
+      "question": "Les FCFA-jeu sont-ils de l’argent réel ?",
+      "options": [
+        "Oui, on peut les retirer",
+        "Non, ils servent à apprendre",
+        "Oui, à la banque"
+      ],
+      "answer": 1,
+      "explanation": "La simulation utilise une monnaie fictive, sans retrait ni achat réel."
+    },
+    {
+      "id": "paco-002",
+      "index": 1,
+      "chapter": 1,
+      "target": 790,
+      "moves": 23,
+      "seconds": 60,
+      "legacy": true,
+      "topic": "Action",
+      "question": "Une action représente…",
+      "options": [
+        "Une part du capital d’une entreprise",
+        "Un revenu garanti",
+        "Un prêt sans risque"
+      ],
+      "answer": 0,
+      "explanation": "Tu détiens une petite part d’une entreprise. Sa valeur peut monter ou baisser."
+    },
+    {
+      "id": "paco-003",
+      "index": 2,
+      "chapter": 1,
+      "target": 930,
+      "moves": 22,
+      "seconds": 70,
+      "legacy": true,
+      "topic": "Risque",
+      "question": "Quand le cours baisse, une part détenue…",
+      "options": [
+        "Disparaît",
+        "Vaut moins au prix du marché",
+        "Garantit un bénéfice futur"
+      ],
+      "answer": 1,
+      "explanation": "La part reste détenue, mais vaut moins. Une remontée n’est pas garantie."
+    },
+    {
+      "id": "paco-004",
+      "index": 3,
+      "chapter": 1,
+      "target": 1070,
+      "moves": 21,
+      "seconds": 75,
+      "legacy": true,
+      "topic": "Diversification",
+      "question": "Diversifier permet surtout de…",
+      "options": [
+        "Supprimer toute perte",
+        "Garantir un dividende",
+        "Réduire la dépendance à une seule entreprise"
+      ],
+      "answer": 2,
+      "explanation": "Plusieurs secteurs réduisent une dépendance, sans supprimer tous les risques."
+    },
+    {
+      "id": "paco-005",
+      "index": 4,
+      "chapter": 1,
+      "target": 1210,
+      "moves": 20,
+      "seconds": 75,
+      "legacy": true,
+      "topic": "Dividende",
+      "question": "Dans notre démonstration, au versement du dividende…",
+      "options": [
+        "Le total augmente automatiquement",
+        "Le cours est garanti",
+        "Le cash augmente et le cours s’ajuste : total inchangé"
+      ],
+      "answer": 2,
+      "explanation": "+100 de cash et −100 sur le cours par part isolent le détachement. Un dividende n’est pas garanti."
+    },
+    {
+      "id": "paco-006",
+      "index": 5,
+      "chapter": 1,
+      "target": 1350,
+      "moves": 19,
+      "seconds": 90,
+      "legacy": true,
+      "topic": "Bilan de départ",
+      "question": "Une bonne habitude est de…",
+      "options": [
+        "Acheter et vendre sans arrêt",
+        "Comprendre, diversifier et tenir compte des frais",
+        "Tout miser sur une seule entreprise"
+      ],
+      "answer": 1,
+      "explanation": "La patience et la compréhension comptent. Les performances ne sont jamais promises."
+    },
+    {
+      "id": "paco-007",
+      "index": 6,
+      "chapter": 2,
+      "target": 730,
+      "moves": 24,
+      "seconds": 60,
+      "legacy": false,
+      "topic": "Budget",
+      "question": "Avant de placer une somme, il faut d’abord…",
+      "options": [
+        "Prévoir les dépenses et une réserve",
+        "Dépenser toute son épargne",
+        "Emprunter pour jouer"
+      ],
+      "answer": 0,
+      "explanation": "Un budget distingue les revenus, les dépenses et la réserve disponible."
+    },
+    {
+      "id": "paco-008",
+      "index": 7,
+      "chapter": 2,
+      "target": 870,
+      "moves": 23,
+      "seconds": 70,
+      "legacy": false,
+      "topic": "Objectif",
+      "question": "Un objectif d’épargne utile est…",
+      "options": [
+        "Un gain garanti chaque jour",
+        "Le conseil d’un inconnu",
+        "Précis et associé à un horizon"
+      ],
+      "answer": 2,
+      "explanation": "Définir le projet et le délai aide à choisir une démarche adaptée."
+    },
+    {
+      "id": "paco-009",
+      "index": 8,
+      "chapter": 2,
+      "target": 1010,
+      "moves": 22,
+      "seconds": 70,
+      "legacy": false,
+      "topic": "Horizon",
+      "question": "Un besoin prévu dans deux semaines demande surtout…",
+      "options": [
+        "De bloquer tout son argent",
+        "De garder une somme disponible",
+        "De chercher une hausse rapide"
+      ],
+      "answer": 1,
+      "explanation": "Un horizon court rend la disponibilité particulièrement importante."
+    },
+    {
+      "id": "paco-010",
+      "index": 9,
+      "chapter": 2,
+      "target": 1150,
+      "moves": 21,
+      "seconds": 75,
+      "legacy": false,
+      "topic": "Réserve",
+      "question": "Une épargne de précaution sert à…",
+      "options": [
+        "Faire face aux dépenses imprévues",
+        "Garantir les gains en bourse",
+        "Éviter de faire un budget"
+      ],
+      "answer": 0,
+      "explanation": "La réserve aide à absorber un imprévu sans vendre un placement dans l’urgence."
+    },
+    {
+      "id": "paco-011",
+      "index": 10,
+      "chapter": 2,
+      "target": 1290,
+      "moves": 20,
+      "seconds": 75,
+      "legacy": false,
+      "topic": "Liquidité",
+      "question": "Un actif liquide est un actif que l’on peut…",
+      "options": [
+        "Revendre forcément plus cher",
+        "Conserver sans aucun risque",
+        "Convertir assez facilement en argent disponible"
+      ],
+      "answer": 2,
+      "explanation": "La liquidité concerne la facilité d’achat ou de vente, pas la promesse de rendement."
+    },
+    {
+      "id": "paco-012",
+      "index": 11,
+      "chapter": 2,
+      "target": 1430,
+      "moves": 19,
+      "seconds": 75,
+      "legacy": false,
+      "topic": "Coût complet",
+      "question": "Une part à 2 000 et 25 de frais coûte…",
+      "options": [
+        "1 975 FCFA-jeu",
+        "2 025 FCFA-jeu",
+        "2 000 FCFA-jeu"
+      ],
+      "answer": 1,
+      "explanation": "Le montant payé comprend le prix et les frais : 2 000 + 25 = 2 025."
+    },
+    {
+      "id": "paco-013",
+      "index": 12,
+      "chapter": 3,
+      "target": 810,
+      "moves": 24,
+      "seconds": 60,
+      "legacy": false,
+      "topic": "Ordre limité",
+      "question": "Un ordre d’achat à cours limité fixe…",
+      "options": [
+        "Un prix maximum accepté",
+        "Un bénéfice minimum garanti",
+        "La date d’un dividende"
+      ],
+      "answer": 0,
+      "explanation": "Un ordre limité précise un prix maximal d’achat. Il peut ne pas être exécuté."
+    },
+    {
+      "id": "paco-014",
+      "index": 13,
+      "chapter": 3,
+      "target": 950,
+      "moves": 23,
+      "seconds": 70,
+      "legacy": false,
+      "topic": "Exécution",
+      "question": "Un ordre limité est toujours exécuté…",
+      "options": [
+        "Oui, immédiatement",
+        "Oui, même sans vendeur",
+        "Non, il faut une contrepartie au prix accepté"
+      ],
+      "answer": 2,
+      "explanation": "La présence d’un ordre ne garantit ni une transaction ni son délai."
+    },
+    {
+      "id": "paco-015",
+      "index": 14,
+      "chapter": 3,
+      "target": 1090,
+      "moves": 22,
+      "seconds": 70,
+      "legacy": false,
+      "topic": "Offre et demande",
+      "question": "Le carnet d’ordres regroupe…",
+      "options": [
+        "Les salaires des dirigeants",
+        "Des intentions d’achat et de vente",
+        "Les bénéfices garantis"
+      ],
+      "answer": 1,
+      "explanation": "Les ordres d’achat et de vente se rencontrent pour former les transactions."
+    },
+    {
+      "id": "paco-016",
+      "index": 15,
+      "chapter": 3,
+      "target": 1230,
+      "moves": 21,
+      "seconds": 75,
+      "legacy": false,
+      "topic": "Volume",
+      "question": "Le volume échangé indique…",
+      "options": [
+        "La quantité de titres négociés",
+        "Le gain futur certain",
+        "Le dividende à venir"
+      ],
+      "answer": 0,
+      "explanation": "Le volume mesure une activité passée. Il ne promet pas une hausse future."
+    },
+    {
+      "id": "paco-017",
+      "index": 16,
+      "chapter": 3,
+      "target": 1370,
+      "moves": 20,
+      "seconds": 75,
+      "legacy": false,
+      "topic": "Bénéfices",
+      "question": "Un dividende versé l’année passée est-il garanti ensuite ?",
+      "options": [
+        "Oui, automatiquement",
+        "Oui, si le prix baisse",
+        "Non, il dépend notamment des décisions et résultats"
+      ],
+      "answer": 2,
+      "explanation": "Les distributions dépendent de la situation de l’entreprise et des décisions compétentes."
+    },
+    {
+      "id": "paco-018",
+      "index": 17,
+      "chapter": 3,
+      "target": 1510,
+      "moves": 19,
+      "seconds": 90,
+      "legacy": false,
+      "topic": "Rendement",
+      "question": "800 de dividende pour un cours de 10 000 donne…",
+      "options": [
+        "0,8 % de rendement brut",
+        "8 % de rendement brut",
+        "80 % de rendement brut"
+      ],
+      "answer": 1,
+      "explanation": "800 ÷ 10 000 × 100 = 8 %. Ce calcul historique ne garantit aucun revenu futur."
+    },
+    {
+      "id": "paco-019",
+      "index": 18,
+      "chapter": 4,
+      "target": 890,
+      "moves": 24,
+      "seconds": 70,
+      "legacy": false,
+      "topic": "BPA",
+      "question": "Le bénéfice par action est…",
+      "options": [
+        "Le bénéfice net divisé par le nombre d’actions",
+        "Le prix divisé par les frais",
+        "Le nombre total d’actionnaires"
+      ],
+      "answer": 0,
+      "explanation": "Le BPA rapproche un résultat de l’entreprise du nombre de ses actions."
+    },
+    {
+      "id": "paco-020",
+      "index": 19,
+      "chapter": 4,
+      "target": 1030,
+      "moves": 23,
+      "seconds": 70,
+      "legacy": false,
+      "topic": "PER",
+      "question": "Pour un cours de 10 000 et un BPA positif de 1 000, le PER vaut…",
+      "options": [
+        "1 000",
+        "10 000",
+        "10"
+      ],
+      "answer": 2,
+      "explanation": "Le PER vaut cours ÷ BPA : 10. Il ne promet pas un remboursement en dix ans."
+    },
+    {
+      "id": "paco-021",
+      "index": 20,
+      "chapter": 4,
+      "target": 1170,
+      "moves": 22,
+      "seconds": 75,
+      "legacy": false,
+      "topic": "Pertes",
+      "question": "Si le BPA est négatif, un PER calculé mécaniquement est…",
+      "options": [
+        "Une garantie de reprise",
+        "Non pertinent pour cette comparaison habituelle",
+        "Une preuve que le titre est gratuit"
+      ],
+      "answer": 1,
+      "explanation": "Un résultat négatif ne permet pas d’interpréter le PER comme avec un bénéfice positif."
+    },
+    {
+      "id": "paco-022",
+      "index": 21,
+      "chapter": 4,
+      "target": 1310,
+      "moves": 21,
+      "seconds": 75,
+      "legacy": false,
+      "topic": "Fractionnement",
+      "question": "Deux fois plus de parts à un prix divisé par deux donnent…",
+      "options": [
+        "La même valeur totale avant autres variations",
+        "Deux fois plus de richesse",
+        "La moitié de la valeur"
+      ],
+      "answer": 0,
+      "explanation": "Par exemple, 1 × 100 et 2 × 50 représentent tous deux une valeur de 100."
+    },
+    {
+      "id": "paco-023",
+      "index": 22,
+      "chapter": 4,
+      "target": 1450,
+      "moves": 20,
+      "seconds": 75,
+      "legacy": false,
+      "topic": "Assemblée générale",
+      "question": "L’assemblée générale permet aux actionnaires…",
+      "options": [
+        "De fixer un gain garanti",
+        "De supprimer les risques",
+        "De participer aux décisions prévues par leurs droits"
+      ],
+      "answer": 2,
+      "explanation": "Les droits de vote et décisions dépendent des titres et des règles applicables."
+    },
+    {
+      "id": "paco-024",
+      "index": 23,
+      "chapter": 4,
+      "target": 1590,
+      "moves": 19,
+      "seconds": 90,
+      "legacy": false,
+      "topic": "Détachement",
+      "question": "Dans notre exemple isolé, un dividende de 100 entraîne…",
+      "options": [
+        "La disparition de la part",
+        "+100 de cash et un cours ajusté de −100",
+        "+100 de valeur totale garantie"
+      ],
+      "answer": 1,
+      "explanation": "Le détachement seul ne crée pas un gain immédiat de valeur totale ; le marché peut aussi varier."
+    },
+    {
+      "id": "paco-025",
+      "index": 24,
+      "chapter": 5,
+      "target": 970,
+      "moves": 24,
+      "seconds": 70,
+      "legacy": false,
+      "topic": "Intermédiaire",
+      "question": "Pour négocier à la BRVM, on passe notamment par…",
+      "options": [
+        "Une SGI agréée",
+        "Un vendeur anonyme de messages",
+        "Le jeu PACO"
+      ],
+      "answer": 0,
+      "explanation": "Une SGI agréée est un intermédiaire de marché. PACO reste une simulation pédagogique."
+    },
+    {
+      "id": "paco-026",
+      "index": 25,
+      "chapter": 5,
+      "target": 1110,
+      "moves": 23,
+      "seconds": 70,
+      "legacy": false,
+      "topic": "Titres",
+      "question": "Une obligation représente généralement…",
+      "options": [
+        "Une part du capital identique à une action",
+        "Une absence de risque",
+        "Une créance sur un émetteur"
+      ],
+      "answer": 2,
+      "explanation": "Obligation et action ont des droits et risques différents. Une créance reste exposée au défaut."
+    },
+    {
+      "id": "paco-027",
+      "index": 26,
+      "chapter": 5,
+      "target": 1250,
+      "moves": 22,
+      "seconds": 75,
+      "legacy": false,
+      "topic": "Inflation",
+      "question": "Si les prix montent alors que mon épargne ne change pas…",
+      "options": [
+        "Tous les placements deviennent sûrs",
+        "Son pouvoir d’achat peut diminuer",
+        "Son pouvoir d’achat augmente forcément"
+      ],
+      "answer": 1,
+      "explanation": "Le montant nominal et le pouvoir d’achat sont deux notions différentes."
+    },
+    {
+      "id": "paco-028",
+      "index": 27,
+      "chapter": 5,
+      "target": 1390,
+      "moves": 21,
+      "seconds": 75,
+      "legacy": false,
+      "topic": "Régularité",
+      "question": "Épargner régulièrement aide surtout à…",
+      "options": [
+        "Installer une discipline dans le temps",
+        "Garantir un rendement positif",
+        "Annuler tous les frais"
+      ],
+      "answer": 0,
+      "explanation": "La régularité peut soutenir un projet, sans supprimer les risques ni les frais."
+    },
+    {
+      "id": "paco-029",
+      "index": 28,
+      "chapter": 5,
+      "target": 1530,
+      "moves": 20,
+      "seconds": 90,
+      "legacy": false,
+      "topic": "Information",
+      "question": "Face à une promesse de gain certain, il faut…",
+      "options": [
+        "Acheter immédiatement",
+        "Transmettre son code confidentiel",
+        "Vérifier les sources et se méfier de la promesse"
+      ],
+      "answer": 2,
+      "explanation": "Une promesse de gain certain mérite de la prudence. Ne partage jamais tes codes confidentiels."
+    },
+    {
+      "id": "paco-030",
+      "index": 29,
+      "chapter": 5,
+      "target": 1670,
+      "moves": 19,
+      "seconds": 90,
+      "legacy": false,
+      "topic": "Bilan final",
+      "question": "Pour faire le bilan de la simulation, je compare…",
+      "options": [
+        "Uniquement le dernier score",
+        "Le cash, les parts, les frais et les objectifs",
+        "Uniquement le nombre de parts"
+      ],
+      "answer": 1,
+      "explanation": "Un bilan complet tient compte des avoirs, des dépenses et de la progression, sans confondre jeu et argent réel."
+    }
+  ]
+}

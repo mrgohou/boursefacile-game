@@ -1,0 +1,148 @@
+{
+  "materials": [
+    {
+      "name": "cream",
+      "hex": "FFF0D3",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "white",
+      "hex": "FFF9EA",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "teal",
+      "hex": "187B89",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "blue",
+      "hex": "368BC6",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "navy",
+      "hex": "234A60",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "roof",
+      "hex": "DF744D",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "coral",
+      "hex": "EC806D",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "mint",
+      "hex": "8AD6B1",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "green",
+      "hex": "67A842",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "leaf",
+      "hex": "3C8E50",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "lime",
+      "hex": "B5DC68",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "yellow",
+      "hex": "FFC955",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "gold",
+      "hex": "E5AD38",
+      "metallic": 0.5,
+      "smoothness": 0.68
+    },
+    {
+      "name": "wood",
+      "hex": "A97149",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "darkwood",
+      "hex": "6D4F3A",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "glass",
+      "hex": "87D8E7",
+      "metallic": 0.02,
+      "smoothness": 0.68
+    },
+    {
+      "name": "road",
+      "hex": "6C7E87",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "metal",
+      "hex": "BAC6CD",
+      "metallic": 0.5,
+      "smoothness": 0.68
+    },
+    {
+      "name": "water",
+      "hex": "47BBCB",
+      "metallic": 0.02,
+      "smoothness": 0.68
+    },
+    {
+      "name": "pink",
+      "hex": "E994BC",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "purple",
+      "hex": "9671C7",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "red",
+      "hex": "D95452",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "skin",
+      "hex": "9C6548",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    },
+    {
+      "name": "ink",
+      "hex": "203D44",
+      "metallic": 0.02,
+      "smoothness": 0.46
+    }
+  ]
+}

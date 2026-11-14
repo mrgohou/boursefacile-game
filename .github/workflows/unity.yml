@@ -1,0 +1,60 @@
+name: PACO Unity checks and Android build
+on:
+  workflow_dispatch:
+    inputs:
+      build_android:
+        description: Build Android with the configured Unity license
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  domain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - run: python3 scripts/test_domain.py
+      - run: python3 scripts/validate_assets.py
+  unity:
+    if: inputs.build_android
+    needs: domain
+    runs-on: ubuntu-latest
+    env:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check license configuration
+        shell: bash
+        run: |
+          if [ -z "$UNITY_LICENSE" ]; then
+            echo 'Configure an active Unity license in repository secrets before running this job.'
+            exit 1
+          fi
+      - name: Free build workspace
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          docker-images: false
+      - uses: game-ci/unity-test-runner@v4
+        with:
+          unityVersion: 6000.0.62f1
+          testMode: all
+          artifactsPath: TestResults
+      - uses: game-ci/unity-builder@v4
+        with:
+          unityVersion: 6000.0.62f1
+          targetPlatform: Android
+          buildMethod: Paco.Editor.ProjectSetup.Android
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: paco-unity-android-and-reports
+          path: |
+            Builds/Android/*.apk
+            TestResults/
+            Logs/

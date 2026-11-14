@@ -1,0 +1,1 @@
+<linker><assembly fullname="Paco.Domain" preserve="all"/><assembly fullname="Paco.Runtime" preserve="all"/><assembly fullname="Newtonsoft.Json" preserve="all"/></linker>

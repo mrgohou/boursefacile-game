@@ -1,0 +1,11 @@
+{
+  "name": "Paco.PlayTests",
+  "references": [
+    "Paco.Domain",
+    "Paco.Runtime",
+    "UnityEngine.UI"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

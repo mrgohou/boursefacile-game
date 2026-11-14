@@ -1,0 +1,17 @@
+{
+  "domainTestsPassed": 13,
+  "stagesSolved": 30,
+  "seedsPerStage": 5,
+  "stageResolutions": 150,
+  "journeyQuestions": 45,
+  "fbxModels": 21,
+  "wavFiles": 11,
+  "csharpCompatibilityCompile": "passed; external Unity 2021.3 and UGUI references; not Unity 6 compilation",
+  "unityEditorAvailable": false,
+  "unityEditorTestsRun": false,
+  "unityApkBuilt": false,
+  "physicalDeviceTested": false,
+  "previewsRenderer": "Blender 4.3.2 Cycles",
+  "previewIsUnityRuntime": false,
+  "stageCatalogSHA256": "417c580ab30f2dbfda25ab53457709e9f0de4c30e0f83398d48c8ec45b97c555"
+}

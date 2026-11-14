@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><EnableDefaultCompileItems>false</EnableDefaultCompileItems></PropertyGroup>
+<ItemGroup><Compile Include="../Assets/Paco/Domain/*.cs"/><Compile Include="DomainTests.cs"/><PackageReference Include="Newtonsoft.Json" Version="13.0.2"/></ItemGroup>
+</Project>

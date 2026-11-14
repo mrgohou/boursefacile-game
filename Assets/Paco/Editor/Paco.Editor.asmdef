@@ -1,0 +1,12 @@
+{
+  "name": "Paco.Editor",
+  "references": [
+    "Paco.Runtime",
+    "Paco.Domain",
+    "Unity.RenderPipelines.Universal.Runtime",
+    "Unity.RenderPipelines.Core.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ]
+}

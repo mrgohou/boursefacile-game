@@ -1,0 +1,597 @@
+{
+  "destinations": [
+    {
+      "name": "Abidjan",
+      "country": "Côte d'Ivoire",
+      "topic": "La BRVM",
+      "intro": "Bienvenue à Abidjan, siège de la BRVM ! C'est la bourse commune des 8 pays de l'UEMOA.",
+      "reminder": "Une seule bourse, 8 pays, une seule monnaie : le franc CFA.",
+      "questions": [
+        {
+          "question": "Combien de pays partagent la BRVM ?",
+          "options": [
+            "8",
+            "3",
+            "15",
+            "1"
+          ],
+          "answer": 0,
+          "explanation": "Les 8 pays de l'UEMOA ont une seule bourse commune."
+        },
+        {
+          "question": "Dans quelle monnaie achète-t-on les actions à la BRVM ?",
+          "options": [
+            "L'euro",
+            "Le dollar",
+            "Le naira",
+            "Le franc CFA"
+          ],
+          "answer": 3,
+          "explanation": "Tout se fait en franc CFA : pas de risque de change dans la zone."
+        },
+        {
+          "question": "Où se trouve le siège de la BRVM ?",
+          "options": [
+            "Lomé",
+            "Paris",
+            "Abidjan",
+            "Dakar"
+          ],
+          "answer": 2,
+          "explanation": "Le siège est à Abidjan, et chaque pays a une antenne."
+        }
+      ]
+    },
+    {
+      "name": "Dakar",
+      "country": "Sénégal",
+      "topic": "L'action",
+      "intro": "À Dakar, on découvre l'action. Une action, c'est un petit morceau d'une entreprise.",
+      "reminder": "Avoir une action, c'est être un peu propriétaire de l'entreprise.",
+      "questions": [
+        {
+          "question": "Une action, c'est…",
+          "options": [
+            "un prêt à une banque",
+            "un billet de loterie",
+            "un produit en magasin",
+            "un petit morceau d'une entreprise"
+          ],
+          "answer": 3,
+          "explanation": "Avec une action, tu possèdes une petite part de l'entreprise."
+        },
+        {
+          "question": "Si tu as des actions Sonatel, tu es…",
+          "options": [
+            "obligé d’être client Sonatel",
+            "un peu propriétaire de Sonatel",
+            "employé de Sonatel"
+          ],
+          "answer": 1,
+          "explanation": "Tu es actionnaire : tu partages ses succès et ses risques."
+        },
+        {
+          "question": "10 actions à 4 110 FCFA coûtent combien, sans les frais ?",
+          "options": [
+            "4 110 FCFA",
+            "41 100 FCFA",
+            "4 120 FCFA",
+            "411 000 FCFA"
+          ],
+          "answer": 1,
+          "explanation": "10 × 4 110 = 41 100 FCFA."
+        }
+      ]
+    },
+    {
+      "name": "Cotonou",
+      "country": "Bénin",
+      "topic": "Le prix qui change",
+      "intro": "Regarde les passants : plus il y a d acheteurs, plus le prix monte.",
+      "reminder": "Beaucoup d'acheteurs : le prix monte. Beaucoup de vendeurs : il baisse.",
+      "questions": [
+        {
+          "question": "Beaucoup plus d'acheteurs que de vendeurs : le prix…",
+          "options": [
+            "ne bouge pas",
+            "monte",
+            "baisse"
+          ],
+          "answer": 1,
+          "explanation": "Quand tout le monde veut acheter, les prix proposés montent."
+        },
+        {
+          "question": "Qui fixe le prix d'une action chaque jour ?",
+          "options": [
+            "Paco",
+            "L'offre et la demande des investisseurs",
+            "Le gouvernement",
+            "Ta banque"
+          ],
+          "answer": 1,
+          "explanation": "Le prix vient de la rencontre entre acheteurs et vendeurs."
+        },
+        {
+          "question": "Une action passe de 80 000 à 84 000 FCFA. Elle a gagné…",
+          "options": [
+            "5 %",
+            "4 %",
+            "40 %",
+            "84 %"
+          ],
+          "answer": 0,
+          "explanation": "4 000 ÷ 80 000 = 0,05, soit 5 %."
+        }
+      ]
+    },
+    {
+      "name": "Lomé",
+      "country": "Togo",
+      "topic": "Comment on gagne",
+      "intro": "On peut gagner de deux façons : en revendant plus cher, ou grâce aux dividendes.",
+      "reminder": "Gain total = plus-value + dividendes.",
+      "questions": [
+        {
+          "question": "Quelles sont les deux façons de gagner en bourse ?",
+          "options": [
+            "La plus-value et les dividendes",
+            "La loterie et la chance",
+            "Les frais et les impôts"
+          ],
+          "answer": 0,
+          "explanation": "Gain total = plus-value à la revente + dividendes reçus."
+        },
+        {
+          "question": "Achat à 2 000, revente à 2 200 FCFA : quelle plus-value par action ?",
+          "options": [
+            "200 FCFA",
+            "2 200 FCFA",
+            "4 200 FCFA",
+            "20 FCFA"
+          ],
+          "answer": 0,
+          "explanation": "2 200 − 2 000 = 200 FCFA (avant frais)."
+        },
+        {
+          "question": "Un dividende, c'est…",
+          "options": [
+            "le prix d'achat de l'action",
+            "une part du bénéfice versée aux actionnaires",
+            "une taxe à payer"
+          ],
+          "answer": 1,
+          "explanation": "L'entreprise partage une partie de ses bénéfices."
+        }
+      ]
+    },
+    {
+      "name": "Ouagadougou",
+      "country": "Burkina Faso",
+      "topic": "Dividende et rendement",
+      "intro": "Le dividende, c'est une part du bénéfice que l'entreprise partage avec ses actionnaires.",
+      "reminder": "Le rendement dit combien de pièces tu reçois pour 100 posées.",
+      "questions": [
+        {
+          "question": "Action à 10 000 FCFA, dividende de 800 FCFA : quel rendement ?",
+          "options": [
+            "8 %",
+            "80 %",
+            "0,8 %",
+            "12 %"
+          ],
+          "answer": 0,
+          "explanation": "800 ÷ 10 000 × 100 = 8 %. Soit 8 pièces pour 100 posées."
+        },
+        {
+          "question": "Qui décide de verser un dividende ?",
+          "options": [
+            "Ta SGI",
+            "Les actionnaires, en assemblée générale (AGO)",
+            "La BRVM"
+          ],
+          "answer": 1,
+          "explanation": "Chaque année, l'AGO vote ce qu'on fait du bénéfice."
+        },
+        {
+          "question": "Un dividende versé l'an dernier est-il garanti cette année ?",
+          "options": [
+            "Non, jamais garanti",
+            "Oui, toujours"
+          ],
+          "answer": 0,
+          "explanation": "Il dépend des bénéfices et du vote de l’AGO."
+        }
+      ]
+    },
+    {
+      "name": "Bamako",
+      "country": "Mali",
+      "topic": "Le BPA",
+      "intro": "Le cœur du bâtiment, c est le bénéfice par action. Vert, l entreprise gagne de l argent.",
+      "reminder": "BPA = bénéfice de l entreprise ÷ nombre d actions.",
+      "questions": [
+        {
+          "question": "Le BPA, c’est…",
+          "options": [
+            "le nombre de salariés",
+            "le bénéfice net divisé par le nombre d'actions",
+            "le prix divisé par le dividende"
+          ],
+          "answer": 1,
+          "explanation": "Il dit ce que chaque action « gagne » vraiment."
+        },
+        {
+          "question": "Bénéfice de 10 milliards, 10 millions d'actions : quel BPA ?",
+          "options": [
+            "10 000 FCFA",
+            "1 FCFA",
+            "1 000 FCFA",
+            "100 FCFA"
+          ],
+          "answer": 2,
+          "explanation": "10 000 000 000 ÷ 10 000 000 = 1 000 FCFA."
+        },
+        {
+          "question": "Un BPA négatif veut dire que…",
+          "options": [
+            "l'action est gratuite",
+            "le dividende sera énorme",
+            "l'entreprise a perdu de l'argent"
+          ],
+          "answer": 2,
+          "explanation": "Cœur rouge : cette année, l’entreprise a fait une perte."
+        }
+      ]
+    },
+    {
+      "name": "Niamey",
+      "country": "Niger",
+      "topic": "Le PER",
+      "intro": "Le PER compare le cours au bénéfice par action. Ce ratio ne promet pas de remboursement.",
+      "reminder": "PER = cours ÷ BPA positif. Les bénéfices futurs restent incertains.",
+      "questions": [
+        {
+          "question": "Pour un cours de 10 000 et un BPA positif de 1 000, le PER vaut…",
+          "options": [
+            "10",
+            "1 000",
+            "Une durée garantie de dix ans"
+          ],
+          "answer": 0,
+          "explanation": "PER = cours ÷ BPA positif. Les bénéfices futurs restent incertains."
+        },
+        {
+          "question": "Un PER de 9 garantit-il un remboursement dans neuf ans ?",
+          "options": [
+            "Oui",
+            "Non, c’est un ratio de valorisation",
+            "Oui, si le cours reste stable"
+          ],
+          "answer": 1,
+          "explanation": "Le PER compare le cours au bénéfice par action. Ce ratio ne promet pas de remboursement."
+        },
+        {
+          "question": "Avec un BPA négatif, le PER usuel est…",
+          "options": [
+            "Une promesse de remboursement",
+            "Toujours nul",
+            "Non pertinent pour cette comparaison habituelle"
+          ],
+          "answer": 2,
+          "explanation": "Un bénéfice négatif ne permet pas cette interprétation habituelle du PER."
+        }
+      ]
+    },
+    {
+      "name": "Bissau",
+      "country": "Guinée-Bissau",
+      "topic": "La SGI",
+      "intro": "Pour acheter une action, on passe par une SGI : c est le guichet officiel de la bourse.",
+      "reminder": "Pas de SGI, pas d achat : elle est ton intermédiaire agréé.",
+      "questions": [
+        {
+          "question": "Pour acheter une action à la BRVM, je passe par…",
+          "options": [
+            "le marché du quartier",
+            "n'importe quel site internet",
+            "une SGI agréée"
+          ],
+          "answer": 2,
+          "explanation": "Seules les SGI agréées peuvent passer tes ordres."
+        },
+        {
+          "question": "SGI veut dire…",
+          "options": [
+            "Service du Gouvernement Ivoirien",
+            "Société de Gestion et d'Intermédiation",
+            "Société Générale d'Investissement"
+          ],
+          "answer": 1,
+          "explanation": "C'est ton intermédiaire officiel avec la bourse."
+        },
+        {
+          "question": "Où sont gardées tes actions ?",
+          "options": [
+            "Sur un compte-titres",
+            "Dans un portefeuille Mobile Money",
+            "Dans un coffre à la maison"
+          ],
+          "answer": 0,
+          "explanation": "La SGI ouvre pour toi un compte-titres."
+        }
+      ]
+    },
+    {
+      "name": "Saint-Louis",
+      "country": "Sénégal",
+      "topic": "Le 1er ordre",
+      "intro": "Tu peux acheter au prix du jour, ou fixer ton prix maximum et attendre.",
+      "reminder": "Un ordre, c est une consigne donnée à ta SGI.",
+      "questions": [
+        {
+          "question": "Un ordre « à cours limité », c’est…",
+          "options": [
+            "acheter sans payer de frais",
+            "fixer le prix maximum que j'accepte de payer",
+            "acheter à n’importe quel prix"
+          ],
+          "answer": 1,
+          "explanation": "Tu protèges ton budget : pas d'achat au-dessus de ta limite."
+        },
+        {
+          "question": "Ma limite est plus basse que le cours du jour. Mon ordre…",
+          "options": [
+            "attend",
+            "s'exécute plus cher",
+            "est payé par Paco"
+          ],
+          "answer": 0,
+          "explanation": "Il reste en attente jusqu'à ce qu'un vendeur accepte ton prix."
+        },
+        {
+          "question": "Qui transmet ton ordre à la bourse ?",
+          "options": [
+            "Ton voisin",
+            "L'État",
+            "Ta SGI"
+          ],
+          "answer": 2,
+          "explanation": "Tu donnes la consigne, ta SGI l’exécute."
+        }
+      ]
+    },
+    {
+      "name": "Porto-Novo",
+      "country": "Bénin",
+      "topic": "Les frais",
+      "intro": "Chaque achat et chaque vente coûtent des frais. Attention aux cadenas !",
+      "reminder": "Acheter et revendre sans arrêt, ça vide la tirelire.",
+      "questions": [
+        {
+          "question": "Que coûte chaque achat ou vente ?",
+          "options": [
+            "Rien du tout",
+            "Des frais"
+          ],
+          "answer": 1,
+          "explanation": "Courtage et autres frais : vérifie le barème de ta SGI."
+        },
+        {
+          "question": "Acheter et revendre très souvent…",
+          "options": [
+            "rapporte toujours plus",
+            "supprime les frais",
+            "fait payer beaucoup de frais"
+          ],
+          "answer": 2,
+          "explanation": "Les frais grignotent tes gains à chaque opération."
+        },
+        {
+          "question": "Des frais de 1 % sur 10 000 FCFA, ça fait…",
+          "options": [
+            "1 FCFA",
+            "100 FCFA",
+            "10 FCFA",
+            "1 000 FCFA"
+          ],
+          "answer": 1,
+          "explanation": "1 % de 10 000 = 100 FCFA."
+        }
+      ]
+    },
+    {
+      "name": "Kara",
+      "country": "Togo",
+      "topic": "La diversification",
+      "intro": "Une ville avec plusieurs secteurs résiste mieux aux tempêtes.",
+      "reminder": "Ne mets pas toutes tes pièces dans le même panier.",
+      "questions": [
+        {
+          "question": "Diversifier, c'est…",
+          "options": [
+            "tout mettre sur une seule action",
+            "changer de SGI chaque mois",
+            "répartir son argent entre plusieurs entreprises et secteurs"
+          ],
+          "answer": 2,
+          "explanation": "Plusieurs paniers, moins de risque."
+        },
+        {
+          "question": "Pourquoi diversifier ?",
+          "options": [
+            "Pour payer moins de frais",
+            "Une mauvaise nouvelle touche moins tout ton portefeuille",
+            "Pour gagner à coup sûr"
+          ],
+          "answer": 1,
+          "explanation": "La diversification réduit le risque, elle ne garantit pas de gain."
+        },
+        {
+          "question": "Quelle ville est la plus diversifiée ?",
+          "options": [
+            "Banque + télécoms + agro",
+            "Trois banques",
+            "Une seule entreprise"
+          ],
+          "answer": 0,
+          "explanation": "Trois secteurs différents réagissent différemment aux nouvelles."
+        }
+      ]
+    },
+    {
+      "name": "Bobo-Dioulasso",
+      "country": "Burkina Faso",
+      "topic": "Le fractionnement",
+      "intro": "Une grosse part peut devenir plusieurs petites. La valeur totale ne change pas.",
+      "reminder": "Sonatel a divisé ses actions par 10 : plus de parts, même valeur.",
+      "questions": [
+        {
+          "question": "Fractionnement par 10 : 1 action à 41 000 FCFA devient…",
+          "options": [
+            "10 actions à 41 000 FCFA",
+            "10 actions à 4 100 FCFA",
+            "1 action à 4 100 FCFA"
+          ],
+          "answer": 1,
+          "explanation": "Plus de parts, chacune plus petite."
+        },
+        {
+          "question": "Après un fractionnement, la valeur totale de tes actions…",
+          "options": [
+            "ne change pas",
+            "est multipliée par 10",
+            "est divisée par 10"
+          ],
+          "answer": 0,
+          "explanation": "10 × 4 100 = 41 000 : même valeur."
+        },
+        {
+          "question": "Pourquoi une entreprise fractionne-t-elle ses actions ?",
+          "options": [
+            "Pour cacher ses pertes",
+            "Pour supprimer les dividendes",
+            "Pour rendre l’action plus accessible"
+          ],
+          "answer": 2,
+          "explanation": "Un prix unitaire plus bas attire plus d’acheteurs, comme Sonatel en 2026."
+        }
+      ]
+    },
+    {
+      "name": "Ségou",
+      "country": "Mali",
+      "topic": "Les dates de dividende",
+      "intro": "Pour toucher le dividende, il faut avoir l action avant la date de détachement.",
+      "reminder": "Regarde le sablier : après la date, c est trop tard pour cette année.",
+      "questions": [
+        {
+          "question": "Pour toucher le dividende, il faut avoir l’action…",
+          "options": [
+            "avant la date de détachement",
+            "après la date de paiement",
+            "à n’importe quel moment"
+          ],
+          "answer": 0,
+          "explanation": "Après le détachement, le dividende de l’année est déjà attribué."
+        },
+        {
+          "question": "La date de paiement, c’est…",
+          "options": [
+            "le jour de l'AGO",
+            "le jour où tu achètes",
+            "le jour où l'argent arrive sur ton compte"
+          ],
+          "answer": 2,
+          "explanation": "Le détachement vient d’abord, le paiement ensuite."
+        },
+        {
+          "question": "Où vérifier les dates officielles ?",
+          "options": [
+            "Nulle part",
+            "Dans les avis publiés par la BRVM",
+            "Dans une rumeur sur les réseaux"
+          ],
+          "answer": 1,
+          "explanation": "Les avis officiels font foi, et un avis rectificatif peut les changer."
+        }
+      ]
+    },
+    {
+      "name": "Zinder",
+      "country": "Niger",
+      "topic": "L'épargne régulière",
+      "intro": "Un peu chaque mois, ça grandit comme une boule de neige.",
+      "reminder": "La régularité et le temps travaillent pour toi.",
+      "questions": [
+        {
+          "question": "Épargner un peu chaque mois…",
+          "options": [
+            "ne sert à rien",
+            "coûte plus cher que tout placer d’un coup",
+            "fait grandir ton épargne avec le temps"
+          ],
+          "answer": 2,
+          "explanation": "La régularité et le temps travaillent pour toi."
+        },
+        {
+          "question": "Des dividendes réinvestis…",
+          "options": [
+            "sont interdits",
+            "peuvent rapporter à leur tour",
+            "disparaissent"
+          ],
+          "answer": 1,
+          "explanation": "C'est l'effet boule de neige."
+        },
+        {
+          "question": "Les performances passées…",
+          "options": [
+            "garantissent les gains de demain",
+            "ne garantissent pas les résultats futurs"
+          ],
+          "answer": 1,
+          "explanation": "Le passé aide à comprendre, pas à prédire."
+        }
+      ]
+    },
+    {
+      "name": "Abidjan-Plateau",
+      "country": "Côte d'Ivoire",
+      "topic": "Ta stratégie",
+      "intro": "La grande finale ! Construis une ville équilibrée et patiente.",
+      "reminder": "Patience + diversification valent mieux qu un coup de chance.",
+      "questions": [
+        {
+          "question": "La stratégie préférée de Paco ?",
+          "options": [
+            "Suivre une rumeur",
+            "Patience + diversification",
+            "Tout miser vite"
+          ],
+          "answer": 1,
+          "explanation": "Sage plutôt que chanceux : c’est le Score PACO."
+        },
+        {
+          "question": "Avant d’investir pour de vrai, il faut…",
+          "options": [
+            "comprendre, comparer les frais et placer seulement ce qu’on peut laisser longtemps",
+            "emprunter beaucoup",
+            "tout placer le premier jour"
+          ],
+          "answer": 0,
+          "explanation": "On n'investit que l'argent dont on n'a pas besoin tout de suite."
+        },
+        {
+          "question": "Le marché baisse. Un GOAT de la BRVM…",
+          "options": [
+            "vend tout immédiatement",
+            "arrête de lire les nouvelles",
+            "garde son calme et regarde les entreprises"
+          ],
+          "answer": 2,
+          "explanation": "Une séance ne fait pas une année."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "models": {
+    "house": 49,
+    "farm": 47,
+    "shop": 63,
+    "telecom": 53,
+    "bank": 54,
+    "factory": 42,
+    "energy": 57,
+    "services": 66,
+    "tree": 4,
+    "palm": 11,
+    "car": 9,
+    "person": 9,
+    "fountain": 5,
+    "tile_cacao": 6,
+    "tile_phone": 3,
+    "tile_cash": 5,
+    "tile_fuel": 5,
+    "tile_bulb": 6,
+    "tile_gear": 11,
+    "title_win": 1,
+    "title_lose": 1
+  },
+  "previewRenderer": "Blender Cycles; NOT Unity runtime screenshots",
+  "originalGeometry": true
+}

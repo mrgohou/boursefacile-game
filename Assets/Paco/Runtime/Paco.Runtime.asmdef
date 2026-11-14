@@ -1,0 +1,11 @@
+{
+  "name": "Paco.Runtime",
+  "references": [
+    "Paco.Domain",
+    "UnityEngine.UI"
+  ],
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "Newtonsoft.Json.dll"
+  ]
+}
