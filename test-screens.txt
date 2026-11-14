@@ -1,0 +1,8 @@
+
+::group::✅ Passing tests
+✅ parcours principal (clair)
+✅ parcours principal (sombre)
+✅ le quiz valide une ville avec 2 bonnes réponses
+::endgroup::
+
+🎉 3 tests passed.

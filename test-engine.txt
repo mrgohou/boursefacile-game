@@ -1,0 +1,24 @@
+
+::group::✅ Passing tests
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/engine_test.dart: parité avec la version web même hasard que mulberry32 (TypeScript)
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/engine_test.dart: parité avec la version web même grille de départ que le web pour le niveau 1 et le niveau 31
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/engine_test.dart: puzzle 45 niveaux, tous jouables au départ, sans alignement initial
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/engine_test.dart: puzzle un coup valide marque des points et laisse une grille pleine et stable
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/engine_test.dart: puzzle l’indice de Paco propose toujours un coup accepté
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/engine_test.dart: puzzle 4 alignées créent une tuile Dividende
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/engine_test.dart: puzzle cadenas : 2 touches, non échangeable
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/engine_test.dart: puzzle étoiles et épargne suivent le GDD
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/engine_test.dart: Ma Ville vrais cours et symboles officiels
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/engine_test.dart: Ma Ville achat, vente, frais et plus-value
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/engine_test.dart: Ma Ville AGO : dividende seulement pour les parts gardées avant le sablier
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/engine_test.dart: Ma Ville prix bornés à ±15 % du vrai cours ; le bâtiment grandit
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/engine_test.dart: Ma Ville le Score PACO récompense la diversification
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/engine_test.dart: Ma Ville Paco ne dit jamais « achète » ou « vends »
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/market_test.dart: copie locale plus récente utilisée, plus ancienne ignorée
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/market_test.dart: copie incomplète ou illisible refusée
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/city_layout_test.dart: chaque entreprise a un terrain dans le quartier de sa famille
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/city_layout_test.dart: aucun terrain sur une route ni deux terrains au même endroit
+✅ /home/runner/work/boursefacile-game/boursefacile-game/app/test/city_layout_test.dart: la ville tient dans la carte
+::endgroup::
+
+🎉 19 tests passed.
