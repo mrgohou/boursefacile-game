@@ -1,0 +1,13 @@
+{
+  "sourceFile": "app-arm64-v8a-release_v2.apk",
+  "sourceSha256": "2fac7a3495cdb506fc7624533717e9531b255e2f5123a6f7151f74c849124aab",
+  "sourceApplicationId": "ci.boursefacile.paco_bourse",
+  "sourceVersion": "0.1.0 (2001)",
+  "mode": "offline content import",
+  "files": {
+    "levels.json": "712bd570e0a33eb6b412702409a05a78bff31b0c11f775c5683711f2f5079aac",
+    "cities.json": "457e57679aec8df609b5abcc32d956863539c7da28fa5785ccdc623b33d944c5",
+    "quiz.json": "a14caef0c5d3acccf60e73223367c801854b6a0cab610f0928fbd0c2e5366318",
+    "market-snapshot.json": "e9978ae07aa4a97484e6ac8aa40132f8e1832868e53bf576d0c3bcca229582b6"
+  }
+}
