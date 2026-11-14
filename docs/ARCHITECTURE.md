@@ -16,7 +16,7 @@ Le code Kotlin implémente les mêmes invariants économiques, seuils de quartie
 
 `PacoViewModel` expose un `StateFlow<UiState>`. Il contrôle navigation, partie active, chrono, sérialisation des mutations par `Mutex` et annulation des tâches de partie. `PlayerRepository` effectue un commit SharedPreferences sur IO. En cas d'erreur, le modèle observable ne reçoit pas l'achat. Les gagnants sont persistés dès la résolution, indépendamment du bouton choisi ensuite.
 
-`PlayerCodec` lit les formats PACO connus v1/v2/v3. Il refuse les types et prix incohérents, les constructions orphelines et les doubles identifiants. L'UI demande confirmation avant de remplacer la progression par un import. Le format peut servir de base d'échange, mais il faut un export explicite depuis l'autre application ; Android isole les sauvegardes selon l'identifiant du package. L'APK compagnon ne contient pas les données de ses joueurs.
+`PlayerCodec` lit les formats PACO connus v1/v2/v3/v4. Il refuse les types et prix incohérents, les constructions orphelines et les doubles identifiants. L'UI demande confirmation avant de remplacer la progression par un import. Le format peut servir de base d'échange, mais il faut un export explicite depuis l'autre application ; Android isole les sauvegardes selon l'identifiant du package. L'APK compagnon ne contient pas les données de ses joueurs.
 
 ## Présentation et cycle de vie
 

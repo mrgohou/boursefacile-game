@@ -64,7 +64,7 @@ data class Player(
     val history: List<String> = emptyList(),
 ) {
     val unlocked: Int
-        get() = (0..5).firstOrNull { it !in answered } ?: 6
+        get() = stageSpecs.indices.firstOrNull { it !in answered } ?: TOTAL_STAGES
 
     val gains: Int
         get() = completed.size * 1500 + journey.size * 300
@@ -84,7 +84,7 @@ data class Player(
         ) {
             "Portefeuille invalide."
         }
-        require(completed.all { it in 0..5 } && answered.all { it in completed }) {
+        require(completed.all { it in stageSpecs.indices } && answered.all { it in completed }) {
             "Progression invalide."
         }
         require(completed.all { it == 0 || it - 1 in answered }) { "Progression non séquentielle." }
@@ -124,7 +124,7 @@ data class Player(
     private fun log(message: String) = copy(history = (history + message).takeLast(50)).checked()
 
     fun win(level: Int): Player {
-        require(level in 0..5) { "Niveau inconnu." }
+        require(level in stageSpecs.indices) { "Niveau inconnu." }
         if (level in completed) return this
         require(level == unlocked) { "Termine la notion précédente." }
         return copy(cash = cash + 1500, completed = completed + level)

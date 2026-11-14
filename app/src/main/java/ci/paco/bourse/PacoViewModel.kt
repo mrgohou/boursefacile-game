@@ -186,7 +186,8 @@ class PacoViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun openLevel(level: Int) {
-        if (_ui.value.busy || level !in 0..5 || level > _ui.value.player.unlocked) return
+        if (_ui.value.busy || level !in stageSpecs.indices || level > _ui.value.player.unlocked)
+            return
         if (level in _ui.value.player.completed && level !in _ui.value.player.answered) {
             _ui.update { it.copy(lesson = level) }
             return

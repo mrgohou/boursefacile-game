@@ -68,4 +68,7 @@ val lessons =
             1,
             "La patience et la compréhension comptent. Les performances ne sont jamais promises.",
         ),
-    )
+    ) +
+        stageSpecs.drop(6).map {
+            Lesson(it.topic, it.question, it.options, it.answer, it.explanation)
+        }

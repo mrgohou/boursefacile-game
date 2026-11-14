@@ -4,12 +4,12 @@ import ci.paco.bourse.domain.*
 import org.json.JSONArray
 import org.json.JSONObject
 
-/** Explicit v3 interchange. Never reads another Android app's private files. */
+/** Explicit v4 interchange (reads v1–v3). Never reads another Android app's private files. */
 object PlayerCodec {
     fun encode(p: Player): String =
         JSONObject()
             .apply {
-                put("version", 3)
+                put("version", 4)
                 put("cash", p.cash)
                 put("holdings", JSONObject(p.holdings))
                 put("prices", JSONObject(companies.associate { it.id to p.price(it.id) }))
@@ -30,7 +30,7 @@ object PlayerCodec {
         val j = JSONObject(text)
         require(j.get("version") is Int)
         val version = j.getInt("version")
-        require(version in 1..3) { "Version de sauvegarde inconnue." }
+        require(version in 1..4) { "Version de sauvegarde inconnue." }
         fun strings(key: String): List<String> {
             val a = j.getJSONArray(key)
             return (0 until a.length()).map {
@@ -89,6 +89,10 @@ object PlayerCodec {
                     history = strings("history"),
                 )
                 .checked()
+        if (version < 4)
+            require(p.completed.all { it in 0..5 } && p.answered.all { it in 0..5 }) {
+                "Progression incompatible avec une ancienne sauvegarde."
+            }
         val prices = j.getJSONObject("prices")
         require(
             prices.length() == 3 &&

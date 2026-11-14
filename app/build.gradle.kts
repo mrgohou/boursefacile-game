@@ -10,8 +10,8 @@ android {
         applicationId = "ci.paco.bourse.kotlin"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0.0-kotlin-alpha"
+        versionCode = 2
+        versionName = "1.1.0-kotlin-alpha"
     }
     buildFeatures { compose = true }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }

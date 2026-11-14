@@ -208,4 +208,59 @@ class DomainTest {
         e.moves = 0
         assertTrue(e.swap(pair.first, pair.second).isEmpty())
     }
+
+    @Test
+    fun `all thirty stages are configured from the shared catalogue and solvable`() {
+        val data =
+            org.json
+                .JSONObject(java.io.File("src/main/assets/progression/stages.json").readText())
+                .getJSONArray("stages")
+        assertEquals(30, TOTAL_STAGES)
+        assertEquals(TOTAL_STAGES, lessons.size)
+        assertEquals(TOTAL_STAGES, data.length())
+        for (i in stageSpecs.indices) {
+            val spec = stageSpecs[i]
+            val e = PuzzleEngine(i)
+            val raw = data.getJSONObject(i)
+            assertEquals(raw.getInt("target"), e.target)
+            assertEquals(raw.getInt("moves"), e.moves)
+            assertEquals(raw.getInt("seconds"), secondsFor(i))
+            assertTrue(e.target <= e.moves * 90)
+            assertTrue(e.moves in 19..24)
+            assertTrue(secondsFor(i) in 60..90)
+            assertTrue(lessons[i].question.isNotEmpty())
+            assertTrue(lessons[i].answer in lessons[i].options.indices)
+            val budget = e.moves
+            for (turn in 0 until budget) {
+                if (e.won) break
+                val pair = e.hint()!!
+                e.swap(pair.first, pair.second)
+            }
+            assertTrue("Stage ${i+1} is solvable", e.won)
+        }
+    }
+
+    @Test
+    fun `legacy stage six unlocks seven and v4 preserves thirty unique rewards`() {
+        var p = Player()
+        for (i in 0..5) p = p.win(i).learn(i)
+        val legacy = org.json.JSONObject(PlayerCodec.encode(p)).put("version", 3)
+        p = PlayerCodec.decode(legacy.toString())
+        assertEquals(6, p.unlocked)
+        assertEquals(19000, p.cash)
+        assertSame(p, p.win(5))
+        for (i in 6 until TOTAL_STAGES) {
+            p = p.win(i).learn(i)
+            p = PlayerCodec.decode(PlayerCodec.encode(p))
+        }
+        assertEquals(30, p.unlocked)
+        assertEquals(55000, p.cash)
+        assertEquals(30, p.completed.size)
+        assertThrows(IllegalArgumentException::class.java) { p.win(30) }
+        assertThrows(IllegalArgumentException::class.java) {
+            PlayerCodec.decode(
+                org.json.JSONObject(PlayerCodec.encode(p)).put("version", 3).toString()
+            )
+        }
+    }
 }

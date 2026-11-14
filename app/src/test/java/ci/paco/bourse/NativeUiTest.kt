@@ -179,4 +179,35 @@ class NativeUiTest {
         compose.onNodeWithText("Ma ville").assertIsDisplayed()
         org.junit.Assert.assertEquals(setOf(0), vm.ui.value.player.completed)
     }
+
+    @Test
+    fun nativeStageThirtyOpensFromMapWithCorrectBudget() {
+        ready()
+        var fixture = Player()
+        for (i in 0 until 29) fixture = fixture.win(i).learn(i)
+        compose.runOnUiThread {
+            vm.previewImport(PlayerCodec.encode(fixture))
+            vm.confirmImport()
+        }
+        compose.waitUntil(10000) { !vm.ui.value.busy && vm.ui.value.player.unlocked == 29 }
+        compose.onNodeWithText("Jouer").performClick()
+        compose.onNodeWithText("30. Bilan final").assertIsDisplayed()
+        capture("native-map-30")
+        compose.onNodeWithText("Jouer").performClick()
+        compose.onNodeWithText("Mission 30 · Bilan final").assertIsDisplayed()
+        compose
+            .onNodeWithText("Objectif : 1670 points en 90 secondes et 19 coups maximum.")
+            .assertIsDisplayed()
+        capture("native-stage-30", true)
+        compose.onNodeWithText("C’est parti").performClick()
+        compose.runOnUiThread {
+            ShadowSystemClock.advanceBy(Duration.ofSeconds(91))
+            vm.reconcile()
+        }
+        compose.onNodeWithContentDescription("PAS DE CHANCE").assertExists()
+        compose.onNodeWithText("Menu principal").performClick()
+        compose.onNodeWithText("Ma ville").assertIsDisplayed()
+        org.junit.Assert.assertEquals(53500, vm.ui.value.player.cash)
+        org.junit.Assert.assertEquals(29, vm.ui.value.player.completed.size)
+    }
 }

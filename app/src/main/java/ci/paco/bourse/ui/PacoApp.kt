@@ -10,6 +10,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -223,7 +224,7 @@ private fun Home(ui: UiState, vm: PacoViewModel, art: Map<String, ImageBitmap>) 
                         Column {
                             Text("Ma ville", style = MaterialTheme.typography.titleMedium)
                             Text(
-                                "${ui.player.answered.size}/6 notions · Kotlin",
+                                "${ui.player.answered.size}/$TOTAL_STAGES notions · Kotlin",
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         }
@@ -301,14 +302,22 @@ private fun Home(ui: UiState, vm: PacoViewModel, art: Map<String, ImageBitmap>) 
 
 @Composable
 private fun Levels(ui: UiState, vm: PacoViewModel) {
+    val listState =
+        rememberLazyListState(
+            initialFirstVisibleItemIndex = ui.player.unlocked.coerceAtMost(TOTAL_STAGES - 1) + 1
+        )
     LazyColumn(
+        state = listState,
         contentPadding = PaddingValues(20.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp),
     ) {
         item {
-            Text("Un puzzle, une idée à emporter.", style = MaterialTheme.typography.headlineMedium)
+            Text(
+                "30 étapes · cinq chapitres pour apprendre.",
+                style = MaterialTheme.typography.headlineMedium,
+            )
         }
-        items(6) { i ->
+        items(TOTAL_STAGES) { i ->
             Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = if (i % 2 == 0) Arrangement.Start else Arrangement.End,
@@ -318,7 +327,8 @@ private fun Levels(ui: UiState, vm: PacoViewModel) {
                     if (i <= ui.player.unlocked) Cream else Color(0xFFE0DFDA),
                 ) {
                     Text("${i+1}. ${lessons[i].topic}", style = MaterialTheme.typography.titleLarge)
-                    Text("${secondsFor(i)} secondes · ${650+i*140} points")
+                    Text("Chapitre ${i/6+1} · étape ${i%6+1}/6")
+                    Text("${secondsFor(i)} secondes · ${stageSpecs[i].target} points")
                     Button(
                         onClick = { vm.openLevel(i) },
                         enabled = i <= ui.player.unlocked && !ui.busy,
@@ -733,7 +743,7 @@ private fun SettingsScreen(ui: UiState, vm: PacoViewModel) {
         OutlinedTextField(
             value = draft,
             onValueChange = { if (it.length <= 131072) draft = it },
-            label = { Text("Coller une sauvegarde PACO v1, v2 ou v3") },
+            label = { Text("Coller une sauvegarde PACO v1, v2, v3 ou v4") },
             modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp),
             maxLines = 6,
         )

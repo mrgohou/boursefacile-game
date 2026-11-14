@@ -4,15 +4,7 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.random.Random
 
-fun secondsFor(level: Int): Int =
-    when (level) {
-        0,
-        1 -> 60
-        2 -> 70
-        3,
-        4 -> 75
-        else -> 90
-    }
+fun secondsFor(level: Int): Int = stageSpecs[level].seconds
 
 class RoundClock(val seconds: Int) {
     private var deadline: Long? = null
@@ -48,7 +40,7 @@ data class Frame(
 
 class PuzzleEngine(val level: Int, seed: Int = 4701) {
     init {
-        require(level in 0..5)
+        require(level in stageSpecs.indices)
     }
 
     private val random = Random(seed + level * 137)
@@ -56,8 +48,8 @@ class PuzzleEngine(val level: Int, seed: Int = 4701) {
         private set
 
     var score = 0
-    var moves = 24 - level
-    val target = 650 + level * 140
+    var moves = stageSpecs[level].moves
+    val target = stageSpecs[level].target
     val won
         get() = score >= target
 

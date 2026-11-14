@@ -528,7 +528,7 @@ private fun Instructions(
                     Text("Chargement du plateau…")
                 }
                 Text(
-                    "Objectif : ${p.target} points en ${secondsFor(p.level)} secondes et ${24-p.level} coups maximum."
+                    "Objectif : ${p.target} points en ${secondsFor(p.level)} secondes et ${stageSpecs[p.level].moves} coups maximum."
                 )
                 Text(
                     "Glisse une pièce vers sa voisine pour aligner au moins 3 symboles. Deux taps sur des cases voisines fonctionnent aussi. Un échange sans alignement revient en place sans utiliser de coup."
