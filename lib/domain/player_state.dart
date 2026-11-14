@@ -1,3 +1,5 @@
+import 'city_growth.dart';
+
 class Company {
   final String id, name, sector;
   final int price, colorValue;
@@ -40,6 +42,9 @@ class PlayerState {
   final Map<String, int> holdings, prices;
   final Set<int> completed, answered;
   final Set<String> companyCards;
+  final Set<String> ownedPlots;
+  final Map<String, String> townBuildings;
+  final Set<int> journeyAnswers;
   final bool marketDropped, dividendPaid;
   final List<String> history;
 
@@ -50,6 +55,9 @@ class PlayerState {
     required Set<int> completed,
     required Set<int> answered,
     required Set<String> companyCards,
+    Set<String> ownedPlots = const {},
+    Map<String, String> townBuildings = const {},
+    Set<int> journeyAnswers = const {},
     required this.marketDropped,
     required this.dividendPaid,
     required List<String> history,
@@ -58,6 +66,9 @@ class PlayerState {
        completed = Set.unmodifiable(completed),
        answered = Set.unmodifiable(answered),
        companyCards = Set.unmodifiable(companyCards),
+       ownedPlots = Set.unmodifiable(ownedPlots),
+       townBuildings = Map.unmodifiable(townBuildings),
+       journeyAnswers = Set.unmodifiable(journeyAnswers),
        history = List.unmodifiable(history);
 
   factory PlayerState.initial() => PlayerState._(
@@ -90,6 +101,9 @@ class PlayerState {
     Set<int>? completed,
     Set<int>? answered,
     Set<String>? companyCards,
+    Set<String>? ownedPlots,
+    Map<String, String>? townBuildings,
+    Set<int>? journeyAnswers,
     bool? marketDropped,
     bool? dividendPaid,
     required String message,
@@ -106,6 +120,9 @@ class PlayerState {
       completed: completed ?? this.completed,
       answered: answered ?? this.answered,
       companyCards: companyCards ?? this.companyCards,
+      ownedPlots: ownedPlots ?? this.ownedPlots,
+      townBuildings: townBuildings ?? this.townBuildings,
+      journeyAnswers: journeyAnswers ?? this.journeyAnswers,
       marketDropped: marketDropped ?? this.marketDropped,
       dividendPaid: dividendPaid ?? this.dividendPaid,
       history: log.length > 50 ? log.sublist(log.length - 50) : log,
@@ -199,8 +216,84 @@ class PlayerState {
     );
   }
 
+  int get earnedRewards =>
+      completed.length * 1500 + journeyAnswers.length * 300;
+
+  PlayerState answerJourney(int cityIndex, int questionIndex) {
+    if (cityIndex < 0 ||
+        cityIndex >= 15 ||
+        questionIndex < 0 ||
+        questionIndex >= 3) {
+      throw ArgumentError('Question inconnue.');
+    }
+    final key = cityIndex * 3 + questionIndex;
+    if (journeyAnswers.contains(key)) return this;
+    // Sequential chapters; all three questions unlock the next destination.
+    if (cityIndex > 0 &&
+        !List.generate(
+          3,
+          (i) => (cityIndex - 1) * 3 + i,
+        ).every(journeyAnswers.contains)) {
+      throw StateError('Termine la destination précédente.');
+    }
+    return _change(
+      cash: cash + 300,
+      journeyAnswers: {...journeyAnswers, key},
+      message:
+          'Voyage ${cityIndex + 1}, notion ${questionIndex + 1} : +300 FCFA-jeu.',
+    );
+  }
+
+  PlayerState buyLand(String id) {
+    final index = lands.indexWhere((l) => l.id == id);
+    if (index < 0) throw ArgumentError('Terrain inconnu.');
+    final land = lands[index];
+    if (ownedPlots.contains(id)) {
+      throw StateError('Ce terrain est déjà acquis.');
+    }
+    if (index > 0 && !ownedPlots.contains(lands[index - 1].id)) {
+      throw StateError('Acquiers d’abord le quartier précédent.');
+    }
+    if (earnedRewards < land.requiredGains) {
+      throw StateError(
+        'Gagne encore des récompenses pour débloquer ce quartier.',
+      );
+    }
+    if (cash < land.price) {
+      throw StateError('Épargne insuffisante pour ce terrain.');
+    }
+    return _change(
+      cash: cash - land.price,
+      ownedPlots: {...ownedPlots, id},
+      message: 'Terrain ${land.name} : −${land.price} FCFA-jeu.',
+    );
+  }
+
+  PlayerState construct(String landId, String buildingId) {
+    if (!ownedPlots.contains(landId)) {
+      throw StateError('Achète ce terrain avant de construire.');
+    }
+    if (townBuildings.containsKey(landId)) {
+      throw StateError('Un bâtiment occupe déjà ce terrain.');
+    }
+    final index = townBuildingTypes.indexWhere((b) => b.id == buildingId);
+    if (index < 0) throw ArgumentError('Bâtiment inconnu.');
+    final building = townBuildingTypes[index];
+    if (cash < building.cost) {
+      throw StateError('Épargne insuffisante pour construire.');
+    }
+    return _change(
+      cash: cash - building.cost,
+      townBuildings: {...townBuildings, landId: buildingId},
+      message: 'Construction ${building.name} : −${building.cost} FCFA-jeu.',
+    );
+  }
+
   Map<String, dynamic> toJson() => {
-    'version': 2,
+    'version': 3,
+    'ownedPlots': ownedPlots.toList()..sort(),
+    'townBuildings': Map<String, String>.from(townBuildings),
+    'journeyAnswers': journeyAnswers.toList()..sort(),
     'companyCards': companyCards.toList()..sort(),
     'cash': cash,
     'holdings': Map<String, int>.from(holdings),
@@ -214,7 +307,7 @@ class PlayerState {
 
   factory PlayerState.fromJson(Map<String, dynamic> raw) {
     try {
-      if ((raw['version'] != 1 && raw['version'] != 2) ||
+      if ((raw['version'] != 1 && raw['version'] != 2 && raw['version'] != 3) ||
           raw['cash'] is! int ||
           raw['cash'] < 0 ||
           raw['cash'] > _limit ||
@@ -292,6 +385,44 @@ class PlayerState {
       if (history.length > 50 || history.any((s) => s.length > 500)) {
         throw const FormatException();
       }
+      final plots = raw['version'] == 3
+          ? List<String>.from(raw['ownedPlots'] as List)
+          : <String>[];
+      final buildings = raw['version'] == 3
+          ? Map<String, String>.from(raw['townBuildings'] as Map)
+          : <String, String>{};
+      final journey = raw['version'] == 3
+          ? List<int>.from(raw['journeyAnswers'] as List)
+          : <int>[];
+      if (plots.toSet().length != plots.length ||
+          plots.any((p) => !lands.any((l) => l.id == p)) ||
+          buildings.keys.any((id) => !plots.contains(id)) ||
+          buildings.values.any(
+            (id) => !townBuildingTypes.any((b) => b.id == id),
+          ) ||
+          journey.toSet().length != journey.length ||
+          journey.any((i) => i < 0 || i >= 45)) {
+        throw const FormatException();
+      }
+      for (var i = 1; i < lands.length; i++) {
+        if (plots.contains(lands[i].id) && !plots.contains(lands[i - 1].id)) {
+          throw const FormatException();
+        }
+      }
+      for (final q in journey) {
+        final city = q ~/ 3;
+        if (city > 0 &&
+            !List.generate(
+              3,
+              (i) => (city - 1) * 3 + i,
+            ).every(journey.contains)) {
+          throw const FormatException();
+        }
+      }
+      final earned = completed.length * 1500 + journey.length * 300;
+      if (lands.any((l) => plots.contains(l.id) && earned < l.requiredGains)) {
+        throw const FormatException();
+      }
       return PlayerState._(
         cash: raw['cash'] as int,
         holdings: holdings,
@@ -299,6 +430,9 @@ class PlayerState {
         completed: completed,
         answered: answered,
         companyCards: companyCards,
+        ownedPlots: plots.toSet(),
+        townBuildings: buildings,
+        journeyAnswers: journey.toSet(),
         marketDropped: dropped,
         dividendPaid: paid,
         history: history,

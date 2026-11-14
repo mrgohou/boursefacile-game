@@ -9,6 +9,8 @@ import '../data/player_repository.dart';
 import '../domain/lessons.dart';
 import '../domain/player_state.dart';
 import 'city_map.dart';
+import 'city_growth_sheet.dart';
+import 'companion_page.dart';
 import 'game_chrome.dart';
 import 'collection_sheets.dart';
 import 'illustrations.dart';
@@ -78,6 +80,7 @@ class PacoHome extends StatefulWidget {
 class _PacoHomeState extends State<PacoHome> {
   late final PlayerController controller;
   late final Listenable updates;
+  String? focusLand;
   @override
   void initState() {
     super.initState();
@@ -97,7 +100,17 @@ class _PacoHomeState extends State<PacoHome> {
     if (!mounted) return;
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(text)));
+      ..showSnackBar(
+        SnackBar(
+          content: Text(text),
+          margin: EdgeInsets.fromLTRB(
+            16,
+            0,
+            16,
+            195 + MediaQuery.viewPaddingOf(context).bottom,
+          ),
+        ),
+      );
   }
 
   Future<bool> change(PlayerState Function(PlayerState) action) async {
@@ -197,6 +210,10 @@ class _PacoHomeState extends State<PacoHome> {
           Navigator.pop(sc);
           company(id);
         },
+        onGrow: () {
+          Navigator.pop(sc);
+          growCity();
+        },
         onOpenGuichet: () {
           Navigator.pop(sc);
           guichet();
@@ -286,6 +303,43 @@ class _PacoHomeState extends State<PacoHome> {
     }
   }
 
+  void growCity() => unawaited(
+    sheet(
+      (sc, s) => scrollSheet(
+        sc,
+        'Agrandir ma ville',
+        CityGrowthSheet(
+          state: s,
+          busy: controller.busy,
+          onBuy: (id) async {
+            if (await change((state) => state.buyLand(id)) && mounted) {
+              setState(() => focusLand = id);
+              message('Terrain acquis. Choisis maintenant ton bâtiment.');
+            }
+          },
+          onBuild: (land, building) async {
+            if (await change((state) => state.construct(land, building)) &&
+                mounted) {
+              setState(() => focusLand = land);
+              message('Ton nouveau bâtiment est prêt dans la ville.');
+            }
+          },
+        ),
+      ),
+    ),
+  );
+  void voyage() => unawaited(
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => CompanionPage(
+          controller: controller,
+          onAnswer: (city, question) =>
+              change((s) => s.answerJourney(city, question)),
+        ),
+      ),
+    ),
+  );
+
   void menu() => unawaited(
     sheet(
       (sc, s) => scrollSheet(
@@ -315,6 +369,23 @@ class _PacoHomeState extends State<PacoHome> {
                 ),
               ),
             const Divider(),
+            ListTile(
+              leading: const Icon(Icons.add_location_alt_outlined),
+              title: const Text('Agrandir ma ville'),
+              onTap: () {
+                Navigator.pop(sc);
+                growCity();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.public_rounded),
+              title: const Text('Voyage de Paco'),
+              subtitle: const Text('15 villes · 45 notions · récompenses'),
+              onTap: () {
+                Navigator.pop(sc);
+                voyage();
+              },
+            ),
             ListTile(
               leading: const Icon(Icons.menu_book_outlined),
               title: const Text('Mon carnet'),
@@ -589,9 +660,11 @@ class _PacoHomeState extends State<PacoHome> {
                         state: s,
                         onBuildingTap: company,
                         onGuichetTap: guichet,
+                        onExpansionTap: (_) => growCity(),
+                        focusLand: focusLand,
                         reducedMotion: MediaQuery.disableAnimationsOf(context),
                         controlsBottomInset:
-                            MediaQuery.sizeOf(context).height > 700 ? 175 : 140,
+                            MediaQuery.sizeOf(context).height > 700 ? 225 : 195,
                       ),
                     ),
                   ),
@@ -721,6 +794,28 @@ class _PacoHomeState extends State<PacoHome> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: FilledButton.tonalIcon(
+                                    onPressed: growCity,
+                                    icon: const Icon(
+                                      Icons.add_location_alt_outlined,
+                                    ),
+                                    label: const Text('Agrandir'),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: FilledButton.tonalIcon(
+                                    onPressed: voyage,
+                                    icon: const Icon(Icons.public_rounded),
+                                    label: const Text('Voyager'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
                             if (MediaQuery.sizeOf(context).height > 700 &&
                                 MediaQuery.textScalerOf(context).scale(14) < 20)
                               Padding(

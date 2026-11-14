@@ -69,6 +69,10 @@ void main() {
   }
 
   Future<void> capture(WidgetTester tester, GlobalKey key, String name) async {
+    await tester.runAsync(() async {
+      await Future<void>.delayed(const Duration(milliseconds: 250));
+    });
+    await tester.pump();
     final boundary =
         key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
     await tester.runAsync(() async {
@@ -102,6 +106,58 @@ void main() {
     });
     await tester.pump();
     await capture(tester, key, 'city-home');
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('capture land purchase and expanded city', (tester) async {
+    viewport(tester);
+    final key = GlobalKey();
+    final repo = PreviewRepository();
+    await tester.pumpWidget(
+      RepaintBoundary(
+        key: key,
+        child: PacoApp(repository: repo, audio: SilentGameAudio()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Agrandir'));
+    await tester.pumpAndSettle();
+    await capture(tester, key, 'land-purchase');
+    await tester.ensureVisible(find.text('Acheter le terrain').first);
+    await tester.tap(find.text('Acheter le terrain').first);
+    await tester.pumpAndSettle();
+    final farm = find.text('Ferme de cacao\n500 FCFA-jeu');
+    await tester.ensureVisible(farm);
+    await tester.tap(farm);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Fermer'));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    await capture(tester, key, 'expanded-city');
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('capture imported journey', (tester) async {
+    viewport(tester);
+    final key = GlobalKey();
+    await tester.pumpWidget(
+      RepaintBoundary(
+        key: key,
+        child: PacoApp(
+          repository: PreviewRepository(),
+          audio: SilentGameAudio(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Voyager'));
+    await tester.pumpAndSettle();
+    await tester.runAsync(() async {
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    });
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('1. Abidjan'));
+    await tester.pumpAndSettle();
+    await capture(tester, key, 'companion-journey');
     expect(tester.takeException(), isNull);
   });
   testWidgets('capture animated puzzle layout', (tester) async {

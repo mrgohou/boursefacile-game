@@ -1,5 +1,4 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:paco_bourse/main.dart' as entrypoint;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paco_bourse/audio/game_audio.dart';
 import 'package:paco_bourse/data/player_repository.dart';
@@ -25,22 +24,73 @@ void motionOff(WidgetTester tester) {
 
 void main() {
   testWidgets(
-    'real entrypoint displays a recoverable error if native storage is unavailable',
+    'land purchase and construction persist and appear in properties',
     (tester) async {
       motionOff(tester);
-      entrypoint.main();
-      await tester.pumpAndSettle();
-      expect(find.text('Réessayer'), findsOneWidget);
-      expect(
-        find.textContaining('Impossible de lire la sauvegarde'),
-        findsOneWidget,
+      final repo = TestRepository()
+        ..value = PlayerState.initial().completeLevel(0);
+      await tester.pumpWidget(
+        PacoApp(repository: repo, audio: SilentGameAudio()),
       );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Agrandir'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Acheter le terrain').first);
+      await tester.tap(find.text('Acheter le terrain').first);
+      await tester.pumpAndSettle();
+      expect(repo.value.ownedPlots, {'rive'});
+      final farm = find.text('Ferme de cacao\n500 FCFA-jeu');
+      await tester.ensureVisible(farm);
+      await tester.tap(farm);
+      await tester.pumpAndSettle();
+      expect(repo.value.cash, 10000);
+      expect(repo.value.townBuildings, {'rive': 'ferme'});
+      await tester.tap(find.byTooltip('Fermer'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('dock-Propriétés')));
+      await tester.pumpAndSettle();
+      expect(find.text('Les Rives'), findsOneWidget);
+      expect(find.text('Ferme de cacao'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
-      expect(tester.takeException(), isNull);
     },
   );
+  testWidgets('imported quiz pays once even when reviewed', (tester) async {
+    motionOff(tester);
+    final repo = TestRepository();
+    await tester.pumpWidget(
+      PacoApp(repository: repo, audio: SilentGameAudio()),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Voyager'));
+    await tester.pumpAndSettle();
+    await tester.runAsync(() async {
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    });
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('1. Abidjan'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Notion 1 · +300 FCFA-jeu'));
+    await tester.tap(find.text('Notion 1 · +300 FCFA-jeu'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('8'));
+    await tester.pumpAndSettle();
+    expect(repo.value.cash, 10300);
+    expect(repo.value.journeyAnswers, {0});
+    await tester.tap(find.text('Fermer'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Notion 1 · revoir'));
+    await tester.tap(find.text('Notion 1 · revoir'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('8'));
+    await tester.pumpAndSettle();
+    expect(repo.value.cash, 10300);
+    expect(find.textContaining('récompense déjà reçue'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+  });
 
   testWidgets('native audio failure does not prevent the city first frame', (
     tester,

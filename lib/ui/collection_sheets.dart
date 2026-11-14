@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../domain/lessons.dart';
 import '../domain/player_state.dart';
+import '../domain/city_growth.dart';
 import 'paco_theme.dart';
 
 String _money(int value) =>
@@ -13,10 +14,12 @@ class PropertiesSheet extends StatelessWidget {
     required this.state,
     required this.onCompanyTap,
     this.onOpenGuichet,
+    this.onGrow,
   });
   final PlayerState state;
   final ValueChanged<String> onCompanyTap;
   final VoidCallback? onOpenGuichet;
+  final VoidCallback? onGrow;
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +30,41 @@ class PropertiesSheet extends StatelessWidget {
       children: [
         _Balance(state: state),
         const SizedBox(height: 24),
+        Text(
+          'Ma ville · ${state.ownedPlots.length} terrains · ${state.townBuildings.length} constructions',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        if (onGrow != null)
+          OutlinedButton.icon(
+            onPressed: onGrow,
+            icon: const Icon(Icons.add_location_alt_outlined),
+            label: const Text('Gérer mes terrains et bâtiments'),
+          ),
+        for (final land in lands.where((l) => state.ownedPlots.contains(l.id)))
+          ListTile(
+            leading: state.townBuildings[land.id] == null
+                ? const Icon(Icons.landscape_outlined)
+                : Image.asset(
+                    'assets/buildings/${townBuildingTypes.firstWhere((b) => b.id == state.townBuildings[land.id]).asset}.webp',
+                    width: 50,
+                  ),
+            title: Text(land.name),
+            subtitle: Text(
+              state.townBuildings[land.id] == null
+                  ? 'Terrain libre · prêt à construire'
+                  : townBuildingTypes
+                        .firstWhere((b) => b.id == state.townBuildings[land.id])
+                        .name,
+            ),
+          ),
+        const SizedBox(height: 16),
         if (owned.isEmpty) ...[
           const Icon(Icons.cottage_outlined, size: 64),
           const SizedBox(height: 16),
           Text(
-            'Ta ville attend sa première propriété',
+            state.ownedPlots.isEmpty
+                ? 'Ta ville attend sa première propriété'
+                : 'Aucune part d’entreprise détenue',
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 8),

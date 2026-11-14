@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:material_ui/material_ui.dart';
 
 import '../domain/player_state.dart';
+import '../domain/city_growth.dart';
 
 /// A pan-and-pinch 2D town. Portfolio rules remain in PlayerState.
 class CityMap extends StatefulWidget {
@@ -11,12 +12,16 @@ class CityMap extends StatefulWidget {
     required this.state,
     required this.onBuildingTap,
     this.onGuichetTap,
+    this.onExpansionTap,
+    this.focusLand,
     this.reducedMotion = false,
     this.controlsBottomInset = 112,
   });
   final PlayerState state;
   final ValueChanged<String> onBuildingTap;
   final VoidCallback? onGuichetTap;
+  final ValueChanged<String>? onExpansionTap;
+  final String? focusLand;
   final bool reducedMotion;
   final double controlsBottomInset;
 
@@ -25,7 +30,7 @@ class CityMap extends StatefulWidget {
 }
 
 class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
-  static const _world = Size(1400, 1000);
+  static const _world = Size(2200, 1700);
   final _transform = TransformationController();
   late final AnimationController _life;
   Size? _viewport;
@@ -50,6 +55,20 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
   void didUpdateWidget(covariant CityMap oldWidget) {
     super.didUpdateWidget(oldWidget);
     _updateMotion();
+    if (widget.focusLand != oldWidget.focusLand &&
+        widget.focusLand != null &&
+        _viewport != null) {
+      final land = lands.firstWhere((l) => l.id == widget.focusLand);
+      final scale = _transform.value.getMaxScaleOnAxis();
+      _transform.value = Matrix4.identity()
+        ..translateByDouble(
+          _viewport!.width / 2 - land.x * scale,
+          _viewport!.height / 2 - land.y * scale,
+          0,
+          1,
+        )
+        ..scaleByDouble(scale, scale, 1, 1);
+    }
   }
 
   void _updateMotion() {
@@ -292,7 +311,11 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
                   child: Stack(
                     clipBehavior: Clip.none,
                     children: [
-                      Positioned.fill(
+                      Positioned(
+                        left: 0,
+                        top: 0,
+                        width: 1400,
+                        height: 1000,
                         child: RepaintBoundary(
                           child: Image.asset(
                             'assets/buildings/city-garden.png',
@@ -304,6 +327,16 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
                           ),
                         ),
                       ),
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: CustomPaint(
+                            painter: _ExpansionRoadPainter(
+                              widget.state.ownedPlots,
+                            ),
+                          ),
+                        ),
+                      ),
+                      for (final land in lands) _district(land),
                       _hub(),
                       _building(
                         'telecom',
@@ -408,6 +441,94 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
       );
     },
   );
+
+  Widget _district(LandSpec land) {
+    final owned = widget.state.ownedPlots.contains(land.id);
+    final type = widget.state.townBuildings[land.id];
+    final building = type == null
+        ? null
+        : townBuildingTypes.firstWhere((b) => b.id == type);
+    return Positioned(
+      left: land.x - 170,
+      top: land.y - 110,
+      width: 340,
+      height: 290,
+      child: Semantics(
+        button: true,
+        label:
+            '${land.name}, ${owned ? building?.name ?? 'terrain acquis, construire' : 'terrain à acquérir'}',
+        excludeSemantics: true,
+        child: InkWell(
+          onTap: () => widget.onExpansionTap?.call(land.id),
+          borderRadius: BorderRadius.circular(20),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 185,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Opacity(
+                      opacity: owned ? 1 : .6,
+                      child: Transform.scale(
+                        scale: 1.8,
+                        child: CustomPaint(
+                          size: const Size(188, 100),
+                          painter: _EmptyPlotPainter(),
+                        ),
+                      ),
+                    ),
+                    if (building != null)
+                      Image.asset(
+                        'assets/buildings/${building.asset}.webp',
+                        height: 175,
+                        excludeFromSemantics: true,
+                      )
+                    else
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: owned
+                              ? const Color(0xFFFFE394)
+                              : const Color(0xFFFFF8E7),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          owned ? Icons.add_rounded : Icons.lock_outline,
+                          size: 42,
+                          color: const Color(0xFF345A48),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF8E7),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '${land.name}\n${owned ? building?.name ?? 'Construire' : '${land.price} FCFA-jeu'}',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 23,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF274C38),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _passant(String color, double t, bool reverse) {
     final p = Offset.lerp(
@@ -809,4 +930,38 @@ class _LifePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _LifePainter oldDelegate) => t != oldDelegate.t;
+}
+
+class _ExpansionRoadPainter extends CustomPainter {
+  const _ExpansionRoadPainter(this.owned);
+  final Set<String> owned;
+  @override
+  void paint(Canvas canvas, Size size) {
+    var previous = const Offset(1250, 500);
+    for (final land in lands) {
+      final target = Offset(land.x, land.y);
+      if (owned.contains(land.id)) {
+        canvas.drawLine(
+          previous,
+          target,
+          Paint()
+            ..color = const Color(0xFFFFF0C7)
+            ..strokeWidth = 32
+            ..strokeCap = StrokeCap.round,
+        );
+        canvas.drawLine(
+          previous,
+          target,
+          Paint()
+            ..color = const Color(0xFFD8B27D)
+            ..strokeWidth = 20
+            ..strokeCap = StrokeCap.round,
+        );
+      }
+      previous = target;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _ExpansionRoadPainter old) => old.owned != owned;
 }

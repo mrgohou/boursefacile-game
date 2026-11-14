@@ -17,6 +17,10 @@ Sur macOS avec Xcode et un simulateur iOS : `flutter run -d <simulateur>`. La co
 
 Ville tropicale illustrée, commandes en relief, typographie Nunito embarquée et puzzle violet/or : voir `docs/DESIGN-0.3.md` et les captures dans `docs/screenshots/`. Le démarrage Android AOT avec rendu de compatibilité est conservé.
 
+## Ville et contenu 0.4.0
+
+Six quartiers à acheter, sept types de bâtiments et un Voyage de 15 destinations / 45 quiz repris de l’APK fourni. Les gains financent terrains et constructions, conservés dans une sauvegarde v3 compatible v1/v2. « Agrandir », « Voyager » et « Mes propriétés » donnent accès à cette progression. Voir `docs/COMPANION-SYNC-0.4.md` pour l’analyse de compatibilité et les limites de synchronisation.
+
 ## Ce qui fonctionne
 
 - Accueil sur une ville isométrique : déplacement et zoom tactiles, bâtiments acquis, routes, rivière, passants et véhicules animés.
