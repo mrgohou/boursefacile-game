@@ -67,6 +67,7 @@ class MatchEngine {
   final ChallengeSpec challenge;
   late List<int> board;
   late int moves;
+  int invalidMoves = 0;
   int score = 0, perfectMoves = 0, collected = 0, specialUses = 0;
   final Set<int> lockedCells = {};
   final Map<int, SpecialPiece> specials = {};
@@ -241,6 +242,7 @@ class MatchEngine {
         !adjacent(a, b) ||
         lockedCells.contains(a) ||
         lockedCells.contains(b)) {
+      if (!won && !lost && adjacent(a, b)) invalidMoves++;
       return false;
     }
     final steps = <TurnStep>[];
@@ -264,6 +266,7 @@ class MatchEngine {
     var matches = findMatches(board);
     final directFour = _hasFour(board);
     if (sa == null && sb == null && matches.isEmpty) {
+      invalidMoves++;
       final changed = [...board];
       _exchange(board, a, b);
       steps.add(

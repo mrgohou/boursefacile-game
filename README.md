@@ -1,3 +1,5 @@
+> Mise à jour **Flutter 0.9.0 — Héritages BRVM** : [contenu et installation](docs/RELEASE-0.9.md), [validation](docs/VALIDATION-0.9.md), [outils et skills utilisés](docs/TOOLS-0.9.md).
+
 # PACO Bourse — nouveau projet mobile
 
 Socle indépendant Flutter + Flame pour un jeu pédagogique destiné aux adolescents et adultes débutants. Android prioritaire ; projet iOS inclus. Aucune application existante n'a été modifiée.

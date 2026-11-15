@@ -8,9 +8,13 @@ class CompanionPage extends StatefulWidget {
     super.key,
     required this.controller,
     required this.onAnswer,
+    this.onAttempt,
+    this.onClosedQuestion,
   });
   final PlayerController controller;
   final Future<bool> Function(int city, int question) onAnswer;
+  final Future<bool> Function(int city, int question, bool correct)? onAttempt;
+  final Future<void> Function()? onClosedQuestion;
   @override
   State<CompanionPage> createState() => _CompanionPageState();
 }
@@ -47,6 +51,17 @@ class _CompanionPageState extends State<CompanionPage> {
                       onPressed: saving || finished
                           ? null
                           : () async {
+                              update(() => saving = true);
+                              final ok =
+                                  await widget.onAttempt?.call(
+                                    city,
+                                    question,
+                                    i == 0,
+                                  ) ??
+                                  true;
+                              if (!dc.mounted) return;
+                              update(() => saving = false);
+                              if (!ok) return;
                               if (i != 0) {
                                 update(
                                   () => feedback = 'Essaie encore : relis la notion de Paco.',
@@ -84,6 +99,7 @@ class _CompanionPageState extends State<CompanionPage> {
         ),
       ),
     );
+    await widget.onClosedQuestion?.call();
   }
 
   @override

@@ -8,9 +8,13 @@ class KnowledgePage extends StatefulWidget {
     super.key,
     required this.topic,
     required this.onAttempt,
+    this.onRecordedAttempt,
+    this.onClosedQuestion,
   });
   final String topic;
   final void Function(String topic, bool correct) onAttempt;
+  final Future<bool> Function(String id, bool correct)? onRecordedAttempt;
+  final Future<void> Function()? onClosedQuestion;
   @override
   State<KnowledgePage> createState() => _KnowledgePageState();
 }
@@ -38,7 +42,7 @@ class _KnowledgePageState extends State<KnowledgePage> {
 
   Future<void> question(Map q) async {
     int? chosen;
-    bool answered = false;
+    bool answered = false, saving = false;
     await showDialog<void>(
       context: context,
       builder: (dc) => StatefulBuilder(
@@ -53,9 +57,19 @@ class _KnowledgePageState extends State<KnowledgePage> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: OutlinedButton(
-                      onPressed: answered
+                      onPressed: answered || saving
                           ? null
-                          : () {
+                          : () async {
+                              setDialog(() => saving = true);
+                              final ok =
+                                  await widget.onRecordedAttempt?.call(
+                                    q['id'] as String,
+                                    i == q['answer'],
+                                  ) ??
+                                  true;
+                              if (!dc.mounted) return;
+                              setDialog(() => saving = false);
+                              if (!ok) return;
                               widget.onAttempt(
                                 q['topic'] as String,
                                 i == q['answer'],
@@ -84,7 +98,7 @@ class _KnowledgePageState extends State<KnowledgePage> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(dc),
+              onPressed: saving ? null : () => Navigator.pop(dc),
               child: const Text('Fermer'),
             ),
             if (answered && chosen != q['answer'])
@@ -99,6 +113,7 @@ class _KnowledgePageState extends State<KnowledgePage> {
         ),
       ),
     );
+    await widget.onClosedQuestion?.call();
   }
 
   @override

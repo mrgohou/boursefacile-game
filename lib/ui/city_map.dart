@@ -1,3 +1,5 @@
+import 'cultural_art.dart';
+
 import 'dart:math' as math;
 
 import 'package:material_ui/material_ui.dart';
@@ -30,7 +32,7 @@ class CityMap extends StatefulWidget {
 }
 
 class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
-  static const _world = Size(2200, 1700);
+  static const _world = Size(5800, 2200);
   final _transform = TransformationController();
   late final AnimationController _life;
   Size? _viewport;
@@ -138,7 +140,14 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
               SizedBox(
                 height: 146,
                 child: owned
-                    ? _asset('assets/buildings/$asset.webp', 220)
+                    ? CulturalArt(
+                        index: cityBuildingFrame(
+                          baseCityId,
+                          widget.state.cityTier,
+                        ),
+                        building: true,
+                        size: 146,
+                      )
                     : Stack(
                         alignment: Alignment.center,
                         children: [
@@ -239,7 +248,11 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
             children: [
               SizedBox(
                 height: 76,
-                child: _asset('assets/buildings/${company.family}-1.webp', 100),
+                child: CulturalArt(
+                  index: cityBuildingFrame(place.landId, widget.state.cityTier),
+                  building: true,
+                  size: 76,
+                ),
               ),
               Container(
                 padding: const EdgeInsets.all(3),
@@ -532,10 +545,13 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
                       ),
                     ),
                     if (building != null)
-                      Image.asset(
-                        'assets/buildings/${building.asset}.webp',
-                        height: 175,
-                        excludeFromSemantics: true,
+                      CulturalArt(
+                        index: cityBuildingFrame(
+                          land.id,
+                          widget.state.cityTier,
+                        ),
+                        building: true,
+                        size: 175,
                       )
                     else
                       Container(

@@ -129,7 +129,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('dock-Propriétés')));
       await tester.pumpAndSettle();
-      expect(find.text('Les Rives'), findsOneWidget);
+      expect(find.text('Yamoussoukro'), findsOneWidget);
       expect(find.text('Ferme de cacao'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox.shrink());

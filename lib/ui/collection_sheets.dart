@@ -1,3 +1,5 @@
+import 'cultural_art.dart';
+
 import 'package:material_ui/material_ui.dart';
 
 import '../domain/lessons.dart';
@@ -29,6 +31,14 @@ class PropertiesSheet extends StatelessWidget {
       subtitle: 'Les petites parts qui font grandir ta ville.',
       children: [
         _Balance(state: state),
+        const SizedBox(height: 16),
+        Text('Mes trésors', style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          '${state.rewards.colas} colas · ${state.rewards.cauris} cauris · ${state.rewards.gold} pièces d’or · ${state.rewards.crosses} croix d’Agadez',
+        ),
+        const Text(
+          'Valeurs déjà créditées lors de la collecte. Les objets sont conservés comme souvenirs.',
+        ),
         const SizedBox(height: 24),
         Text(
           'Ma ville · ${state.ownedPlots.length} terrains · ${state.townBuildings.length} constructions',
@@ -44,9 +54,10 @@ class PropertiesSheet extends StatelessWidget {
           ListTile(
             leading: state.townBuildings[land.id] == null
                 ? const Icon(Icons.landscape_outlined)
-                : Image.asset(
-                    'assets/buildings/${townBuildingTypes.firstWhere((b) => b.id == state.townBuildings[land.id]).asset}.webp',
-                    width: 50,
+                : CulturalArt(
+                    index: cityBuildingFrame(land.id, state.cityTier),
+                    building: true,
+                    size: 50,
                   ),
             title: Text(land.name),
             subtitle: Text(

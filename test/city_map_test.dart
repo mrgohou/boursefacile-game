@@ -1,3 +1,4 @@
+import 'package:paco_bourse/ui/cultural_art.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paco_bourse/domain/player_state.dart';
@@ -41,14 +42,9 @@ void main() {
       expect(find.text('Agroalimentaire\n1 part'), findsOneWidget);
       expect(find.text('＋ Agroalimentaire'), findsNothing);
       expect(
-        find.byWidgetPredicate((w) {
-          if (w is! Image) return false;
-          final provider = w.image is ResizeImage
-              ? (w.image as ResizeImage).imageProvider
-              : w.image;
-          return provider is AssetImage &&
-              provider.assetName == 'assets/buildings/agro-1.webp';
-        }),
+        find.byWidgetPredicate(
+          (w) => w is CulturalArt && w.building && w.index == 0,
+        ),
         findsOneWidget,
       );
       selected = null;

@@ -1,3 +1,4 @@
+import 'cultural_rewards.dart';
 import 'city_growth.dart';
 import 'city_placement.dart';
 export 'city_placement.dart';
@@ -9,6 +10,8 @@ export 'company_catalog.dart';
 class PlayerState {
   static const _limit = 1000000000;
   final int cash;
+  final int cityStage;
+  final CulturalRewards rewards;
   final Map<String, int> holdings, prices;
   final Set<int> completed, answered;
   final Set<String> companyCards;
@@ -21,6 +24,8 @@ class PlayerState {
 
   PlayerState._({
     required this.cash,
+    this.cityStage = 0,
+    CulturalRewards? rewards,
     required Map<String, int> holdings,
     required Map<String, int> prices,
     required Set<int> completed,
@@ -33,7 +38,8 @@ class PlayerState {
     required this.marketDropped,
     required this.dividendPaid,
     required List<String> history,
-  }) : holdings = Map.unmodifiable(holdings),
+  }) : rewards = rewards ?? CulturalRewards(),
+       holdings = Map.unmodifiable(holdings),
        prices = Map.unmodifiable(prices),
        completed = Set.unmodifiable(completed),
        answered = Set.unmodifiable(answered),
@@ -71,6 +77,7 @@ class PlayerState {
 
   PlayerState _change({
     int? cash,
+    CulturalRewards? rewards,
     Map<String, int>? holdings,
     Map<String, int>? prices,
     Set<int>? completed,
@@ -91,6 +98,8 @@ class PlayerState {
     }
     return PlayerState._(
       cash: nextCash,
+      cityStage: cityTier,
+      rewards: rewards ?? this.rewards,
       holdings: holdings ?? this.holdings,
       prices: prices ?? this.prices,
       completed: completed ?? this.completed,
@@ -106,7 +115,7 @@ class PlayerState {
     );
   }
 
-  PlayerState completeLevel(int level) {
+  PlayerState completeLevel(int level, {bool flawless = false}) {
     if (level < 0 || level >= stageCount) {
       throw ArgumentError('Leçon inconnue.');
     }
@@ -116,6 +125,7 @@ class PlayerState {
     }
     return _change(
       cash: cash + 1500,
+      rewards: rewards.puzzle(level, flawless),
       completed: {...completed, level},
       message: 'Puzzle ${level + 1} : +1 500 FCFA-jeu.',
     );
@@ -128,9 +138,67 @@ class PlayerState {
     if (answered.contains(level)) return this;
     return _change(
       answered: {...answered, level},
+      rewards: rewards.quiz('lesson:$level', true, campaignLevel: level),
       message: 'Notion ${level + 1} comprise.',
     );
   }
+
+  PlayerState startPuzzle(int level) {
+    if (level < 0 ||
+        level >= stageCount ||
+        level != unlockedLevel ||
+        completed.contains(level)) {
+      return this;
+    }
+    return _change(
+      rewards: rewards.start(level),
+      message: 'Tentative puzzle ${level + 1} démarrée.',
+    );
+  }
+
+  PlayerState recordQuizAttempt(String id, bool correct) {
+    if (!RegExp(r'^(lesson:\d+|journey:\d+|knowledge:practical-brvm-\d+)$')
+        .hasMatch(id)) {
+      throw ArgumentError('Quiz inconnu.');
+    }
+    // Campaign and journey success is recorded atomically with progression.
+    if (correct && !id.startsWith('knowledge:')) return this;
+    final r = rewards.quiz(
+      id,
+      correct,
+      campaignLevel: id.startsWith('lesson:')
+          ? int.parse(id.split(':').last)
+          : null,
+    );
+    if (identical(r, rewards)) return this;
+    return _change(
+      rewards: r,
+      message: correct ? 'Quiz réussi au premier essai.' : 'Une erreur : la série de quiz repart à zéro, tes acquis restent conservés.',
+    );
+  }
+
+  PlayerState collectReward(int id) {
+    final grant = rewards.pending.where((r) => r.id == id).firstOrNull;
+    if (grant == null) throw StateError('Récompense déjà collectée.');
+    return _change(
+      cash: cash + grant.value,
+      rewards: rewards.collect(id),
+      message: 'COLLECTER : ${grant.label}, +${grant.value} F jeu.',
+    );
+  }
+
+  int get pacoScore =>
+      answered.length * 100 +
+      journeyAnswers.length * 25 +
+      rewards.seen.where((id) => id.startsWith('knowledge:')).length * 20;
+  int get cityTier =>
+      _currentCityTier > cityStage ? _currentCityTier : cityStage;
+  int get _currentCityTier =>
+      earnedRewards >= 15000 && pacoScore >= 1000 && holdingsValue >= 10000
+      ? 2
+      : earnedRewards >= 4500 && pacoScore >= 300 && holdingsValue >= 1500
+      ? 1
+      : 0;
 
   int _fee(int amount) => (amount + 99) ~/ 100 < 25 ? 25 : (amount + 99) ~/ 100;
   void _checkTrade(String id) {
@@ -221,7 +289,11 @@ class PlayerState {
   }
 
   int get earnedRewards =>
-      completed.length * 1500 + journeyAnswers.length * 300;
+      completed.length * 1500 +
+      journeyAnswers.length * 300 +
+      rewards.colas * 500 +
+      rewards.cauris * 1000 +
+      rewards.gold * 2000;
 
   PlayerState answerJourney(int cityIndex, int questionIndex) {
     if (cityIndex < 0 ||
@@ -242,6 +314,7 @@ class PlayerState {
     }
     return _change(
       cash: cash + 300,
+      rewards: rewards.quiz('journey:$key', true),
       journeyAnswers: {...journeyAnswers, key},
       message:
           'Voyage ${cityIndex + 1}, notion ${questionIndex + 1} : +300 FCFA-jeu.',
@@ -294,7 +367,9 @@ class PlayerState {
   }
 
   Map<String, dynamic> toJson() => {
-    'version': 6,
+    'version': 7,
+    'cityStage': cityTier,
+    'culturalRewards': rewards.toJson(),
     'placements': {for (final e in placements.entries) e.key: e.value.toJson()},
     'ownedPlots': ownedPlots.toList()..sort(),
     'townBuildings': Map<String, String>.from(townBuildings),
@@ -317,7 +392,8 @@ class PlayerState {
               raw['version'] != 3 &&
               raw['version'] != 4 &&
               raw['version'] != 5 &&
-              raw['version'] != 6) ||
+              raw['version'] != 6 &&
+              raw['version'] != 7) ||
           raw['cash'] is! int ||
           raw['cash'] < 0 ||
           raw['cash'] > _limit ||
@@ -438,7 +514,26 @@ class PlayerState {
           throw const FormatException();
         }
       }
-      final earned = completed.length * 1500 + journey.length * 300;
+      final rewardState = raw['version'] >= 7
+          ? CulturalRewards.fromJson(raw['culturalRewards'])
+          : CulturalRewards(
+              seen: {
+                ...answered.map((n) => 'lesson:$n'),
+                ...journey.map((n) => 'journey:$n'),
+              },
+            );
+      if (raw['version'] >= 7 &&
+          (raw['cityStage'] is! int ||
+              raw['cityStage'] < 0 ||
+              raw['cityStage'] > 2)) {
+        throw const FormatException();
+      }
+      final earned =
+          completed.length * 1500 +
+          journey.length * 300 +
+          rewardState.colas * 500 +
+          rewardState.cauris * 1000 +
+          rewardState.gold * 2000;
       if (lands.any((l) => plots.contains(l.id) && earned < l.requiredGains)) {
         throw const FormatException();
       }
@@ -459,6 +554,8 @@ class PlayerState {
       }
       return PlayerState._(
         cash: raw['cash'] as int,
+        cityStage: raw['version'] >= 7 ? raw['cityStage'] as int : 0,
+        rewards: rewardState,
         holdings: holdings,
         prices: prices,
         completed: completed,

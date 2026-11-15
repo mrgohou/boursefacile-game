@@ -53,7 +53,7 @@ void main() {
     expect(migrated.completed, {0});
     expect(migrated.ownedPlots, isEmpty);
     expect(migrated.journeyAnswers, isEmpty);
-    expect(migrated.toJson()['version'], 6);
+    expect(migrated.toJson()['version'], 7);
   });
   test('invalid expansion data and insufficient budget are rejected', () {
     final s = PlayerState.initial().completeLevel(0);
@@ -103,7 +103,7 @@ void main() {
         s = s.answerJourney(city, q);
       }
     }
-    for (final l in lands) {
+    for (final l in lands.take(6)) {
       s = s.buyLand(l.id).construct(l.id, 'services');
     }
     expect(s.ownedPlots.length, 6);

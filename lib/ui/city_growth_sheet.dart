@@ -1,3 +1,6 @@
+import '../domain/cultural_catalog.dart';
+import 'cultural_art.dart';
+
 import 'package:material_ui/material_ui.dart';
 
 import '../domain/city_growth.dart';
@@ -31,6 +34,13 @@ class CityGrowthSheet extends StatelessWidget {
       const Text(
         'Les puzzles et le Voyage de Paco débloquent les quartiers. Terrain et construction se paient séparément. Ces bâtiments restent à toi ; ils ne rapportent pas de revenu automatique et ne sont pas des actions.',
       ),
+      const SizedBox(height: 12),
+      Text(
+        'Développement : ${cityTiers[state.cityTier]} · score PACO ${state.pacoScore}',
+      ),
+      const Text(
+        'Ville en essor : 4 500 F de gains, score PACO 300 et 1 500 F investis. Moderne : 15 000 F de gains, score PACO 1 000 et 10 000 F investis. Le stade est commun à tes villes ; un stade débloqué reste acquis après une vente.',
+      ),
       const SizedBox(height: 20),
       for (var i = 0; i < lands.length; i++) _land(context, lands[i], i),
     ],
@@ -49,7 +59,10 @@ class CityGrowthSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(land.name, style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                '${land.name} · ${cityCountries[cityCountryIndex(land.id)]}',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               Text(
                 owned
                     ? 'Terrain acquis'
@@ -71,10 +84,10 @@ class CityGrowthSheet extends StatelessWidget {
                   label: const Text('Acheter le terrain'),
                 ),
               ] else if (type != null) ...[
-                Image.asset(
-                  'assets/buildings/${townBuildingTypes.firstWhere((b) => b.id == type).asset}.webp',
-                  height: 110,
-                  excludeFromSemantics: true,
+                CulturalArt(
+                  index: cityBuildingFrame(land.id, state.cityTier),
+                  building: true,
+                  size: 110,
                 ),
                 Text(
                   townBuildingTypes.firstWhere((b) => b.id == type).name,

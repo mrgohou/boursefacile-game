@@ -1,3 +1,6 @@
+import 'fabric_ribbon.dart';
+import '../domain/cultural_catalog.dart';
+
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -19,6 +22,8 @@ class PuzzlePage extends StatefulWidget {
     required this.level,
     this.audio,
     this.onCompleted,
+    this.onStart,
+    this.onQuality,
     this.now,
     this.mastery = 0,
     this.onFinished,
@@ -29,6 +34,8 @@ class PuzzlePage extends StatefulWidget {
   final DateTime Function()? now;
   final GameAudio? audio;
   final Future<bool> Function()? onCompleted;
+  final Future<bool> Function()? onStart;
+  final ValueChanged<bool>? onQuality;
   @override
   State<PuzzlePage> createState() => _PuzzlePageState();
 }
@@ -44,6 +51,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
   int _lastShown = 0;
   late PuzzleClock clock;
   Timer? _timer;
+  bool _starting = false;
   bool _started = false, _instructionOpen = false, _resultOpen = false;
   bool _timedOut = false;
   final _dialogRevision = ValueNotifier<int>(0);
@@ -116,6 +124,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
         game!.engine.target,
       );
     }
+    widget.onQuality?.call(success && game!.engine.invalidMoves == 0);
     widget.onFinished?.call(
       success,
       clock.seconds - clock.remaining,
@@ -127,7 +136,21 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
   }
 
   Future<void> startRound() async {
-    if (!mounted || won || lost || _started) return;
+    if (!mounted || won || lost || _started || _starting) return;
+    _starting = true;
+    final saved = await widget.onStart?.call() ?? true;
+    _starting = false;
+    if (!mounted) return;
+    if (!saved) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Démarrage non enregistré. Ouvre la consigne pour réessayer.',
+          ),
+        ),
+      );
+      return;
+    }
     if (!game!.isLoaded) await game!.loaded;
     if (!mounted || won || lost) return;
     setState(() {
@@ -369,7 +392,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
               onPressed: () {
                 _instructionOpen = false;
                 Navigator.pop(dc, true);
-                if (initial) unawaited(startRound());
+                if (initial || !_started) unawaited(startRound());
               },
               child: Text(initial ? 'C’est parti' : 'Reprendre'),
             ),
@@ -377,6 +400,17 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
         ),
       ),
     );
+  }
+
+  String tileDescription(int i) {
+    if (game!.engine.lockedCells.contains(i)) return 'Pion verrouillé';
+    final special = game!.engine.specials[i];
+    if (special != null) {
+      final token =
+          culturalTokens[specialTokenIndex(widget.level, special.index)];
+      return '${token.name}, ${culturalEffects[special.index]}';
+    }
+    return PacoGame.symbolNames[game!.tileType(i)];
   }
 
   Widget accessibleGrid() => ValueListenableBuilder<int>(
@@ -393,7 +427,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
                       button: true,
                       selected: game!.selectedTile == y * 9 + x,
                       label:
-                          'Ligne ${y + 1}, colonne ${x + 1}, ${PacoGame.symbolNames[game!.tileType(y * 9 + x)]}${game!.isHinted(y * 9 + x) ? ', indice' : ''}',
+                          'Ligne ${y + 1}, colonne ${x + 1}, ${tileDescription(y * 9 + x)}${game!.isHinted(y * 9 + x) ? ', indice' : ''}',
                       onTap: !_started || won || lost || game!.isAnimating
                           ? null
                           : () => game!.selectTile(y * 9 + x),
@@ -456,6 +490,8 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
       );
       return Column(
         children: [
+          FabricRibbon(pattern: widget.level % 5),
+          const SizedBox(height: 8),
           SingleChildScrollView(
             controller: _boardScroll,
             physics: const NeverScrollableScrollPhysics(),
@@ -680,7 +716,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
           builder: (context, _, child) => Padding(
             padding: const EdgeInsets.all(8),
             child: Text(
-              game!.engine.progress.join(' · '),
+              '${fabricNames[widget.level % 5]} · ${game!.engine.progress.join(' · ')}',
               style: const TextStyle(fontWeight: FontWeight.w800),
             ),
           ),

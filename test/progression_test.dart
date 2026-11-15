@@ -76,7 +76,7 @@ void main() {
       final next = restored.completeLevel(6).answerLesson(6);
       expect(next.cash, 20500);
       expect(next.unlockedLevel, 7);
-      expect(next.toJson()['version'], 6);
+      expect(next.toJson()['version'], 7);
       expect(PlayerState.fromJson(next.toJson()).toJson(), next.toJson());
       expect(
         () => PlayerState.fromJson({...next.toJson(), 'version': 3}),

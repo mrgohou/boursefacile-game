@@ -1,3 +1,6 @@
+import 'cultural_art.dart';
+import 'reward_dialog.dart';
+
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -9,6 +12,7 @@ import '../data/learning_repository.dart';
 import '../domain/learning_director.dart';
 import '../data/player_repository.dart';
 import '../domain/lessons.dart';
+import '../domain/cultural_catalog.dart';
 import '../domain/player_state.dart';
 import 'city_map.dart';
 import 'loading_screen.dart';
@@ -175,10 +179,13 @@ class _PacoHomeState extends State<PacoHome> {
     await widget.audio.setScene('puzzle');
     if (!mounted) return;
     var completedThisRun = false;
+    var flawless = false;
     final won = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => PuzzlePage(
           level: index,
+          onStart: () => change((s) => s.startPuzzle(index)),
+          onQuality: (v) => flawless = v,
           mastery: learning.mastery,
           onFinished: (won, seconds, moves) => remember(
             learning.recordRound(
@@ -190,7 +197,9 @@ class _PacoHomeState extends State<PacoHome> {
           ),
           audio: widget.audio,
           onCompleted: () async {
-            completedThisRun = await change((s) => s.completeLevel(index));
+            completedThisRun = await change(
+              (s) => s.completeLevel(index, flawless: flawless),
+            );
             return completedThisRun;
           },
         ),
@@ -198,7 +207,8 @@ class _PacoHomeState extends State<PacoHome> {
     );
     unawaited(widget.audio.setScene('city'));
     if (!mounted || won == false || (won != true && !completedThisRun)) return;
-    if (completedThisRun || await change((s) => s.completeLevel(index))) {
+    if (completedThisRun ||
+        await change((s) => s.completeLevel(index, flawless: flawless))) {
       if (mounted) await quiz(index);
     }
   }
@@ -210,6 +220,8 @@ class _PacoHomeState extends State<PacoHome> {
       useSafeArea: true,
       builder: (_) => QuizSheet(
         index: index,
+        onRecordedAttempt: (correct) =>
+            change((s) => s.recordQuizAttempt('lesson:$index', correct)),
         onAttempt: (correct) => remember(
           learning.recordQuiz(topic: lessons[index].topic, correct: correct),
         ),
@@ -220,6 +232,33 @@ class _PacoHomeState extends State<PacoHome> {
         },
       ),
     );
+    if (mounted) await collectRewards();
+  }
+
+  bool _collecting = false;
+  Future<void> collectRewards() async {
+    if (_collecting || !mounted) return;
+    _collecting = true;
+    try {
+      while (mounted && controller.state.rewards.pending.isNotEmpty) {
+        final r = controller.state.rewards.pending.first;
+        final collected = await showDialog<bool>(
+          barrierDismissible: false,
+          context: context,
+          builder: (_) => RewardDialog(
+            reward: r,
+            onCollect: () async {
+              final ok = await change((s) => s.collectReward(r.id));
+              if (ok) widget.audio.play('win');
+              return ok;
+            },
+          ),
+        );
+        if (collected != true) break;
+      }
+    } finally {
+      _collecting = false;
+    }
   }
 
   Future<void> sheet(Widget Function(BuildContext, PlayerState) builder) async {
@@ -384,8 +423,13 @@ class _PacoHomeState extends State<PacoHome> {
       MaterialPageRoute<void>(
         builder: (_) => CompanionPage(
           controller: controller,
+          onAttempt: (city, question, correct) => change(
+            (s) =>
+                s.recordQuizAttempt('journey:${city * 3 + question}', correct),
+          ),
           onAnswer: (city, question) =>
               change((s) => s.answerJourney(city, question)),
+          onClosedQuestion: collectRewards,
         ),
       ),
     ),
@@ -421,6 +465,39 @@ class _PacoHomeState extends State<PacoHome> {
               ),
             const Divider(),
             ListTile(
+              title: const Text('Récompenses à collecter'),
+              subtitle: Text(
+                '${s.rewards.pending.length} en attente · ${s.rewards.quizStreak} quiz · ${s.rewards.levelStreak} niveaux sans faute',
+              ),
+              leading: const Icon(Icons.redeem),
+              onTap: () {
+                Navigator.pop(sc);
+                unawaited(collectRewards());
+              },
+            ),
+            ListTile(
+              title: const Text('Mes trésors'),
+              subtitle: Text(
+                '${s.rewards.colas} colas · ${s.rewards.cauris} cauris · ${s.rewards.gold} pièces d’or · ${s.rewards.crosses} croix d’Agadez',
+              ),
+              onTap: () {
+                Navigator.pop(sc);
+                Navigator.of(context).push<void>(
+                  MaterialPageRoute(builder: (_) => const CulturalGuide()),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Villes BRVM · progression'),
+              subtitle: Text(
+                '${cityTiers[s.cityTier]} · score PACO ${s.pacoScore} · ${s.ownedPlots.length + 1}/32 villes',
+              ),
+              onTap: () {
+                Navigator.pop(sc);
+                growCity();
+              },
+            ),
+            ListTile(
               title: const Text('Base de connaissances · 40 exercices'),
               subtitle: Text('Paco te propose : ${learning.recommendedTopic}'),
               onTap: () {
@@ -429,6 +506,10 @@ class _PacoHomeState extends State<PacoHome> {
                   MaterialPageRoute(
                     builder: (_) => KnowledgePage(
                       topic: learning.recommendedTopic,
+                      onRecordedAttempt: (id, correct) => change(
+                        (s) => s.recordQuizAttempt('knowledge:$id', correct),
+                      ),
+                      onClosedQuestion: collectRewards,
                       onAttempt: (topic, correct) => remember(
                         learning.recordQuiz(topic: topic, correct: correct),
                       ),
@@ -1022,10 +1103,12 @@ class QuizSheet extends StatefulWidget {
     required this.index,
     required this.onAnswer,
     this.onAttempt,
+    this.onRecordedAttempt,
   });
   final int index;
   final Future<bool> Function() onAnswer;
   final ValueChanged<bool>? onAttempt;
+  final Future<bool> Function(bool)? onRecordedAttempt;
   @override
   State<QuizSheet> createState() => _QuizSheetState();
 }
@@ -1106,6 +1189,15 @@ class _QuizSheetState extends State<QuizSheet> {
               onPressed: selected == null || saving
                   ? null
                   : () async {
+                      setState(() => saving = true);
+                      final recorded =
+                          await widget.onRecordedAttempt?.call(
+                            selected == l.answer,
+                          ) ??
+                          true;
+                      if (!mounted) return;
+                      setState(() => saving = false);
+                      if (!recorded) return;
                       widget.onAttempt?.call(selected == l.answer);
                       if (selected != l.answer) {
                         setState(() => submitted = true);
@@ -1125,7 +1217,7 @@ class _QuizSheetState extends State<QuizSheet> {
             ),
           const SizedBox(height: 12),
           const Text(
-            'Tu peux réessayer sans pénalité. La bonne réponse débloque l’étape suivante.',
+            'Tu gardes tes acquis. Une erreur rompt la série sans faute ; la bonne réponse débloque l’étape suivante.',
           ),
         ],
       ),

@@ -24,6 +24,5 @@ class CityPlacement {
   String get siteKey => '$landId:$cell';
 }
 
-String cityName(String id) => id == baseCityId
-    ? 'Ville centrale'
-    : lands.firstWhere((l) => l.id == id).name;
+String cityName(String id) =>
+    id == baseCityId ? 'Abidjan' : lands.firstWhere((l) => l.id == id).name;

@@ -1,3 +1,5 @@
+import '../domain/cultural_catalog.dart';
+
 import 'dart:math' as math;
 
 import 'package:flame/components.dart';
@@ -51,6 +53,7 @@ class PacoGame extends FlameGame {
     'engrenage',
   ];
   final List<Sprite> _sprites = [];
+  final List<Sprite> _culturalSprites = [];
   final List<_Cell> _cells = [];
   late List<int> _visible;
   List<int> get visibleBoard => List.unmodifiable(List.generate(81, tileType));
@@ -99,9 +102,27 @@ class PacoGame extends FlameGame {
       'tiles/bidon.webp',
       'tiles/ampoule.webp',
       'tiles/engrenage.webp',
+      'culture/pions-atlas.png',
     ]);
     if (_removed) return;
-    _sprites.addAll(textures.map(Sprite.new));
+    _sprites.addAll(textures.take(6).map(Sprite.new));
+    final atlas = textures.last;
+    for (var i = 0; i < 20; i++) {
+      final frame = culturalAtlasFrames[i];
+      _culturalSprites.add(
+        Sprite(
+          atlas,
+          srcPosition: Vector2(
+            frame.$1 / 1122 * atlas.width,
+            frame.$2 / 1402 * atlas.height,
+          ),
+          srcSize: Vector2(
+            frame.$3 / 1122 * atlas.width,
+            frame.$4 / 1402 * atlas.height,
+          ),
+        ),
+      );
+    }
     for (var i = 0; i < 81; i++) {
       if (_removed) return;
       final cell = _Cell(this, i);
@@ -268,7 +289,17 @@ class PacoGame extends FlameGame {
         ),
         Radius.circular(_unit * .18),
       );
-      canvas.drawRRect(r, Paint()..color = const Color(0xFF624C86));
+      canvas.drawRRect(
+        r,
+        Paint()
+          ..color = HSLColor.fromAHSL(
+            1,
+            (engine.challenge.themeIndex * 47.0 + 265) % 360,
+            .30,
+            .28,
+          ).toColor(),
+      );
+      _fabric(canvas, r.outerRect, i);
     }
     if (!isAnimating) {
       for (final i in engine.lockedCells) {
@@ -370,6 +401,46 @@ class PacoGame extends FlameGame {
     final locks = s?.lockedCells ?? engine.lockedCells;
     final specialPieces = s?.specials ?? engine.specials;
     for (final i in {...locks, ...specialPieces.keys}) {
+      if (!locks.contains(i) && _culturalSprites.isNotEmpty) {
+        final type = specialPieces[i]!.index;
+        final sprite =
+            _culturalSprites[specialTokenIndex(
+              engine.challenge.themeIndex,
+              type,
+            )];
+        final p = _position(i);
+        canvas.save();
+        canvas.clipRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromLTWH(p.dx + 3, p.dy + 3, _unit - 6, _unit - 6),
+            Radius.circular(_unit * .18),
+          ),
+        );
+        sprite.render(
+          canvas,
+          position: Vector2(p.dx + 3, p.dy + 3),
+          size: Vector2.all(_unit - 6),
+        );
+        canvas.restore();
+        final effect = TextPainter(
+          text: TextSpan(
+            text: '${type + 1}',
+            style: TextStyle(
+              fontSize: _unit * .22,
+              fontWeight: FontWeight.w900,
+              color: const Color(0xFF182B40),
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
+        canvas.drawCircle(
+          p + Offset(_unit * .8, _unit * .8),
+          _unit * .15,
+          Paint()..color = const Color(0xFFFFD86A),
+        );
+        effect.paint(canvas, p + Offset(_unit * .75, _unit * .65));
+        continue;
+      }
       final IconData symbol = locks.contains(i)
           ? Icons.lock
           : switch (specialPieces[i]!.name) {
@@ -400,6 +471,49 @@ class PacoGame extends FlameGame {
         Paint()..color = const Color(0xD92A354B),
       );
       text.paint(canvas, pos);
+    }
+    canvas.restore();
+  }
+
+  void _fabric(Canvas canvas, Rect rect, int cell) {
+    final style = engine.challenge.themeIndex % 5;
+    final ink = Paint()
+      ..color = const Color(0xFFEDD6A4).withValues(alpha: .30)
+      ..strokeWidth = 1.4
+      ..style = PaintingStyle.stroke;
+    canvas.save();
+    canvas.clipRect(rect);
+    final x = rect.center.dx, y = rect.center.dy, u = rect.width;
+    if (style == 0 || style == 3) {
+      final path = Path()
+        ..moveTo(x, rect.top)
+        ..lineTo(rect.right, y)
+        ..lineTo(x, rect.bottom)
+        ..lineTo(rect.left, y)
+        ..close();
+      canvas.drawPath(path, ink);
+      if (style == 3) canvas.drawCircle(rect.center, u * .18, ink);
+    } else if (style == 1) {
+      for (var j = 0; j < 3; j++) {
+        canvas.drawCircle(
+          Offset(rect.left + u * (j + .5) / 3, y),
+          u * .045,
+          ink,
+        );
+      }
+      canvas.drawLine(rect.topLeft, rect.bottomRight, ink);
+      canvas.drawLine(rect.topRight, rect.bottomLeft, ink);
+    } else if (style == 2) {
+      for (var j = 0; j < 5; j++) {
+        final dx = rect.left + u * j / 4;
+        canvas.drawLine(Offset(dx, rect.top), Offset(dx, rect.bottom), ink);
+      }
+    } else {
+      for (var j = 0; j < 4; j++) {
+        final dy = rect.top + u * j / 3;
+        canvas.drawLine(Offset(rect.left, dy), Offset(rect.right, dy), ink);
+      }
+      canvas.drawRect(rect.deflate(u * .18), ink);
     }
     canvas.restore();
   }
