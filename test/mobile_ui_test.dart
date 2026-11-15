@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:paco_bourse/audio/game_audio.dart';
 import 'package:paco_bourse/data/player_repository.dart';
 import 'package:paco_bourse/domain/player_state.dart';
+import 'package:paco_bourse/domain/lessons.dart';
 import 'package:paco_bourse/ui/city_map.dart';
 import 'package:paco_bourse/ui/paco_app.dart';
 
@@ -23,6 +24,42 @@ void motionOff(WidgetTester tester) {
 }
 
 void main() {
+  testWidgets(
+    'pragmatic quiz only unlocks progression after the correct answer',
+    (tester) async {
+      motionOff(tester);
+      final repo = TestRepository()
+        ..value = PlayerState.initial().completeLevel(0);
+      await tester.pumpWidget(
+        PacoApp(repository: repo, audio: SilentGameAudio()),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Jouer'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('1'));
+      await tester.pumpAndSettle();
+      final lesson = lessons[0];
+      final wrong = (lesson.answer + 1) % lesson.options.length;
+      await tester.ensureVisible(find.text(lesson.options[wrong]));
+      await tester.tap(find.text(lesson.options[wrong]));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Vérifier ma réponse'));
+      await tester.tap(find.text('Vérifier ma réponse'));
+      await tester.pumpAndSettle();
+      expect(repo.value.answered, isEmpty);
+      await tester.ensureVisible(find.text(lesson.options[lesson.answer]));
+      await tester.tap(find.text(lesson.options[lesson.answer]));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Vérifier ma réponse'));
+      await tester.tap(find.text('Vérifier ma réponse'));
+      await tester.pumpAndSettle();
+      expect(repo.value.answered, {0});
+      expect(repo.value.unlockedLevel, 1);
+      expect(repo.value.cash, 11500);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('owned shares expose distinct buy-more and sell buttons', (
     tester,
   ) async {
@@ -247,7 +284,7 @@ void main() {
     expect(repo.value.companyCards, contains('cacao'));
     await tester.tap(find.byTooltip('Fermer'));
     await tester.pumpAndSettle();
-    expect(find.text('Agro\n1 part'), findsOneWidget);
+    expect(find.text('Agroalimentaire\n1 part'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

@@ -9,7 +9,7 @@ import 'package:paco_bourse/ui/clay_heading.dart';
 
 void main() {
   test('difficulty budgets and deadline start are explicit', () {
-    expect(List.generate(6, puzzleSeconds), [60, 60, 70, 75, 75, 90]);
+    expect(List.generate(6, puzzleSeconds), [120, 120, 120, 180, 120, 180]);
     var now = DateTime.utc(2026);
     final clock = PuzzleClock(60, now: () => now);
     now = now.add(const Duration(hours: 1));
@@ -61,7 +61,7 @@ void main() {
       await tester.tap(find.text('C’est parti'));
       await tester.pump();
       expect(game.inputEnabled, isTrue);
-      now = now.add(const Duration(seconds: 60));
+      now = now.add(Duration(seconds: puzzleSeconds(0)));
       game.selectTile(hint[0]);
       game.selectTile(hint[1]);
       expect(game.engine.moves, moves);
@@ -132,7 +132,7 @@ void main() {
       game.selectTile(pair[0]);
       game.selectTile(pair[1]);
       expect(game.engine.won, isTrue);
-      now = now.add(const Duration(seconds: 60));
+      now = now.add(Duration(seconds: puzzleSeconds(0)));
       await tester.pump(const Duration(milliseconds: 300));
       await tester.pumpAndSettle();
       expect(find.bySemanticsLabel('GAGNE'), findsOneWidget);

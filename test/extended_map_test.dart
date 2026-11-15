@@ -1,4 +1,7 @@
 import 'dart:io';
+
+import 'package:paco_bourse/domain/challenge_catalog.dart';
+
 import 'dart:ui' as ui;
 
 import 'package:flame/game.dart';
@@ -77,8 +80,8 @@ void main() {
     final game = tester
         .widget<GameWidget<PacoGame>>(find.byType(GameWidget<PacoGame>))
         .game!;
-    expect(game.engine.target, 1670);
-    expect(game.engine.moves, 19);
+    expect(game.engine.target, challengeFor(29).score);
+    expect(game.engine.moves, challengeFor(29).moves);
     await capture('flutter-stage-30');
     expect(repo.value.cash, 53500);
     expect(tester.takeException(), isNull);

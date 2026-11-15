@@ -5,10 +5,15 @@ import 'package:material_ui/material_ui.dart';
 
 import '../audio/game_audio.dart';
 import '../data/player_controller.dart';
+import '../data/learning_repository.dart';
+import '../domain/learning_director.dart';
 import '../data/player_repository.dart';
 import '../domain/lessons.dart';
 import '../domain/player_state.dart';
 import 'city_map.dart';
+import 'loading_screen.dart';
+import 'knowledge_page.dart';
+import 'city_placement_sheet.dart';
 import 'market_list.dart';
 import 'city_growth_sheet.dart';
 import 'companion_page.dart';
@@ -78,12 +83,49 @@ class _PacoHomeState extends State<PacoHome> {
   late final PlayerController controller;
   late final Listenable updates;
   String? focusLand;
+  final learningStore = LearningRepository();
+  LearningProfile learning = LearningProfile();
+  Future<void> learningWrites = Future.value();
+  void remember(LearningProfile profile) {
+    learning = profile;
+    learningWrites = learningWrites.then((_) async {
+      await learningStore.save(profile);
+    });
+  }
+
+  Future<void> practice() async {
+    await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => PuzzlePage(
+          level: learning.nextPracticeLevel,
+          mastery: learning.mastery,
+          audio: widget.audio,
+          onCompleted: () async => true,
+          onFinished: (won, seconds, moves) => remember(
+            learning.recordRound(
+              level: learning.nextPracticeLevel,
+              won: won,
+              elapsedSeconds: seconds,
+              remainingMoves: moves,
+            ),
+          ),
+        ),
+      ),
+    );
+    unawaited(widget.audio.setScene('city'));
+  }
+
   @override
   void initState() {
     super.initState();
     controller = PlayerController(widget.repository);
     updates = Listenable.merge([controller, widget.audio]);
     unawaited(controller.load());
+    unawaited(
+      learningStore.load().then((value) {
+        if (mounted) learning = value;
+      }),
+    );
     unawaited(widget.audio.setScene('city'));
   }
 
@@ -137,6 +179,15 @@ class _PacoHomeState extends State<PacoHome> {
       MaterialPageRoute(
         builder: (_) => PuzzlePage(
           level: index,
+          mastery: learning.mastery,
+          onFinished: (won, seconds, moves) => remember(
+            learning.recordRound(
+              level: index,
+              won: won,
+              elapsedSeconds: seconds,
+              remainingMoves: moves,
+            ),
+          ),
           audio: widget.audio,
           onCompleted: () async {
             completedThisRun = await change((s) => s.completeLevel(index));
@@ -159,6 +210,9 @@ class _PacoHomeState extends State<PacoHome> {
       useSafeArea: true,
       builder: (_) => QuizSheet(
         index: index,
+        onAttempt: (correct) => remember(
+          learning.recordQuiz(topic: lessons[index].topic, correct: correct),
+        ),
         onAnswer: () async {
           final ok = await change((s) => s.answerLesson(index));
           if (ok) widget.audio.play('ui');
@@ -367,6 +421,43 @@ class _PacoHomeState extends State<PacoHome> {
               ),
             const Divider(),
             ListTile(
+              title: const Text('Base de connaissances · 40 exercices'),
+              subtitle: Text('Paco te propose : ${learning.recommendedTopic}'),
+              onTap: () {
+                Navigator.pop(sc);
+                Navigator.of(context).push<void>(
+                  MaterialPageRoute(
+                    builder: (_) => KnowledgePage(
+                      topic: learning.recommendedTopic,
+                      onAttempt: (topic, correct) => remember(
+                        learning.recordQuiz(topic: topic, correct: correct),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Défi adaptatif · entraînement'),
+              subtitle: Text(
+                '${learning.explanation} Sans récompense économique supplémentaire.',
+              ),
+              onTap: () {
+                Navigator.pop(sc);
+                unawaited(practice());
+              },
+            ),
+            ListTile(
+              title: const Text('Effacer le suivi pédagogique local'),
+              subtitle: const Text(
+                'Ne modifie ni les acquis ni le portefeuille.',
+              ),
+              onTap: () {
+                remember(LearningProfile());
+                Navigator.pop(sc);
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.add_location_alt_outlined),
               title: const Text('Agrandir ma ville'),
               onTap: () {
@@ -489,6 +580,13 @@ class _PacoHomeState extends State<PacoHome> {
                   ? () async {
                       if (await change((s) => s.buy(id))) {
                         widget.audio.play('win');
+                        remember(
+                          learning.recordTrade(
+                            companyId: id,
+                            family: c.family,
+                            buy: true,
+                          ),
+                        );
                         message(
                           'Une part acquise ! Retrouve-la dans Mes propriétés.',
                         );
@@ -509,7 +607,17 @@ class _PacoHomeState extends State<PacoHome> {
               ),
               icon: const Icon(Icons.sell_outlined),
               onPressed: can && held > 0
-                  ? () => change((s) => s.sell(id))
+                  ? () async {
+                      if (await change((s) => s.sell(id))) {
+                        remember(
+                          learning.recordTrade(
+                            companyId: id,
+                            family: c.family,
+                            buy: false,
+                          ),
+                        );
+                      }
+                    }
                   : null,
               label: const Text('Vendre'),
             ),
@@ -536,6 +644,19 @@ class _PacoHomeState extends State<PacoHome> {
                   child: const Text('Découvrir les actions'),
                 ),
               ],
+            ),
+          ),
+        if (held > 0)
+          OutlinedButton.icon(
+            icon: const Icon(Icons.add_location_alt),
+            label: const Text('Placer ou déplacer dans ma ville'),
+            onPressed: () => sheet(
+              (sc, state) => CityPlacementSheet(
+                state: state,
+                companyId: id,
+                onPlace: (land, cell) =>
+                    change((current) => current.placeCompany(id, land, cell)),
+              ),
             ),
           ),
         const SizedBox(height: 20),
@@ -628,7 +749,7 @@ class _PacoHomeState extends State<PacoHome> {
       return Scaffold(
         backgroundColor: const Color(0xFFDDECCE),
         body: controller.loading
-            ? const Center(child: CircularProgressIndicator())
+            ? const PacoLoadingScreen()
             : controller.error != null
             ? SafeArea(
                 child: Center(
@@ -896,9 +1017,15 @@ class _PacoHomeState extends State<PacoHome> {
 }
 
 class QuizSheet extends StatefulWidget {
-  const QuizSheet({super.key, required this.index, required this.onAnswer});
+  const QuizSheet({
+    super.key,
+    required this.index,
+    required this.onAnswer,
+    this.onAttempt,
+  });
   final int index;
   final Future<bool> Function() onAnswer;
+  final ValueChanged<bool>? onAttempt;
   @override
   State<QuizSheet> createState() => _QuizSheetState();
 }
@@ -979,6 +1106,7 @@ class _QuizSheetState extends State<QuizSheet> {
               onPressed: selected == null || saving
                   ? null
                   : () async {
+                      widget.onAttempt?.call(selected == l.answer);
                       if (selected != l.answer) {
                         setState(() => submitted = true);
                         return;

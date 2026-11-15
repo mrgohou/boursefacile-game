@@ -33,11 +33,11 @@ Puzzles chronométrés (60 s, puis 70/75/90 s selon difficulté), consignes et r
 
 - Accueil sur une ville isométrique : déplacement et zoom tactiles, bâtiments acquis, routes, rivière, passants et véhicules animés.
 - Accès direct aux propriétés, cartes de collection permanentes, parcours de puzzles et guichet.
-- Trente puzzles 7×7 en Dart/Flame : glissement tactile ou deux taps, échanges animés, chutes, cascades, particules, indice et mélange.
+- Trente puzzles 9×9 en Dart/Flame : glissement tactile ou deux taps, échanges animés, chutes, cascades, particules, indice et mélange.
 - Deux musiques originales et neuf bruitages ; réglages indépendants et pause en arrière-plan.
 - Trente questions pédagogiques ; seule la réussite du puzzle et de sa question débloque l'étape suivante.
 - 45 entreprises du catalogue historique et trois titres pédagogiques, achats/ventes simulés, frais, baisse et démonstration de dividende.
-- Sauvegarde locale v5 compatible v1/v2/v3/v4 ; cartes conservées après vente, victoire enregistrée dès sa validation, remise à zéro confirmée.
+- Sauvegarde locale v6 compatible v1/v2/v3/v4/v5 ; cartes conservées après vente, victoire enregistrée dès sa validation, remise à zéro confirmée.
 - UI testée à 360 dp et à 320 dp avec texte à 200 %. Plateau avec cibles d'au moins 48 dp et actions sémantiques par tuile.
 
 **Le démarrage est explicitement une démo locale.** Pas de compte Firebase, synchronisation, argent réel ou classement. Les données locales ne constituent jamais une preuve de gain pour un serveur.
@@ -85,3 +85,9 @@ Les planches partagées dans la conversation définissent la direction : bâtime
 ## Marché 0.7.0
 
 Les 45 actions de l’archive du 13 novembre 2026 sont disponibles au guichet avec recherche par nom, symbole, secteur ou pays. Les cours sont repris sans modification comme valeurs de simulation en FCFA-jeu. Les cartes et positions des trois titres pédagogiques restent conservées. Voir [MARKET-0.7.md](docs/MARKET-0.7.md).
+
+## Refonte 0.8.0
+
+Plateau 9×9, défis réels (cadenas, récoltes, coups parfaits, spéciaux), placement libre des entreprises, quartiers de 16 sites, directeur pédagogique statistique local, 40 exercices pratiques et nouvelle icône de Paco. Les données de jeu restent locales. Voir [RELEASE-0.8.md](docs/RELEASE-0.8.md) pour les fonctions, contrôles et limites, et [ENGINE-OPTIONS.md](docs/ENGINE-OPTIONS.md) pour Godot / Construct / Unreal.
+
+![Chargement réel Flutter](docs/screenshots-0.8/loading.png)

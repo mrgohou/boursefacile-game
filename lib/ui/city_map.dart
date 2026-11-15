@@ -114,11 +114,7 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
 
   Widget _building(String id, Offset ground, String asset) {
     final company = companies.firstWhere((c) => c.id == id);
-    final shortSector = {
-      'cacao': 'Agro',
-      'telecom': 'Télécoms',
-      'banque': 'Banque',
-    }[id]!;
+    final shortSector = company.archived ? company.id : company.sector;
     final quantity = widget.state.holdings[id] ?? 0;
     final owned = quantity > 0;
     return Positioned(
@@ -205,6 +201,57 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
                     fontSize: 26,
                     color: Color(0xFF274C38),
                     fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _placedBuilding(String id) {
+    final place = widget.state.placements[id]!;
+    final company = companies.firstWhere((c) => c.id == id);
+    final origin = place.landId == baseCityId
+        ? const Offset(420, 760)
+        : (() {
+            final l = lands.firstWhere((l) => l.id == place.landId);
+            return Offset(l.x - 130, l.y - 65);
+          })();
+    final cell = place.cell;
+    final position = origin + Offset((cell % 4) * 82.0, (cell ~/ 4) * 58.0);
+    return Positioned(
+      key: ValueKey('placed-company-$id'),
+      left: position.dx - 45,
+      top: position.dy - 86,
+      width: 100,
+      height: 120,
+      child: Semantics(
+        button: true,
+        label:
+            '${company.name}, ${cityName(place.landId)}, emplacement ${cell + 1}. Ouvrir la fiche pour déplacer.',
+        excludeSemantics: true,
+        child: InkWell(
+          onTap: () => widget.onBuildingTap(id),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 76,
+                child: _asset('assets/buildings/${company.family}-1.webp', 100),
+              ),
+              Container(
+                padding: const EdgeInsets.all(3),
+                color: Colors.white,
+                child: Text(
+                  company.archived ? id : company.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF244C38),
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),
@@ -338,13 +385,19 @@ class _CityMapState extends State<CityMap> with SingleTickerProviderStateMixin {
                       ),
                       for (final land in lands) _district(land),
                       _hub(),
-                      _building(
-                        'telecom',
-                        const Offset(1000, 465),
-                        'telecom-1',
-                      ),
-                      _building('cacao', const Offset(480, 465), 'agro-1'),
-                      _building('banque', const Offset(755, 680), 'banque-1'),
+                      if (!widget.state.placements.containsKey('telecom'))
+                        _building(
+                          'telecom',
+                          const Offset(1000, 465),
+                          'telecom-1',
+                        ),
+                      if (!widget.state.placements.containsKey('cacao'))
+                        _building('cacao', const Offset(480, 465), 'agro-1'),
+                      if (!widget.state.placements.containsKey('banque'))
+                        _building('banque', const Offset(755, 680), 'banque-1'),
+                      for (final entry in widget.state.placements.entries)
+                        if ((widget.state.holdings[entry.key] ?? 0) > 0)
+                          _placedBuilding(entry.key),
                       Positioned.fill(
                         child: IgnorePointer(
                           child: ExcludeSemantics(

@@ -27,7 +27,7 @@ ThemeData buildPacoTheme({Brightness brightness = Brightness.light}) {
     visualDensity: VisualDensity.standard,
     materialTapTargetSize: MaterialTapTargetSize.padded,
   );
-  final shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(16));
+  final shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(20));
   return base.copyWith(
     scaffoldBackgroundColor: scheme.surface,
     textTheme: base.textTheme.copyWith(
@@ -83,17 +83,45 @@ ThemeData buildPacoTheme({Brightness brightness = Brightness.light}) {
       clipBehavior: Clip.antiAlias,
     ),
     filledButtonTheme: FilledButtonThemeData(
-      style: FilledButton.styleFrom(
-        minimumSize: const Size(48, 48),
-        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
-        shape: shape,
-      ),
+      style:
+          FilledButton.styleFrom(
+            minimumSize: const Size(48, 48),
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+            shape: shape,
+            textStyle: const TextStyle(
+              fontFamily: 'Nunito',
+              fontWeight: FontWeight.w800,
+              fontSize: 15,
+            ),
+            elevation: 5,
+            shadowColor: Colors.black.withValues(alpha: .24),
+            side: BorderSide(
+              color: Colors.white.withValues(alpha: dark ? .2 : .55),
+              width: 1.5,
+            ),
+          ).copyWith(
+            elevation: WidgetStateProperty.resolveWith(
+              (states) => states.contains(WidgetState.disabled)
+                  ? 0
+                  : states.contains(WidgetState.pressed)
+                  ? 1
+                  : 5,
+            ),
+            animationDuration: const Duration(milliseconds: 150),
+          ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(48, 48),
         padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
         shape: shape,
+        elevation: 5,
+        shadowColor: Colors.black.withValues(alpha: .22),
+        textStyle: const TextStyle(
+          fontFamily: 'Nunito',
+          fontWeight: FontWeight.w800,
+          fontSize: 15,
+        ),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(

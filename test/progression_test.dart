@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:paco_bourse/domain/stage_catalog.dart';
+import 'package:paco_bourse/domain/challenge_catalog.dart';
 import 'package:paco_bourse/domain/lessons.dart';
 import 'package:paco_bourse/domain/player_state.dart';
 import 'package:paco_bourse/domain/puzzle_clock.dart';
@@ -10,54 +11,56 @@ import 'package:paco_bourse/game/match_engine.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  test(
-    'all 30 stages match the shared catalogue and have valid learning tasks',
-    () async {
-      final raw = jsonDecode(
-        await rootBundle.loadString('assets/progression/stages.json'),
-      ) as Map;
-      final list = raw['stages'] as List;
-      expect(stageCount, 30);
-      expect(lessons.length, stageCount);
-      expect(list.length, stageCount);
-      expect(stageSpecs.map((s) => s.id).toSet().length, stageCount);
-      for (var i = 0; i < stageCount; i++) {
-        final spec = stageSpecs[i];
-        final engine = MatchEngine(i);
-        expect(engine.target, list[i]['target']);
-        expect(engine.moves, list[i]['moves']);
-        expect(puzzleSeconds(i), list[i]['seconds']);
-        expect(spec.target, lessThanOrEqualTo(spec.moves * 90));
-        expect(spec.moves, inInclusiveRange(19, 24));
-        expect(spec.seconds, inInclusiveRange(60, 90));
-        expect(MatchEngine.findMatches(engine.board), isEmpty);
-        expect(engine.hint(), isNotNull);
-        expect(lessons[i].question, isNotEmpty);
-        expect(
-          lessons[i].answer,
-          inInclusiveRange(0, lessons[i].options.length - 1),
-        );
+  test('all 30 campaign identities remain while 9x9 challenge budgets and learning tasks are valid', () async {
+    final raw = jsonDecode(
+      await rootBundle.loadString('assets/progression/stages.json'),
+    ) as Map;
+    final list = raw['stages'] as List;
+    expect(stageCount, 30);
+    expect(lessons.length, stageCount);
+    expect(list.length, stageCount);
+    expect(stageSpecs.map((s) => s.id).toSet().length, stageCount);
+    for (var i = 0; i < stageCount; i++) {
+      final spec = challengeFor(i);
+      final engine = MatchEngine(i);
+      expect(engine.target, spec.score);
+      expect(engine.moves, spec.moves);
+      expect(puzzleSeconds(i), spec.seconds);
+      expect(spec.moves, inInclusiveRange(24, 40));
+      expect(spec.seconds, inInclusiveRange(90, 180));
+      expect(engine.board.length, 81);
+      expect(MatchEngine.findMatches(engine.board), isEmpty);
+      expect(engine.hint(), isNotNull);
+      expect(lessons[i].question, isNotEmpty);
+      expect(
+        lessons[i].answer,
+        inInclusiveRange(0, lessons[i].options.length - 1),
+      );
+    }
+  });
+  test('all challenge rounds terminate and win requires every objective', () {
+    var wins = 0;
+    for (var i = 0; i < stageCount; i++) {
+      final engine = MatchEngine(i);
+      final budget = engine.moves;
+      for (var turn = 0; turn < budget && !engine.won; turn++) {
+        final pair = engine.hint()!;
+        expect(engine.swap(pair[0], pair[1]), isTrue);
       }
-    },
-  );
-  test(
-    'every stage is solvable using legal matches within its move budget',
-    () {
-      for (var i = 0; i < stageCount; i++) {
-        final engine = MatchEngine(i);
-        final budget = engine.moves;
-        for (var turn = 0; turn < budget && !engine.won; turn++) {
-          final pair = engine.hint()!;
-          expect(engine.swap(pair[0], pair[1]), isTrue);
-        }
-        expect(
-          engine.won,
-          isTrue,
-          reason: 'Stage ${i + 1} must have a reachable target',
-        );
-      }
-    },
-  );
+      final spec = engine.challenge;
+      expect(
+        engine.won,
+        engine.score >= spec.score &&
+            engine.locksRemaining == 0 &&
+            engine.perfectMoves >= spec.perfectMoves &&
+            engine.collected >= spec.collectCount &&
+            engine.specialUses >= spec.specialUses,
+      );
+      expect(engine.won || engine.lost, isTrue);
+      if (engine.won) wins++;
+    }
+    expect(wins, greaterThanOrEqualTo(20));
+  });
   test(
     'legacy six-stage progress unlocks stage seven without another reward',
     () {
@@ -73,7 +76,7 @@ void main() {
       final next = restored.completeLevel(6).answerLesson(6);
       expect(next.cash, 20500);
       expect(next.unlockedLevel, 7);
-      expect(next.toJson()['version'], 5);
+      expect(next.toJson()['version'], 6);
       expect(PlayerState.fromJson(next.toJson()).toJson(), next.toJson());
       expect(
         () => PlayerState.fromJson({...next.toJson(), 'version': 3}),

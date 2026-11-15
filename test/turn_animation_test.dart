@@ -35,17 +35,19 @@ void main() {
         await game.loaded;
       });
       await tester.pump();
-      game.engine.score = game.engine.target - 90;
+      game.engine.score = game.engine.target - 300;
       final pair = game.engine.hint()!;
       final rect = tester.getRect(find.byType(GameWidget<PacoGame>));
-      Offset center(int i) =>
-          Offset(rect.left + (i % 7 + .5) * 50, rect.top + (i ~/ 7 + .5) * 50);
+      Offset center(int i) => Offset(
+        rect.left + (i % 9 + .5) * (350 / 9),
+        rect.top + (i ~/ 9 + .5) * (350 / 9),
+      );
       await tester.timedDragFrom(
         center(pair[0]),
         center(pair[1]) - center(pair[0]),
         const Duration(milliseconds: 80),
       );
-      expect(game.engine.moves, 23);
+      expect(game.engine.moves, game.engine.challenge.moves - 1);
       expect(game.isAnimating, isTrue);
       expect(wins, 0);
       final moves = game.engine.moves;
@@ -90,23 +92,23 @@ void main() {
       final move = e.hint()!;
       e.swap(move[0], move[1]);
       for (final step in e.lastTurn.where((s) => s.phase == TurnPhase.fall)) {
-        expect(step.motions.map((m) => m.to).toSet().length, 49);
+        expect(step.motions.map((m) => m.to).toSet().length, 81);
         final sources = step.motions
             .where((m) => m.from >= 0)
             .map((m) => m.from)
             .toSet();
         expect(sources, {
-          for (var i = 0; i < 49; i++)
+          for (var i = 0; i < 81; i++)
             if (step.before[i] >= 0) i,
         });
         for (final m in step.motions) {
           expect(m.type, step.after[m.to]);
           if (m.from >= 0) {
-            expect(m.from % 7, m.to % 7);
+            expect(m.from % 9, m.to % 9);
             expect(m.to, greaterThanOrEqualTo(m.from));
             expect(m.type, step.before[m.from]);
           } else {
-            expect((m.from - m.to % 7) % 7, 0);
+            expect((m.from - m.to % 9) % 9, 0);
             expect(m.type, inInclusiveRange(0, 5));
           }
         }
@@ -116,8 +118,8 @@ void main() {
   test('invalid adjacent exchange has forward and return animations with no expense', () {
     final e = MatchEngine(0);
     final original = [...e.board];
-    for (var a = 0; a < 49; a++) {
-      for (final b in [a + 1, a + 7]) {
+    for (var a = 0; a < 81; a++) {
+      for (final b in [a + 1, a + 9]) {
         if (!MatchEngine.adjacent(a, b)) continue;
         if (!e.swap(a, b)) {
           expect(e.lastTurn.map((s) => s.phase), [
@@ -126,13 +128,15 @@ void main() {
           ]);
           expect(e.board, original);
           expect(e.score, 0);
-          expect(e.moves, 24);
+          expect(e.moves, e.challenge.moves);
           return;
         }
         // Restart if this candidate happened to be valid.
         e.board = List.of(original);
         e.score = 0;
-        e.moves = 24;
+        e.moves = e.challenge.moves;
+        e.specials.clear();
+        e.perfectMoves = 0;
       }
     }
     fail('Expected an invalid adjacent move');
@@ -142,6 +146,6 @@ void main() {
     e.score = e.target;
     expect(e.swap(0, 1), isFalse);
     expect(e.lastTurn, isEmpty);
-    expect(e.moves, 24);
+    expect(e.moves, e.challenge.moves);
   });
 }

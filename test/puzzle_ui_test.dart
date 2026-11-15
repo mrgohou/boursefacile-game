@@ -9,7 +9,7 @@ void main() {
   testWidgets(
     'Flame board renders, exposes tile semantics and accepts a valid move',
     (tester) async {
-      tester.view.physicalSize = const Size(360, 1000);
+      tester.view.physicalSize = const Size(600, 1300);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
@@ -29,7 +29,7 @@ void main() {
       await tester.pump();
       await tester.tap(find.text('C’est parti'));
       await tester.pump(const Duration(milliseconds: 100));
-      expect(game.engine.board.length, 49);
+      expect(game.engine.board.length, 81);
       expect(
         find.bySemanticsLabel(RegExp('Ligne 1, colonne 1,')),
         findsOneWidget,
@@ -43,8 +43,8 @@ void main() {
       for (final index in pair) {
         await tester.tapAt(
           Offset(
-            rect.left + (index % 7 + .5) * rect.width / 7,
-            rect.top + (index ~/ 7 + .5) * rect.height / 7,
+            rect.left + (index % 9 + .5) * rect.width / 9,
+            rect.top + (index ~/ 9 + .5) * rect.height / 9,
           ),
         );
       }

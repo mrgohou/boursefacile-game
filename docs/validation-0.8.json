@@ -1,0 +1,24 @@
+{
+  "flutterTestsPassed": 79,
+  "physicalDeviceTested": false,
+  "boardSize": 9,
+  "campaignStages": 30,
+  "practicalQuestions": 40,
+  "knownSecurities": 48,
+  "saveFormat": 6,
+  "sitesPerDistrict": 16,
+  "localAdaptation": "bounded statistical director, no LLM, no transmission",
+  "preliminaryGreedySimulation": {
+    "rounds": 90,
+    "wins": 85
+  },
+  "godotReplayCheck": {
+    "turns": 8,
+    "engine": "4.6.3",
+    "scope": "structure only, not second gameplay engine"
+  },
+  "unrealIntegrated": false,
+  "constructIntegrated": false,
+  "fluxQuizFullBankRepublished": false,
+  "iconSHA256": "4b38f23a8d6c152782315dc6d2d6c02cebf7c72527746712eeaffe19183824dc"
+}

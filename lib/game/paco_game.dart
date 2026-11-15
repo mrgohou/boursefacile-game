@@ -5,19 +5,21 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
+import 'package:material_ui/material_ui.dart' show Icons, IconData;
 
 import 'match_engine.dart';
 
 class PacoGame extends FlameGame {
   PacoGame({
     required int level,
+    int mastery = 0,
     required this.onUpdate,
     required this.onWin,
     required this.onLose,
     this.reducedMotion = false,
     this.onAudio,
     this.canAcceptInput,
-  }) : engine = MatchEngine(level) {
+  }) : engine = MatchEngine(level, mastery: mastery) {
     _visible = List.of(engine.board);
   }
   final MatchEngine engine;
@@ -51,7 +53,7 @@ class PacoGame extends FlameGame {
   final List<Sprite> _sprites = [];
   final List<_Cell> _cells = [];
   late List<int> _visible;
-  List<int> get visibleBoard => List.unmodifiable(List.generate(49, tileType));
+  List<int> get visibleBoard => List.unmodifiable(List.generate(81, tileType));
   // During gravity the readable board describes destinations; visual pieces
   // travel between them. Never expose the internal empty-cell sentinel to UI.
   int tileType(int index) => _visible[index] >= 0
@@ -67,9 +69,9 @@ class PacoGame extends FlameGame {
   bool _removed = false, _completed = false;
   int? _dragPointer;
   bool get isAnimating => _timeline.isNotEmpty;
-  double get _unit => math.min(size.x, size.y) / 7;
+  double get _unit => math.min(size.x, size.y) / 9;
   Vector2 get _origin =>
-      Vector2((size.x - _unit * 7) / 2, (size.y - _unit * 7) / 2);
+      Vector2((size.x - _unit * 9) / 2, (size.y - _unit * 9) / 2);
   TurnStep? get _current => isAnimating ? _timeline[_step] : null;
   void _announce() {
     if (!_removed) revision.value++;
@@ -80,7 +82,12 @@ class PacoGame extends FlameGame {
   }
 
   @override
-  Color backgroundColor() => const Color(0xFF493269);
+  Color backgroundColor() => HSLColor.fromAHSL(
+    1,
+    (engine.challenge.themeIndex * 47.0 + 265) % 360,
+    .35,
+    .25,
+  ).toColor();
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -95,7 +102,7 @@ class PacoGame extends FlameGame {
     ]);
     if (_removed) return;
     _sprites.addAll(textures.map(Sprite.new));
-    for (var i = 0; i < 49; i++) {
+    for (var i = 0; i < 81; i++) {
       if (_removed) return;
       final cell = _Cell(this, i);
       _cells.add(cell);
@@ -117,7 +124,7 @@ class PacoGame extends FlameGame {
   void _layout() {
     for (final cell in _cells) {
       cell.position =
-          _origin + Vector2(cell.index % 7 * _unit, cell.index ~/ 7 * _unit);
+          _origin + Vector2(cell.index % 9 * _unit, cell.index ~/ 9 * _unit);
       cell.size = Vector2.all(_unit);
     }
   }
@@ -133,7 +140,7 @@ class PacoGame extends FlameGame {
   void selectTile(int index) {
     if (!acceptsInput) return;
     if (index < 0 ||
-        index >= 49 ||
+        index >= 81 ||
         _removed ||
         _completed ||
         isAnimating ||
@@ -214,6 +221,7 @@ class PacoGame extends FlameGame {
       final done = _current!;
       _elapsed -= _duration(done);
       _visible = List.of(done.after);
+      if (done.phase == TurnPhase.fall) _audio('ui');
       if (done.phase == TurnPhase.clear) {
         onUpdate(done.score, done.moves, engine.target);
       }
@@ -240,7 +248,7 @@ class PacoGame extends FlameGame {
   }
 
   Offset _position(int index) =>
-      Offset((index % 7) * _unit, (index ~/ 7) * _unit);
+      Offset((index % 9) * _unit, (index ~/ 9) * _unit);
   @override
   void render(Canvas canvas) {
     super.render(canvas);
@@ -250,11 +258,11 @@ class PacoGame extends FlameGame {
     final s = _current;
     final t = s == null ? 0.0 : (_elapsed / _duration(s)).clamp(0.0, 1.0);
     final ease = 1 - math.pow(1 - t, 3).toDouble();
-    for (var i = 0; i < 49; i++) {
+    for (var i = 0; i < 81; i++) {
       final r = RRect.fromRectAndRadius(
         Rect.fromLTWH(
-          i % 7 * _unit + 2,
-          i ~/ 7 * _unit + 2,
+          i % 9 * _unit + 2,
+          i ~/ 9 * _unit + 2,
           _unit - 4,
           _unit - 4,
         ),
@@ -262,19 +270,31 @@ class PacoGame extends FlameGame {
       );
       canvas.drawRRect(r, Paint()..color = const Color(0xFF624C86));
     }
+    if (!isAnimating) {
+      for (final i in engine.lockedCells) {
+        final pos = _position(i);
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromLTWH(pos.dx + 3, pos.dy + 3, _unit - 6, _unit - 6),
+            const Radius.circular(8),
+          ),
+          Paint()..color = const Color(0x55FFD773),
+        );
+      }
+    }
     if (s?.phase == TurnPhase.shuffle) {
       final fresh = t >= .5;
       final board = fresh ? s!.after : s!.before;
       final scale = reducedMotion ? 1.0 : (fresh ? (t - .5) * 2 : 1 - t * 2);
-      for (var i = 0; i < 49; i++) {
+      for (var i = 0; i < 81; i++) {
         _drawTile(canvas, board[i], _position(i), scale, 1);
       }
     } else if (s?.phase == TurnPhase.fall) {
       canvas.save();
-      canvas.clipRect(Rect.fromLTWH(0, 0, _unit * 7, _unit * 7));
+      canvas.clipRect(Rect.fromLTWH(0, 0, _unit * 9, _unit * 9));
       for (final m in s!.motions) {
         final from = m.from < 0
-            ? Offset(m.to % 7 * _unit, ((m.from - m.to % 7) ~/ 7) * _unit)
+            ? Offset(m.to % 9 * _unit, ((m.from - m.to % 9) ~/ 9) * _unit)
             : _position(m.from);
         _drawTile(
           canvas,
@@ -289,7 +309,7 @@ class PacoGame extends FlameGame {
       final moving =
           s != null &&
           (s.phase == TurnPhase.swap || s.phase == TurnPhase.revert);
-      for (var i = 0; i < 49; i++) {
+      for (var i = 0; i < 81; i++) {
         if (_visible[i] < 0) continue;
         if (moving && s.motions.any((m) => m.from == i)) continue;
         final clearing = s?.phase == TurnPhase.clear && s!.cleared.contains(i);
@@ -343,9 +363,43 @@ class PacoGame extends FlameGame {
         )..layout();
         text.paint(
           canvas,
-          Offset((_unit * 7 - text.width) / 2, _unit * 3 - t * _unit * .3),
+          Offset((_unit * 9 - text.width) / 2, _unit * 3 - t * _unit * .3),
         );
       }
+    }
+    final locks = s?.lockedCells ?? engine.lockedCells;
+    final specialPieces = s?.specials ?? engine.specials;
+    for (final i in {...locks, ...specialPieces.keys}) {
+      final IconData symbol = locks.contains(i)
+          ? Icons.lock
+          : switch (specialPieces[i]!.name) {
+              'lightning' => Icons.bolt,
+              'goldCoin' => Icons.monetization_on,
+              'goldFuel' => Icons.local_gas_station,
+              'silverSickle' => Icons.grass,
+              _ => Icons.local_shipping,
+            };
+      final silver = specialPieces[i]?.name == 'silverSickle';
+      final text = TextPainter(
+        text: TextSpan(
+          text: String.fromCharCode(symbol.codePoint),
+          style: TextStyle(
+            fontFamily: symbol.fontFamily,
+            package: symbol.fontPackage,
+            color: silver ? const Color(0xFFE1F0FF) : const Color(0xFFFFD35E),
+            fontSize: _unit * .50,
+            shadows: const [Shadow(color: Color(0xFF21394B), blurRadius: 3)],
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      final pos = _position(i) + Offset(_unit * .48, 0);
+      canvas.drawCircle(
+        pos + Offset(_unit * .23, _unit * .23),
+        _unit * .25,
+        Paint()..color = const Color(0xD92A354B),
+      );
+      text.paint(canvas, pos);
     }
     canvas.restore();
   }
@@ -506,7 +560,7 @@ class _Cell extends PositionComponent with TapCallbacks, DragCallbacks {
     final horizontal = _delta.x.abs() >= _delta.y.abs();
     final target =
         index +
-        (horizontal ? (_delta.x > 0 ? 1 : -1) : (_delta.y > 0 ? 7 : -7));
+        (horizontal ? (_delta.x > 0 ? 1 : -1) : (_delta.y > 0 ? 9 : -9));
     if (MatchEngine.adjacent(index, target)) owner._exchange(index, target);
   }
 

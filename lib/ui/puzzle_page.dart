@@ -6,6 +6,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../audio/game_audio.dart';
 import '../domain/lessons.dart';
+import '../domain/challenge_catalog.dart';
 import '../domain/puzzle_clock.dart';
 import 'clay_heading.dart';
 import '../game/paco_game.dart';
@@ -19,8 +20,12 @@ class PuzzlePage extends StatefulWidget {
     this.audio,
     this.onCompleted,
     this.now,
+    this.mastery = 0,
+    this.onFinished,
   });
   final int level;
+  final int mastery;
+  final void Function(bool won, int seconds, int moves)? onFinished;
   final DateTime Function()? now;
   final GameAudio? audio;
   final Future<bool> Function()? onCompleted;
@@ -30,6 +35,7 @@ class PuzzlePage extends StatefulWidget {
 
 class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
   PacoGame? game;
+  final _boardScroll = ScrollController();
   late final GameAudio audio;
   final stats = ValueNotifier<(int, int, int)>((0, 24, 650));
   bool won = false, lost = false;
@@ -49,7 +55,10 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
     audio = widget.audio ?? SilentGameAudio();
     if (widget.audio == null) unawaited(audio.initialize());
     unawaited(audio.setScene('puzzle'));
-    clock = PuzzleClock(puzzleSeconds(widget.level), now: widget.now);
+    clock = PuzzleClock(
+      challengeFor(widget.level, mastery: widget.mastery).seconds,
+      now: widget.now,
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) unawaited(instructions(initial: true));
     });
@@ -64,6 +73,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
   PacoGame createGame() =>
       PacoGame(
           level: widget.level,
+          mastery: widget.mastery,
           reducedMotion: MediaQuery.disableAnimationsOf(context),
           canAcceptInput: () =>
               _started && !won && !lost && clock.remaining > 0,
@@ -106,6 +116,11 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
         game!.engine.target,
       );
     }
+    widget.onFinished?.call(
+      success,
+      clock.seconds - clock.remaining,
+      game!.engine.moves,
+    );
     game?.endRound();
     if (success) unawaited(_saveWin());
     unawaited(showResult());
@@ -176,7 +191,9 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
                                 ? (_winSaving
                                       ? 'Enregistrement de ta réussite…'
                                       : _winSaved
-                                      ? 'Ta réussite est enregistrée. Retrouve Paco pour valider la notion. La récompense de première victoire n’est versée qu’une fois.'
+                                      ? (widget.level >= lessons.length
+                                            ? 'Entraînement terminé. Le suivi pédagogique est mis à jour localement ; aucun crédit de monnaie ni nouvelle carte de campagne.'
+                                            : 'Ta réussite est enregistrée. Retrouve Paco pour valider la notion. La récompense de première victoire n’est versée qu’une fois.')
                                       : 'Enregistrement impossible. Réessaie avant de continuer.')
                                 : 'Tu conserves ton épargne et tes acquis. Prêt pour une nouvelle tentative ?',
                             textAlign: TextAlign.center,
@@ -198,7 +215,9 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
                                 _winSaving
                                     ? 'Enregistrement…'
                                     : _winSaved
-                                    ? 'Comprendre avec Paco'
+                                    ? (widget.level >= lessons.length
+                                          ? 'Terminer l’entraînement'
+                                          : 'Comprendre avec Paco')
                                     : 'Réessayer l’enregistrement',
                               ),
                             )
@@ -270,6 +289,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     _dialogRevision.dispose();
+    _boardScroll.dispose();
     stats.dispose();
     if (widget.audio == null) audio.dispose();
     super.dispose();
@@ -285,7 +305,10 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
       _winSaved = false;
       _timedOut = false;
       _started = false;
-      clock = PuzzleClock(puzzleSeconds(widget.level), now: widget.now);
+      clock = PuzzleClock(
+        challengeFor(widget.level, mastery: widget.mastery).seconds,
+        now: widget.now,
+      );
       game = createGame();
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -304,7 +327,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
         canPop: false,
         child: AlertDialog(
           title: Text(
-            'Mission ${widget.level + 1} · ${lessons[widget.level].topic}',
+            'Mission ${widget.level + 1} · ${lessons[widget.level % lessons.length].topic}',
           ),
           content: SingleChildScrollView(
             child: Column(
@@ -313,7 +336,11 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
               children: [
                 const Center(child: PacoMascot(size: 85, pose: 'expliquer')),
                 Text(
-                  'Objectif : ${game!.engine.target} points en ${puzzleSeconds(widget.level)} secondes et ${game!.engine.moves} coups maximum.',
+                  '${game!.engine.objectiveSummary} · ${clock.seconds} secondes · ${game!.engine.moves} coups maximum.',
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Spéciaux : éclair = ligne, pièce en or = catégorie, bidon en or = explosion, faucille en argent = récolte, camion = ligne et colonne. Échange un spécial avec une case voisine pour l’activer.',
                 ),
                 const SizedBox(height: 12),
                 const Text(
@@ -356,20 +383,20 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
     valueListenable: game!.revision,
     builder: (context, revision, child) => Column(
       children: [
-        for (var y = 0; y < 7; y++)
+        for (var y = 0; y < 9; y++)
           Expanded(
             child: Row(
               children: [
-                for (var x = 0; x < 7; x++)
+                for (var x = 0; x < 9; x++)
                   Expanded(
                     child: Semantics(
                       button: true,
-                      selected: game!.selectedTile == y * 7 + x,
+                      selected: game!.selectedTile == y * 9 + x,
                       label:
-                          'Ligne ${y + 1}, colonne ${x + 1}, ${PacoGame.symbolNames[game!.tileType(y * 7 + x)]}${game!.isHinted(y * 7 + x) ? ', indice' : ''}',
+                          'Ligne ${y + 1}, colonne ${x + 1}, ${PacoGame.symbolNames[game!.tileType(y * 9 + x)]}${game!.isHinted(y * 9 + x) ? ', indice' : ''}',
                       onTap: !_started || won || lost || game!.isAnimating
                           ? null
-                          : () => game!.selectTile(y * 7 + x),
+                          : () => game!.selectTile(y * 9 + x),
                       child: const SizedBox.expand(),
                     ),
                   ),
@@ -382,7 +409,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
 
   Widget board() => LayoutBuilder(
     builder: (context, constraints) {
-      final side = math.max(344.0, constraints.maxWidth);
+      final side = math.max(444.0, constraints.maxWidth);
       final surface = Stack(
         children: [
           ExcludeSemantics(
@@ -394,10 +421,23 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
       final frame = Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFF8D68C4), Color(0xFF4B3680)],
+            colors: [
+              HSLColor.fromAHSL(
+                1,
+                (widget.level * 47.0 + 265) % 360,
+                .42,
+                .62,
+              ).toColor(),
+              HSLColor.fromAHSL(
+                1,
+                (widget.level * 47.0 + 265) % 360,
+                .4,
+                .28,
+              ).toColor(),
+            ],
           ),
           borderRadius: BorderRadius.circular(22),
           border: Border.all(color: const Color(0xFFFFE8A0), width: 2),
@@ -414,9 +454,44 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
           child: surface,
         ),
       );
-      return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SizedBox(width: side, height: side, child: frame),
+      return Column(
+        children: [
+          SingleChildScrollView(
+            controller: _boardScroll,
+            physics: const NeverScrollableScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            child: SizedBox(width: side, height: side, child: frame),
+          ),
+          if (side > constraints.maxWidth)
+            Row(
+              children: [
+                IconButton.filledTonal(
+                  tooltip: 'Voir les colonnes de gauche',
+                  onPressed: () => _boardScroll.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 180),
+                    curve: Curves.easeOut,
+                  ),
+                  icon: const Icon(Icons.chevron_left),
+                ),
+                const Expanded(
+                  child: Text(
+                    'Plateau 9 × 9 · déplacer la vue',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                IconButton.filledTonal(
+                  tooltip: 'Voir les colonnes de droite',
+                  onPressed: () => _boardScroll.animateTo(
+                    _boardScroll.position.maxScrollExtent,
+                    duration: const Duration(milliseconds: 180),
+                    curve: Curves.easeOut,
+                  ),
+                  icon: const Icon(Icons.chevron_right),
+                ),
+              ],
+            ),
+        ],
       );
     },
   );
@@ -492,7 +567,8 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
             children: List.generate(
               3,
               (i) => Icon(
-                value.$1 >= value.$3 * (i + 1) / 3
+                (value.$3 > 0 && value.$1 >= value.$3 * (i + 1) / 3) ||
+                        (game?.engine.won ?? false)
                     ? Icons.star_rounded
                     : Icons.star_outline_rounded,
                 color: const Color(0xFFC4942D),
@@ -504,15 +580,21 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
           ClipRRect(
             borderRadius: BorderRadius.circular(14),
             child: LinearProgressIndicator(
-              value: (value.$1 / value.$3).clamp(0, 1),
+              value: value.$3 > 0
+                  ? (value.$1 / value.$3).clamp(0, 1)
+                  : (game?.engine.won ?? false)
+                  ? 1
+                  : 0,
               minHeight: 14,
               color: const Color(0xFFFFB530),
               backgroundColor: Colors.white,
             ),
           ),
-          const SizedBox(height: 7),
+          const SizedBox(height: 9),
           Text(
-            '${value.$1} / ${value.$3} points',
+            value.$3 > 0
+                ? '${value.$1} / ${value.$3} points'
+                : '${value.$1} points bonus · réussis le défi',
             style: const TextStyle(
               color: Color(0xFF594D70),
               fontWeight: FontWeight.w700,
@@ -559,7 +641,7 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  lessons[widget.level].topic,
+                  lessons[widget.level % lessons.length].topic,
                   style: Theme.of(context).textTheme.titleLarge
                       ?.copyWith(color: const Color(0xFF4B3478)),
                 ),
@@ -593,6 +675,16 @@ class _PuzzlePageState extends State<PuzzlePage> with WidgetsBindingObserver {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         header,
+        ValueListenableBuilder<int>(
+          valueListenable: game!.revision,
+          builder: (context, _, child) => Padding(
+            padding: const EdgeInsets.all(8),
+            child: Text(
+              game!.engine.progress.join(' · '),
+              style: const TextStyle(fontWeight: FontWeight.w800),
+            ),
+          ),
+        ),
         const SizedBox(height: 10),
         GamePanel(
           color: const Color(0xFFFFF2CB),

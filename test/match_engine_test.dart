@@ -6,7 +6,7 @@ void main() {
     for (var seed = 0; seed < 100; seed++) {
       final engine = MatchEngine(seed % 6, seed: seed);
       expect(engine.board, MatchEngine(seed % 6, seed: seed).board);
-      expect(engine.board.length, 49);
+      expect(engine.board.length, 81);
       expect(MatchEngine.findMatches(engine.board), isEmpty);
       expect(engine.hint(), isNotNull);
     }
@@ -14,12 +14,12 @@ void main() {
   test('invalid swaps preserve every state value', () {
     final e = MatchEngine(0);
     final before = [...e.board];
-    expect(e.swap(6, 7), isFalse);
+    expect(e.swap(8, 9), isFalse);
     expect(e.swap(-1, 0), isFalse);
     expect(e.board, before);
-    expect(e.moves, 24);
+    expect(e.moves, e.challenge.moves);
     expect(e.score, 0);
-    for (var i = 0; i < 48; i++) {
+    for (var i = 0; i < 80; i++) {
       if (!MatchEngine.adjacent(i, i + 1)) continue;
       final probe = [...before];
       final t = probe[i];
@@ -28,7 +28,7 @@ void main() {
       if (MatchEngine.findMatches(probe).isEmpty) {
         expect(e.swap(i, i + 1), isFalse);
         expect(e.board, before);
-        expect(e.moves, 24);
+        expect(e.moves, e.challenge.moves);
         break;
       }
     }
@@ -57,10 +57,10 @@ void main() {
     },
   );
   test('cross matches count shared cell once', () {
-    final board = List.generate(49, (i) => i);
-    for (final i in [23, 24, 25, 17, 31]) {
+    final board = List.generate(81, (i) => i);
+    for (final i in [39, 40, 41, 31, 49]) {
       board[i] = 100;
     }
-    expect(MatchEngine.findMatches(board), {23, 24, 25, 17, 31});
+    expect(MatchEngine.findMatches(board), {39, 40, 41, 31, 49});
   });
 }

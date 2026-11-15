@@ -1,4 +1,6 @@
 import 'city_growth.dart';
+import 'city_placement.dart';
+export 'city_placement.dart';
 import 'stage_catalog.dart';
 
 import 'company_catalog.dart';
@@ -13,6 +15,7 @@ class PlayerState {
   final Set<String> ownedPlots;
   final Map<String, String> townBuildings;
   final Set<int> journeyAnswers;
+  final Map<String, CityPlacement> placements;
   final bool marketDropped, dividendPaid;
   final List<String> history;
 
@@ -26,6 +29,7 @@ class PlayerState {
     Set<String> ownedPlots = const {},
     Map<String, String> townBuildings = const {},
     Set<int> journeyAnswers = const {},
+    Map<String, CityPlacement> placements = const {},
     required this.marketDropped,
     required this.dividendPaid,
     required List<String> history,
@@ -37,6 +41,7 @@ class PlayerState {
        ownedPlots = Set.unmodifiable(ownedPlots),
        townBuildings = Map.unmodifiable(townBuildings),
        journeyAnswers = Set.unmodifiable(journeyAnswers),
+       placements = Map.unmodifiable(placements),
        history = List.unmodifiable(history);
 
   factory PlayerState.initial() => PlayerState._(
@@ -74,6 +79,7 @@ class PlayerState {
     Set<String>? ownedPlots,
     Map<String, String>? townBuildings,
     Set<int>? journeyAnswers,
+    Map<String, CityPlacement>? placements,
     bool? marketDropped,
     bool? dividendPaid,
     required String message,
@@ -93,6 +99,7 @@ class PlayerState {
       ownedPlots: ownedPlots ?? this.ownedPlots,
       townBuildings: townBuildings ?? this.townBuildings,
       journeyAnswers: journeyAnswers ?? this.journeyAnswers,
+      placements: placements ?? this.placements,
       marketDropped: marketDropped ?? this.marketDropped,
       dividendPaid: dividendPaid ?? this.dividendPaid,
       history: log.length > 50 ? log.sublist(log.length - 50) : log,
@@ -152,8 +159,33 @@ class PlayerState {
     return _change(
       cash: cash + prices[id]! - _fee(prices[id]!),
       holdings: {...holdings, id: holdings[id]! - 1},
+      placements: holdings[id] == 1
+          ? (Map<String, CityPlacement>.from(placements)..remove(id))
+          : placements,
       message:
           'Vente : ${prices[id]} − ${_fee(prices[id]!)} FCFA-jeu de frais.',
+    );
+  }
+
+  PlayerState placeCompany(String id, String landId, int cell) {
+    if (!holdings.containsKey(id) || holdings[id]! <= 0) {
+      throw StateError(
+        'Achète au moins une part de cette entreprise avant de la placer.',
+      );
+    }
+    final place = CityPlacement.fromJson({'landId': landId, 'cell': cell});
+    if (landId != baseCityId && !ownedPlots.contains(landId)) {
+      throw StateError('Achète ce terrain avant de le développer.');
+    }
+    if (placements.entries.any(
+      (e) => e.key != id && e.value.siteKey == place.siteKey,
+    )) {
+      throw StateError('Cet emplacement est déjà occupé.');
+    }
+    return _change(
+      placements: {...placements, id: place},
+      message:
+          'Entreprise $id placée dans ${cityName(landId)}, emplacement ${cell + 1}.',
     );
   }
 
@@ -262,7 +294,8 @@ class PlayerState {
   }
 
   Map<String, dynamic> toJson() => {
-    'version': 5,
+    'version': 6,
+    'placements': {for (final e in placements.entries) e.key: e.value.toJson()},
     'ownedPlots': ownedPlots.toList()..sort(),
     'townBuildings': Map<String, String>.from(townBuildings),
     'journeyAnswers': journeyAnswers.toList()..sort(),
@@ -283,7 +316,8 @@ class PlayerState {
               raw['version'] != 2 &&
               raw['version'] != 3 &&
               raw['version'] != 4 &&
-              raw['version'] != 5) ||
+              raw['version'] != 5 &&
+              raw['version'] != 6) ||
           raw['cash'] is! int ||
           raw['cash'] < 0 ||
           raw['cash'] > _limit ||
@@ -293,7 +327,7 @@ class PlayerState {
       }
       final holdings = Map<String, int>.from(raw['holdings'] as Map);
       final prices = Map<String, int>.from(raw['prices'] as Map);
-      final expected = raw['version'] == 5 ? companies : legacyCompanies;
+      final expected = raw['version'] >= 5 ? companies : legacyCompanies;
       if (holdings.length != expected.length ||
           prices.length != expected.length ||
           expected.any(
@@ -408,6 +442,21 @@ class PlayerState {
       if (lands.any((l) => plots.contains(l.id) && earned < l.requiredGains)) {
         throw const FormatException();
       }
+      final placements = <String, CityPlacement>{};
+      if (raw['version'] >= 6) {
+        final map = Map<String, dynamic>.from(raw['placements'] as Map);
+        final used = <String>{};
+        for (final e in map.entries) {
+          final place = CityPlacement.fromJson(e.value);
+          if (!holdings.containsKey(e.key) ||
+              holdings[e.key]! <= 0 ||
+              (place.landId != baseCityId && !plots.contains(place.landId)) ||
+              !used.add(place.siteKey)) {
+            throw const FormatException();
+          }
+          placements[e.key] = place;
+        }
+      }
       return PlayerState._(
         cash: raw['cash'] as int,
         holdings: holdings,
@@ -418,6 +467,7 @@ class PlayerState {
         ownedPlots: plots.toSet(),
         townBuildings: buildings,
         journeyAnswers: journey.toSet(),
+        placements: placements,
         marketDropped: dropped,
         dividendPaid: paid,
         history: history,

@@ -1,0 +1,728 @@
+{
+  "schemaVersion": 1,
+  "language": "fr",
+  "purpose": "Éducation générale et simulation ; pas de recommandation personnalisée ni de promesse de rendement.",
+  "provenance": "Questions originales PACO. Aucune reproduction des questionnaires Flux Bourse. Références officielles à vérifier avant publication éditoriale.",
+  "questions": [
+    {
+      "id": "practical-brvm-001",
+      "topic": "budget",
+      "question": "Avant un premier achat, quelle somme est disponible pour investir ?",
+      "options": [
+        "La somme qui reste après les dépenses essentielles et la réserve prévue",
+        "Tout le solde du compte",
+        "Une somme empruntée sans calculer les mensualités"
+      ],
+      "answer": 0,
+      "explanation": "Le budget évite d’engager de l’argent nécessaire aux dépenses proches.",
+      "practiceAction": "Écrire revenus, dépenses prévues et réserve avant de fixer un budget.",
+      "difficulty": 1,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-002",
+      "topic": "precaution",
+      "question": "Une dépense imprévue doit être réglée demain. Quel outil est le plus adapté ?",
+      "options": [
+        "La vente obligatoirement immédiate d’une action peu échangée",
+        "Une promesse de dividende futur",
+        "Une réserve disponible"
+      ],
+      "answer": 2,
+      "explanation": "La vente d’un titre peut prendre du temps et se faire à un prix défavorable.",
+      "practiceAction": "Distinguer épargne de précaution disponible et investissement de long terme.",
+      "difficulty": 1,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-003",
+      "topic": "horizon",
+      "question": "Une somme doit financer une inscription dans un mois. Quelle question poser d’abord ?",
+      "options": [
+        "Quel titre porte le nom le plus connu ?",
+        "Puis-je supporter une baisse ou une vente tardive avant cette échéance ?",
+        "Quel titre a le plus monté hier ?"
+      ],
+      "answer": 1,
+      "explanation": "Une échéance proche réduit la marge pour supporter des fluctuations et des délais.",
+      "practiceAction": "Relier chaque somme à sa date d’utilisation probable.",
+      "difficulty": 1,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-004",
+      "topic": "objectif",
+      "question": "Quel objectif peut guider une décision d’épargne ?",
+      "options": [
+        "Un montant, une échéance et des contraintes de disponibilité",
+        "Gagner autant que possible immédiatement",
+        "Imiter le portefeuille d’un ami"
+      ],
+      "answer": 0,
+      "explanation": "Un objectif concret aide à comparer les instruments et à réviser le plan.",
+      "practiceAction": "Définir par écrit le besoin, l’échéance et les contraintes.",
+      "difficulty": 1,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-005",
+      "topic": "intermediaire",
+      "question": "Avant d’envoyer des fonds à un intermédiaire de marché, que vérifier ?",
+      "options": [
+        "Seulement son nombre d’abonnés",
+        "La présence du mot BRVM dans son pseudonyme",
+        "Son agrément auprès de l’autorité compétente et ses coordonnées officielles"
+      ],
+      "answer": 2,
+      "explanation": "Une référence officielle vérifiable compte davantage qu’une apparence commerciale.",
+      "practiceAction": "Vérifier les listes officielles de l’AMF-UMOA et les informations de la SGI.",
+      "difficulty": 1,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-006",
+      "topic": "frais",
+      "question": "Deux offres affichent le même courtage. Que comparer aussi ?",
+      "options": [
+        "Le nombre de messages publicitaires",
+        "Les autres frais applicables, taxes et conditions de tenue de compte",
+        "Uniquement la couleur de l’application"
+      ],
+      "answer": 1,
+      "explanation": "Le coût complet peut comprendre d’autres postes que le courtage.",
+      "practiceAction": "Demander la grille tarifaire complète et les conditions du compte.",
+      "difficulty": 1,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-007",
+      "topic": "cout",
+      "question": "Un achat de 10 actions à 2 000 FCFA coûte combien avant frais ?",
+      "options": [
+        "20 000 FCFA",
+        "2 010 FCFA",
+        "200 000 FCFA"
+      ],
+      "answer": 0,
+      "explanation": "La valeur brute de l’ordre est le nombre de titres multiplié par le prix unitaire.",
+      "practiceAction": "Calculer quantité × prix puis ajouter les frais applicables.",
+      "difficulty": 1,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-008",
+      "topic": "frais_minimum",
+      "question": "Des petits ordres répétés peuvent-ils devenir coûteux ?",
+      "options": [
+        "Non, les petits ordres sont toujours gratuits",
+        "Non, les dividendes remboursent obligatoirement les frais",
+        "Oui, notamment lorsqu’un minimum de frais s’applique à chaque ordre"
+      ],
+      "answer": 2,
+      "explanation": "Le minimum de facturation peut représenter une part importante d’un petit ordre.",
+      "practiceAction": "Comparer le coût total de plusieurs petits ordres et d’un ordre regroupé.",
+      "difficulty": 1,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-009",
+      "topic": "ordre_limite",
+      "question": "Que fixe un ordre d’achat à cours limité ?",
+      "options": [
+        "Une date certaine de paiement de dividende",
+        "Un prix maximal accepté pour l’achat",
+        "Une plus-value minimale garantie"
+      ],
+      "answer": 1,
+      "explanation": "La limite encadre le prix, sans garantir que l’ordre sera exécuté.",
+      "practiceAction": "Vérifier quantité, sens et prix limite avant validation.",
+      "difficulty": 1,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-010",
+      "topic": "execution",
+      "question": "Un ordre d’achat limité peut-il rester sans exécution ?",
+      "options": [
+        "Oui, si aucune contrepartie compatible n’est disponible",
+        "Non, tous les ordres sont exécutés immédiatement",
+        "Seulement lorsque le titre verse un dividende"
+      ],
+      "answer": 0,
+      "explanation": "Le prix demandé et les quantités disponibles déterminent la possibilité d’exécution.",
+      "practiceAction": "Suivre le statut de l’ordre au lieu de supposer que l’achat est terminé.",
+      "difficulty": 1,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-011",
+      "topic": "execution_partielle",
+      "question": "Un ordre porte sur 20 titres mais seulement 8 sont exécutés. Combien est-on certain d’avoir acheté ?",
+      "options": [
+        "20 titres",
+        "Aucun titre dans tous les cas",
+        "8 titres"
+      ],
+      "answer": 2,
+      "explanation": "Une exécution partielle ne porte que sur la quantité réellement confirmée.",
+      "practiceAction": "Lire l’avis d’opéré et le solde restant de l’ordre.",
+      "difficulty": 1,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-012",
+      "topic": "validite",
+      "question": "Que faut-il vérifier pour un ordre qui reste en attente ?",
+      "options": [
+        "Le nombre d’amis qui possèdent le titre",
+        "Sa durée de validité et les règles de modification ou d’annulation",
+        "Uniquement le dernier cours vu sur un réseau social"
+      ],
+      "answer": 1,
+      "explanation": "Un ordre peut expirer ou rester actif selon les conditions choisies.",
+      "practiceAction": "Noter la validité et contrôler les ordres encore actifs.",
+      "difficulty": 1,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-013",
+      "topic": "liquidite",
+      "question": "Un titre a un cours affiché mais très peu d’échanges. Que faut-il envisager ?",
+      "options": [
+        "Une revente plus lente ou à un prix différent du dernier cours",
+        "Une vente immédiate toujours garantie",
+        "L’absence de tout risque"
+      ],
+      "answer": 0,
+      "explanation": "Le dernier cours n’est pas une promesse de contrepartie pour une nouvelle quantité.",
+      "practiceAction": "Observer les volumes et les possibilités de contrepartie.",
+      "difficulty": 1,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-014",
+      "topic": "carnet",
+      "question": "L’écart entre meilleur prix acheteur et meilleur prix vendeur renseigne notamment sur…",
+      "options": [
+        "Un rendement garanti",
+        "Le bénéfice futur de l’entreprise",
+        "La différence de prix entre les propositions disponibles"
+      ],
+      "answer": 2,
+      "explanation": "Cet écart peut représenter un coût implicite lors d’un achat puis d’une revente.",
+      "practiceAction": "Comparer les propositions acheteuses et vendeuses avant un ordre.",
+      "difficulty": 1,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-015",
+      "topic": "volume",
+      "question": "Un prix a beaucoup varié sur une petite quantité échangée. Que faire ?",
+      "options": [
+        "Ignorer toutes les autres informations",
+        "Examiner le contexte et les volumes avant de conclure",
+        "En déduire une hausse certaine demain"
+      ],
+      "answer": 1,
+      "explanation": "Une variation de prix isolée ne suffit pas à mesurer la profondeur du marché.",
+      "practiceAction": "Lire cours et volume ensemble, avec la date de séance.",
+      "difficulty": 2,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-016",
+      "topic": "concentration",
+      "question": "Une seule entreprise représente presque tout un portefeuille. Quel risque est particulièrement présent ?",
+      "options": [
+        "La dépendance à cette entreprise",
+        "La disparition garantie de tous les frais",
+        "La garantie d’un dividende plus élevé"
+      ],
+      "answer": 0,
+      "explanation": "Un problème spécifique à cette entreprise peut peser fortement sur le portefeuille.",
+      "practiceAction": "Calculer la part de chaque position dans la valeur totale.",
+      "difficulty": 2,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-017",
+      "topic": "diversification",
+      "question": "Détenir plusieurs banques suffit-il forcément à diversifier les secteurs ?",
+      "options": [
+        "Oui, le nombre de lignes supprime tout risque",
+        "Oui, si les noms sont différents",
+        "Non, les positions restent concentrées dans le même secteur"
+      ],
+      "answer": 2,
+      "explanation": "Plusieurs entreprises peuvent partager des risques économiques communs.",
+      "practiceAction": "Comparer les secteurs et les expositions, pas seulement le nombre de lignes.",
+      "difficulty": 2,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-018",
+      "topic": "perte",
+      "question": "Une action passe de 10 000 à 8 000 FCFA. Quelle est sa variation, hors frais ?",
+      "options": [
+        "Une baisse de 80 %",
+        "Une baisse de 20 %",
+        "Une baisse de 2 %"
+      ],
+      "answer": 1,
+      "explanation": "La variation est la différence divisée par le prix de départ : −2 000 / 10 000.",
+      "practiceAction": "Calculer le pourcentage à partir du prix initial.",
+      "difficulty": 2,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-019",
+      "topic": "rebond",
+      "question": "Après une baisse de 50 %, quelle hausse ramène le prix à son point de départ ?",
+      "options": [
+        "100 %",
+        "50 %",
+        "25 %"
+      ],
+      "answer": 0,
+      "explanation": "Un prix passé de 100 à 50 doit doubler pour revenir à 100.",
+      "practiceAction": "Comparer les hausses et baisses sur leur base de calcul respective.",
+      "difficulty": 2,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-020",
+      "topic": "plus_value",
+      "question": "Une action achetée 2 000 est revendue 2 200. Quelle plus-value brute par action ?",
+      "options": [
+        "2 200 FCFA",
+        "4 200 FCFA",
+        "200 FCFA"
+      ],
+      "answer": 2,
+      "explanation": "La différence de prix est 200 ; le résultat net tient ensuite compte des frais et taxes.",
+      "practiceAction": "Distinguer résultat brut et résultat net.",
+      "difficulty": 2,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-021",
+      "topic": "performance_nette",
+      "question": "Pour évaluer le résultat d’un aller-retour, que faut-il intégrer ?",
+      "options": [
+        "Seulement les messages reçus pendant la détention",
+        "Les prix d’achat et de vente, les frais et les taxes applicables",
+        "Le seul prix de vente"
+      ],
+      "answer": 1,
+      "explanation": "Une hausse de cours peut être absorbée en partie ou totalement par les coûts.",
+      "practiceAction": "Conserver les avis d’opéré et calculer le résultat après coûts.",
+      "difficulty": 2,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-022",
+      "topic": "dividende",
+      "question": "Un dividende versé l’année passée est-il certain l’année suivante ?",
+      "options": [
+        "Non, il dépend notamment des résultats et des décisions compétentes",
+        "Oui, sans aucune condition",
+        "Oui, pour toutes les entreprises connues"
+      ],
+      "answer": 0,
+      "explanation": "Le dividende n’est pas un revenu garanti simplement parce qu’il existe un historique.",
+      "practiceAction": "Vérifier la décision officielle et les conditions de distribution.",
+      "difficulty": 2,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-023",
+      "topic": "rendement",
+      "question": "Un dividende brut de 800 pour un prix de 10 000 correspond à…",
+      "options": [
+        "80 %",
+        "0,8 %",
+        "8 % de rendement brut"
+      ],
+      "answer": 2,
+      "explanation": "800 / 10 000 = 0,08. Ce ratio brut ne garantit ni les dividendes futurs ni le résultat total.",
+      "practiceAction": "Calculer séparément rendement du dividende et variation du cours.",
+      "difficulty": 2,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-024",
+      "topic": "detachement",
+      "question": "Pourquoi acheter juste avant un détachement ne garantit-il pas un gain gratuit ?",
+      "options": [
+        "Les actions reçues sont toujours gratuites",
+        "Le cours peut s’ajuster et les frais ou taxes restent à considérer",
+        "Le dividende double toujours le cours"
+      ],
+      "answer": 1,
+      "explanation": "Le paiement et l’ajustement de cours doivent être examinés ensemble.",
+      "practiceAction": "Lire calendrier, conditions d’éligibilité et traitement des frais et taxes.",
+      "difficulty": 2,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-025",
+      "topic": "calendrier",
+      "question": "Quelle information consulter pour connaître un paiement de dividende ?",
+      "options": [
+        "Un avis officiel avec les dates et les conditions",
+        "Une capture d’écran sans date",
+        "Le cours le plus ancien disponible"
+      ],
+      "answer": 0,
+      "explanation": "Les dates d’éligibilité et de paiement ne sont pas nécessairement identiques.",
+      "practiceAction": "Consulter l’avis officiel de l’émetteur ou du marché.",
+      "difficulty": 2,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-026",
+      "topic": "bpa",
+      "question": "Que mesure le bénéfice par action dans sa définition usuelle ?",
+      "options": [
+        "Le montant automatiquement versé à chaque actionnaire",
+        "Le prix de vente garanti d’une action",
+        "Le bénéfice net attribuable rapporté au nombre d’actions pertinent"
+      ],
+      "answer": 2,
+      "explanation": "Le BPA est un indicateur comptable ; il n’est pas à lui seul un paiement.",
+      "practiceAction": "Lire les comptes, la période et le mode de calcul de l’indicateur.",
+      "difficulty": 2,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-027",
+      "topic": "per",
+      "question": "Pour un cours de 10 000 et un BPA positif de 1 000, le PER vaut…",
+      "options": [
+        "10 %",
+        "10",
+        "1 000"
+      ],
+      "answer": 1,
+      "explanation": "Le PER est cours / BPA. Il ne promet pas un remboursement dans dix ans.",
+      "practiceAction": "Comparer les ratios sur des bases et périodes cohérentes.",
+      "difficulty": 2,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-028",
+      "topic": "per_comparaison",
+      "question": "Un PER plus bas signifie-t-il automatiquement une meilleure affaire ?",
+      "options": [
+        "Non, la croissance, les risques et la qualité des résultats comptent aussi",
+        "Oui, sans autre vérification",
+        "Oui, quel que soit le secteur"
+      ],
+      "answer": 0,
+      "explanation": "Un ratio isolé peut refléter des anticipations ou des difficultés différentes.",
+      "practiceAction": "Comparer des sociétés comparables et lire le contexte.",
+      "difficulty": 2,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-029",
+      "topic": "per_negatif",
+      "question": "Avec un BPA négatif, comment traiter le PER habituel ?",
+      "options": [
+        "Il garantit un remboursement immédiat",
+        "Il vaut forcément zéro",
+        "Il n’est pas pertinent pour la comparaison usuelle fondée sur des bénéfices positifs"
+      ],
+      "answer": 2,
+      "explanation": "Une perte ne s’interprète pas comme un bénéfice permettant la comparaison habituelle du ratio.",
+      "practiceAction": "Examiner la cause des pertes et les autres informations publiées.",
+      "difficulty": 3,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-030",
+      "topic": "comptes",
+      "question": "Avant d’interpréter un chiffre financier, que vérifier ?",
+      "options": [
+        "Le nombre de fois où il a été partagé",
+        "La période, le périmètre et le document source",
+        "Seulement la taille de la police"
+      ],
+      "answer": 1,
+      "explanation": "Des chiffres annuels, semestriels, consolidés ou sociaux peuvent mesurer des réalités différentes.",
+      "practiceAction": "Noter date, période et périmètre de chaque chiffre utilisé.",
+      "difficulty": 3,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-031",
+      "topic": "dette",
+      "question": "Une entreprise très endettée doit notamment être examinée sous l’angle…",
+      "options": [
+        "De sa capacité à servir sa dette et de ses échéances",
+        "Du seul nombre de ses agences",
+        "D’un dividende toujours garanti"
+      ],
+      "answer": 0,
+      "explanation": "Le montant, le coût et les échéances de dette influencent les risques financiers.",
+      "practiceAction": "Lire les informations sur dette, trésorerie et engagements.",
+      "difficulty": 3,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-032",
+      "topic": "flux",
+      "question": "Des bénéfices comptables élevés suffisent-ils à prouver une trésorerie abondante ?",
+      "options": [
+        "Oui, dans tous les cas",
+        "Oui, si le cours monte",
+        "Non, il faut aussi examiner les flux et les besoins de financement"
+      ],
+      "answer": 2,
+      "explanation": "Le résultat comptable et les encaissements ne se confondent pas.",
+      "practiceAction": "Consulter les flux de trésorerie et les besoins de fonds de roulement.",
+      "difficulty": 3,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-033",
+      "topic": "droits",
+      "question": "Pourquoi lire une convocation à l’assemblée générale ?",
+      "options": [
+        "Pour supprimer les frais de courtage",
+        "Pour connaître les résolutions et les modalités d’exercice des droits",
+        "Pour obtenir une hausse de cours garantie"
+      ],
+      "answer": 1,
+      "explanation": "Les droits s’exercent selon les règles et procédures applicables.",
+      "practiceAction": "Lire les résolutions et demander les modalités à l’intermédiaire.",
+      "difficulty": 3,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-034",
+      "topic": "operation_capital",
+      "question": "Une annonce d’augmentation de capital peut nécessiter de vérifier…",
+      "options": [
+        "Les modalités, le calendrier et l’éventuelle dilution",
+        "Seulement le logo de la société",
+        "Une promesse automatique de gain"
+      ],
+      "answer": 0,
+      "explanation": "Les opérations sur capital peuvent modifier le nombre de titres et les droits économiques.",
+      "practiceAction": "Consulter l’avis d’opération et ses conditions avant de décider.",
+      "difficulty": 3,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-035",
+      "topic": "inflation",
+      "question": "Si les prix montent et que l’épargne reste inchangée, que peut-il arriver ?",
+      "options": [
+        "Son pouvoir d’achat augmente forcément",
+        "Ses frais disparaissent",
+        "Son pouvoir d’achat diminue"
+      ],
+      "answer": 2,
+      "explanation": "La valeur nominale et la quantité de biens achetables sont deux mesures différentes.",
+      "practiceAction": "Distinguer rendement nominal et pouvoir d’achat.",
+      "difficulty": 3,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-036",
+      "topic": "information",
+      "question": "Une promesse de rendement élevé sans risque doit conduire à…",
+      "options": [
+        "Envoyer ses codes de compte",
+        "Vérifier les sources et se méfier de la promesse",
+        "Verser rapidement pour ne pas manquer l’offre"
+      ],
+      "answer": 1,
+      "explanation": "Aucune promesse commerciale ne dispense de vérifier l’identité, l’autorisation et le risque.",
+      "practiceAction": "Vérifier l’interlocuteur sur des canaux officiels indépendants.",
+      "difficulty": 3,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-037",
+      "topic": "securite",
+      "question": "Un interlocuteur demande un code de connexion ou un code à usage unique. Que faire ?",
+      "options": [
+        "Ne pas le communiquer et contacter l’établissement par un canal officiel",
+        "L’envoyer si le profil paraît professionnel",
+        "Le publier pour obtenir de l’aide"
+      ],
+      "answer": 0,
+      "explanation": "Les codes de sécurité permettent d’accéder au compte ou d’autoriser des opérations.",
+      "practiceAction": "Utiliser les contacts officiels et protéger ses moyens d’accès.",
+      "difficulty": 3,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-038",
+      "topic": "discipline",
+      "question": "Un cours monte vivement après un message viral. Quelle réaction prépare une décision plus réfléchie ?",
+      "options": [
+        "Acheter forcément immédiatement",
+        "Ignorer totalement les coûts",
+        "Vérifier l’information et la cohérence avec son plan avant d’agir"
+      ],
+      "answer": 2,
+      "explanation": "L’urgence ressentie peut pousser à une décision sans évaluation suffisante.",
+      "practiceAction": "Revenir au budget, à l’horizon et aux sources vérifiables.",
+      "difficulty": 3,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-039",
+      "topic": "suivi",
+      "question": "Que noter dans un journal d’investissement pédagogique ?",
+      "options": [
+        "Uniquement le nom du titre",
+        "Le motif de la décision, les coûts, l’horizon et les critères de réexamen",
+        "Seulement les gains des autres"
+      ],
+      "answer": 1,
+      "explanation": "Un journal permet de comparer le raisonnement initial et les faits ultérieurs.",
+      "practiceAction": "Écrire les hypothèses avant l’achat, puis les confronter aux nouvelles informations.",
+      "difficulty": 3,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    },
+    {
+      "id": "practical-brvm-040",
+      "topic": "bilan",
+      "question": "Pour réexaminer une stratégie, quel bilan est le plus utile ?",
+      "options": [
+        "Le résultat après coûts, les risques pris et l’évolution des besoins",
+        "Le nombre de transactions seulement",
+        "La meilleure journée de cours uniquement"
+      ],
+      "answer": 0,
+      "explanation": "Une stratégie se juge aussi par son adéquation aux contraintes et par le risque supporté.",
+      "practiceAction": "Réexaminer périodiquement objectifs, contraintes et exposition sans promettre un résultat.",
+      "difficulty": 3,
+      "market": "BRVM / UEMOA",
+      "source": "original_paco_educational",
+      "reviewedOn": "2026-11-15",
+      "personalizedAdvice": false
+    }
+  ]
+}
