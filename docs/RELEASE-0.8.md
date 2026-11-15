@@ -10,7 +10,7 @@
 - Sauvegarde v6 compatible en lecture v1 à v5. Solde, positions, cartes et acquis conservés ; les placements arrivent vides lors d’une migration. Les trois placements pédagogiques historiques restent visibles en l’absence d’un choix explicite.
 - Trente quiz de campagne reparamétrés à partir de notions pragmatiques et base de 40 exercices originaux, avec explication et action pédagogique. Accès depuis les réglages ; les exercices recommandés sont priorisés selon le suivi local.
 - Directeur statistique local : réussites, échecs, temps, coups, erreurs de quiz et répartition des achats/ventes. Paliers bornés, choisis avant la partie, pas de modification du chronomètre en cours. Entraînements générés après la campagne, sans crédits économiques supplémentaires. Suivi distinct des acquis, réinitialisable ; pas de LLM ni de transmission du comportement à un serveur.
-- Nouvelle icône Android avec Paco, fond bleu ciel et pièce d’or ; déclinaisons de densité et icône adaptative. Écran de chargement bleu ciel, Paco au centre et nom vert en relief. CTA avec bord et profondeur argile.
+- Nouvelle icône Android avec Paco, fond bleu ciel et pièce d’or ; déclinaisons de densité et icône adaptative. Écran de chargement portrait repris du visuel fourni : « PACO bourse facile » au-dessus de Paco et « apprendre la bourse » en dessous, sur fond bleu ciel. CTA avec bord et profondeur argile.
 
 ## Sources et limites explicites
 
