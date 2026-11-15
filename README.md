@@ -1,13 +1,21 @@
-# PACO Flutter 0.8.0
+# PACO Flutter 0.9.0 — Héritages BRVM
 
-[Télécharger l’APK Android ARM64](paco-flutter-0.8.0-9x9-paco-arm64.apk?raw=true)
+[Télécharger l’APK Android ARM64](https://raw.githubusercontent.com/mrgohou/boursefacile-game/mobile/apk-v0.9.0-heritages/paco-flutter-0.9.0-heritages-brvm-arm64.apk) — 52,9 Mo, Android 7 minimum.
 
-[Visuel du chargement](paco-loading.png) · [Icône PNG](paco-icon.png)
+Installer par-dessus la version Flutter précédente **sans désinstaller** pour conserver les acquis. Même identifiant et même signature de développement que la version 0.8.0. APK AOT/profile destiné aux essais, sans publication Play Store.
 
-Chargement corrigé à partir du visuel fourni : « PACO bourse facile » au-dessus de la mascotte et « apprendre la bourse » en dessous.
+- 20 pions culturels et cinq pouvoirs, légende et noms accessibles.
+- Cinq familles de motifs de pagnes et 24 nouveaux bâtiments en argile.
+- 32 villes des huit pays de la BRVM, 31 terrains achetables et 16 sites par ville ; développement rural, ville en essor puis moderne selon les gains, le score PACO et les investissements. Stade débloqué conservé après vente.
+- Séries de 5 et 10 quiz/niveaux sans faute : colas, cauris, pièces d’or et trophée croix d’Agadez. Fenêtre animée **COLLECTER**, versement unique et trésors conservés. 1 cola = 500 F jeu ; 1 cauri = 1 000 F jeu ; 1 pièce d’or = 2 000 F jeu. La croix n’a pas de valeur monétaire.
+- Migration v7 depuis les anciennes sauvegardes, portefeuille conservé, sans cadeaux rétroactifs.
 
-Cette version comprend le plateau 9×9, les nouveaux défis, le placement des 48 titres, les quartiers de 16 sites, 40 exercices pratiques et une adaptation statistique locale. La sauvegarde v6 reprend les formats v1 à v5. Installer par-dessus Flutter sans désinstaller pour conserver les acquis.
+**Validation : 89 tests Flutter et 4 tests d’interface/capture réussis ; analyse sans problème.** Atlas embarqués et signature APK vérifiés. Aucun téléphone physique utilisé.
 
-79 tests Flutter et analyse statique sans problème. Aucun essai sur téléphone physique.
+[Sources](https://github.com/mrgohou/boursefacile-game/tree/50ecec4d67e502a228d72d8605c6aff0dd50daa2) · [Règles détaillées](https://github.com/mrgohou/boursefacile-game/blob/50ecec4d67e502a228d72d8605c6aff0dd50daa2/docs/RELEASE-0.9.md) · [Outils et skills utilisés](https://github.com/mrgohou/boursefacile-game/blob/50ecec4d67e502a228d72d8605c6aff0dd50daa2/docs/TOOLS-0.9.md) · [Contrôle SHA-256](SHA256SUMS)
 
-FluxBourse est accessible par lien ; sa banque complète n’est pas republiée. Unreal et Construct 3 ne sont pas intégrés : le moteur reste Flutter/Flame. Les détails et limites figurent dans les notes de version du code source.
+Les captures ci-dessous proviennent de Flutter Test, pas d’un appareil Android. Les représentations culturelles sont des évocations artistiques originales. Le jeu reste une simulation pédagogique locale, sans investissement réel.
+
+![Récompense](previews/reward-level10.png)
+![Ville moderne](previews/city-modern.png)
+![Puzzle et pions culturels](previews/puzzle-cultural.png)
