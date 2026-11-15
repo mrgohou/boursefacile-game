@@ -1,0 +1,1 @@
+{"FileVersion":3,"EngineAssociation":"5.5","Category":"Games","Description":"PACO native prototype — source, editor verification required","Modules":[{"Name":"PacoUnreal","Type":"Runtime","LoadingPhase":"Default"}],"Plugins":[{"Name":"PythonScriptPlugin","Enabled":true,"TargetAllowList":["Editor"]},{"Name":"EditorScriptingUtilities","Enabled":true,"TargetAllowList":["Editor"]}]}

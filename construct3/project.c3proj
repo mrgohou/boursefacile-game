@@ -1,0 +1,189 @@
+{
+  "projectFormatVersion": 1,
+  "savedWithRelease": 36200,
+  "name": "PACO Bourse Facile — Construct 3",
+  "runtime": "c3",
+  "useWorker": "no",
+  "bundleAddons": false,
+  "usedAddons": [
+    {
+      "type": "plugin",
+      "id": "Sprite",
+      "name": "Sprite",
+      "author": "Scirra",
+      "bundled": false
+    },
+    {
+      "type": "plugin",
+      "id": "Text",
+      "name": "Text",
+      "author": "Scirra",
+      "bundled": false
+    }
+  ],
+  "uniqueId": "paco-construct-original-2026",
+  "objectTypes": {
+    "items": [
+      "Piece",
+      "Label"
+    ],
+    "subfolders": []
+  },
+  "autosaveData": null,
+  "containers": [],
+  "families": {
+    "items": [],
+    "subfolders": []
+  },
+  "layouts": {
+    "items": [
+      "Main"
+    ],
+    "subfolders": []
+  },
+  "eventSheets": {
+    "items": [
+      "Main"
+    ],
+    "subfolders": []
+  },
+  "rootFileFolders": {
+    "script": {
+      "items": [
+        {
+          "name": "main.js",
+          "type": "application/javascript",
+          "sid": 606000,
+          "script-info": {
+            "purpose": "main"
+          }
+        },
+        {
+          "name": "engine.js",
+          "type": "application/javascript",
+          "sid": 606001,
+          "script-info": {
+            "purpose": "none"
+          }
+        }
+      ],
+      "subfolders": []
+    },
+    "sound": {
+      "items": [],
+      "subfolders": []
+    },
+    "music": {
+      "items": [],
+      "subfolders": []
+    },
+    "video": {
+      "items": [],
+      "subfolders": []
+    },
+    "font": {
+      "items": [],
+      "subfolders": []
+    },
+    "icon": {
+      "items": [],
+      "subfolders": []
+    },
+    "general": {
+      "items": [
+        {
+          "name": "catalog.json",
+          "type": "application/json",
+          "sid": 607000,
+          "file-info": {
+            "purpose": "none"
+          }
+        },
+        {
+          "name": "paco-icon.png",
+          "type": "image/png",
+          "sid": 607001,
+          "file-info": {
+            "purpose": "none"
+          }
+        },
+        {
+          "name": "paco-loading.png",
+          "type": "image/png",
+          "sid": 607002,
+          "file-info": {
+            "purpose": "none"
+          }
+        }
+      ],
+      "subfolders": []
+    }
+  },
+  "timelines": {
+    "items": [],
+    "subfolders": []
+  },
+  "properties": {
+    "description": "Prototype pédagogique natif PACO",
+    "version": "0.1.0.0",
+    "author": "PACO",
+    "authorEmail": "",
+    "authorWebsite": "https://www.construct.net",
+    "appId": "com.paco.construct",
+    "pixelRounding": false,
+    "zAxisScale": "normalized",
+    "fov": 0.7853981633974483,
+    "useLoaderLayout": false,
+    "fullscreenMode": "letterbox-scale",
+    "fullscreenQuality": "high",
+    "viewportFit": "auto",
+    "backgroundColor": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "splashColor": [
+      1,
+      1,
+      1,
+      0
+    ],
+    "useThemeColor": false,
+    "themeColor": [
+      1,
+      1,
+      1,
+      0
+    ],
+    "orientations": "portrait",
+    "webgpu": "auto",
+    "gpuPreference": "high-performance",
+    "scriptsType": "module",
+    "framerateMode": "vsync",
+    "compositingMode": "standard",
+    "sampling": "trilinear",
+    "downscaling": "medium",
+    "renderingMode": "auto",
+    "anisotropicFiltering": "auto",
+    "zNear": 1,
+    "zFar": 10000,
+    "maxSpriteSheetSize": 2048,
+    "loaderStyle": "splash",
+    "preloadSounds": true,
+    "cordovaiOSScheme": "app",
+    "cordovaAndroidScheme": "https",
+    "autoReloadScriptsOnPreview": false,
+    "exportFileStructure": "folders",
+    "uidAllocationMode": "increment",
+    "email": "",
+    "website": ""
+  },
+  "viewportWidth": 540,
+  "viewportHeight": 960,
+  "firstLayout": "Main",
+  "flowcharts": {
+    "items": [],
+    "subfolders": []
+  }
+}

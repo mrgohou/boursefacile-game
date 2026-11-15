@@ -1,0 +1,15 @@
+name: Native prototype rules
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  portable-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/*.test.mjs
+      - run: g++ -std=c++17 -Wall -Wextra -Werror -pedantic -I unreal/Source/PacoUnreal/Public tests/rules_cpp.cpp -o /tmp/paco-rules-test
+      - run: /tmp/paco-rules-test
+      - run: python scripts/build_construct.py
+      - run: python tests/verify_projects.py

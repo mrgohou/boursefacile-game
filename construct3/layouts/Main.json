@@ -1,0 +1,144 @@
+{
+  "name": "Main",
+  "layers": [
+    {
+      "name": "Game",
+      "overriden": 0,
+      "subLayers": [],
+      "instances": [
+        {
+          "type": "Piece",
+          "properties": {
+            "initially-visible": true,
+            "initial-animation": "Default",
+            "initial-frame": 0,
+            "enable-collisions": true,
+            "live-preview": false
+          },
+          "uid": 0,
+          "sid": 601000,
+          "tags": "",
+          "instanceVariables": {},
+          "behaviors": {},
+          "instanceFolderItem": {
+            "sid": 602000,
+            "expanded": true
+          },
+          "showing": true,
+          "locked": false,
+          "world": {
+            "x": -500,
+            "y": -500,
+            "width": 128,
+            "height": 128,
+            "originX": 0.5,
+            "originY": 0.5,
+            "color": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "angle": 0,
+            "zElevation": 0
+          }
+        },
+        {
+          "type": "Label",
+          "properties": {
+            "text": "PACO",
+            "enable-bbcode": false,
+            "font": "Arial",
+            "size": 18,
+            "line-height": 0,
+            "bold": true,
+            "italic": false,
+            "color": [
+              0,
+              0,
+              0,
+              1
+            ],
+            "horizontal-alignment": "center",
+            "vertical-alignment": "center",
+            "wrapping": "word",
+            "text-direction": "ltr",
+            "icon-set": -1,
+            "initially-visible": true,
+            "origin": "center",
+            "read-aloud": false
+          },
+          "uid": 1,
+          "sid": 601001,
+          "tags": "",
+          "instanceVariables": {},
+          "behaviors": {},
+          "instanceFolderItem": {
+            "sid": 602001,
+            "expanded": true
+          },
+          "showing": true,
+          "locked": false,
+          "world": {
+            "x": -500,
+            "y": -500,
+            "width": 128,
+            "height": 128,
+            "originX": 0.5,
+            "originY": 0.5,
+            "color": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "angle": 0,
+            "zElevation": 0
+          }
+        }
+      ],
+      "sid": 603000,
+      "effectTypes": [],
+      "isInitiallyVisible": true,
+      "isInitiallyInteractive": true,
+      "isHTMLElementsLayer": false,
+      "color": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "backgroundColor": [
+        0.8,
+        0.94,
+        1,
+        1
+      ],
+      "isTransparent": false,
+      "parallaxX": 1,
+      "parallaxY": 1,
+      "scaleRate": 1,
+      "forceOwnTexture": false,
+      "renderingMode": "2d",
+      "drawOrder": "index",
+      "useRenderCells": false,
+      "blendMode": "normal",
+      "zElevation": 0,
+      "global": false
+    }
+  ],
+  "scene-graphs-folder-root": {
+    "items": [],
+    "subfolders": []
+  },
+  "nonworld-instances": [],
+  "sid": 604000,
+  "effectTypes": [],
+  "width": 540,
+  "height": 960,
+  "unboundedScrolling": false,
+  "vpX": 0.5,
+  "vpY": 0.5,
+  "projection": "orthographic",
+  "eventSheet": "Main"
+}

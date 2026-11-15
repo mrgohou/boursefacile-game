@@ -1,0 +1,9 @@
+unreal/Binaries/
+unreal/Intermediate/
+unreal/DerivedDataCache/
+unreal/Saved/
+.vs/
+*.sln
+*.suo
+__pycache__/
+node_modules/

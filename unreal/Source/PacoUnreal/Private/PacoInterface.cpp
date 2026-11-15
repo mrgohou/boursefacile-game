@@ -1,0 +1,31 @@
+#include "PacoGame.h"
+#include "Engine/Canvas.h"
+#include "Engine/Engine.h"
+#include "Dom/JsonObject.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/InputSettings.h"
+void APacoController::BeginPlay(){Super::BeginPlay();bShowMouseCursor=true;SetInputMode(FInputModeGameAndUI());}
+void APacoController::SetupInputComponent(){Super::SetupInputComponent();InputComponent->BindKey(EKeys::LeftMouseButton,IE_Pressed,this,&APacoController::Press);InputComponent->BindKey(EKeys::LeftMouseButton,IE_Released,this,&APacoController::Release);InputComponent->BindTouch(IE_Pressed,this,&APacoController::TouchBegin);InputComponent->BindTouch(IE_Released,this,&APacoController::TouchEnd);}
+void APacoController::Press(){float X,Y;GetMousePosition(X,Y);Point(FVector2D(X,Y),true);}
+void APacoController::Release(){float X,Y;GetMousePosition(X,Y);Point(FVector2D(X,Y),false);}
+void APacoController::TouchBegin(ETouchIndex::Type I,FVector P){if(I==ETouchIndex::Touch1)Point(FVector2D(P.X,P.Y),true);}
+void APacoController::TouchEnd(ETouchIndex::Type I,FVector P){if(I==ETouchIndex::Touch1)Point(FVector2D(P.X,P.Y),false);}
+void APacoController::Point(FVector2D P,bool Down){auto* G=Cast<APacoGame>(GetWorld()->GetAuthGameMode());auto* H=Cast<APacoHUD>(GetHUD());if(!G)return;if(!Down&&H&&H->Dispatch(P)){StartCell=-1;return;}if(G->Screen!=TEXT("puzzle"))return;FVector O,D;if(!DeprojectScreenPositionToWorld(P.X,P.Y,O,D)||FMath::Abs(D.Z)<.0001)return;FVector W=O+D*(-O.Z/D.Z);int X=FMath::RoundToInt(W.X/100)+4,Y=FMath::RoundToInt(W.Y/100)+4;int Cell=X>=0&&X<9&&Y>=0&&Y<9?Y*9+X:-1;if(Down){StartCell=Cell;return;}if(Cell>=0){if(StartCell>=0&&Cell!=StartCell)G->Selected=StartCell;G->Cell(Cell);}StartCell=-1;}
+void APacoHUD::NotifyHitBoxClick(FName Name){Super::NotifyHitBoxClick(Name);}
+bool APacoHUD::Dispatch(FVector2D Point){for(int I=0;I<Boxes.Num();I++)if(Boxes[I].IsInside(Point)){if(auto* G=Cast<APacoGame>(GetWorld()->GetAuthGameMode()))G->Action(Names[I]);return true;}return false;}
+void APacoHUD::Button(FString Text,float Y,FName Name,FLinearColor C){float S=Canvas->SizeX/540.f,T=Canvas->SizeY/960.f;DrawRect(C,20*S,Y*T,500*S,48*T);DrawText(Text,FLinearColor::White,30*S,(Y+12)*T,GEngine->GetSmallFont(),1.6*S);Boxes.Add(FBox2D(FVector2D(20*S,Y*T),FVector2D(520*S,(Y+48)*T)));Names.Add(Name);}
+void APacoHUD::DrawHUD(){Super::DrawHUD();Boxes.Empty();Names.Empty();auto* G=Cast<APacoGame>(GetWorld()->GetAuthGameMode());if(!G)return;float S=Canvas->SizeX/540.f,T=Canvas->SizeY/960.f;auto Text=[&](const FString& V,float Y,float Size=1.7f){DrawText(V,FLinearColor::White,25*S,Y*T,GEngine->GetSmallFont(),Size*S);};
+ DrawRect(FLinearColor(.035,.11,.15,.95),0,0,Canvas->SizeX,125*T);Text(TEXT("PACO bourse facile"),22,2.8);Text(FString::Printf(TEXT("%d F CFA — simulation pédagogique"),G->Balance()),78);if(!G->Message.IsEmpty()){DrawRect(FLinearColor(.05,.08,.11,.95),0,130*T,Canvas->SizeX,110*T);Text(G->Message,145,1.4);}
+ if(G->Screen==TEXT("error"))return;
+ auto& C=G->Catalog->GetArrayField(TEXT("companies"));auto Current=C[G->CompanyIndex]->AsObject();FString Company=Current->GetStringField(TEXT("name"));
+ if(G->Screen==TEXT("home")){Button(TEXT("Jouer — étape ")+FString::FromInt(G->Stage+1),275,TEXT("play"));Button(TEXT("Guichet des entreprises"),340,TEXT("market"));Button(TEXT("Mes propriétés — choisir l’emplacement"),405,TEXT("city"));Button(TEXT("Mes cartes"),470,TEXT("cards"));Button(TEXT("Agrandir ma ville"),535,TEXT("lands"));Button(TEXT("Notion de Paco"),600,TEXT("quiz"));}
+ if(G->Screen==TEXT("instructions")){DrawRect(FLinearColor(.05,.12,.18,.98),15*S,270*T,510*S,440*T);Text(TEXT("Objectifs du niveau"),290,2);Text(G->Objectives(),350,1.3);Text(FString::Printf(TEXT("%d secondes · %d coups\nToucher deux voisins ou glisser."),int(G->Seconds),G->Puzzle->moves),450,1.5);Button(TEXT("Commencer"),600,TEXT("start"));}
+ if(G->Screen==TEXT("puzzle")){Text(FString::Printf(TEXT("%.0f s · %d coups"),G->Seconds,G->Puzzle->moves),140,2);Text(G->Objectives(),190,1.3);}
+ if(G->Screen==TEXT("won")||G->Screen==TEXT("lost")){DrawRect(FLinearColor(.08,.18,.25,.98),15*S,270*T,510*S,400*T);Text(G->Screen==TEXT("won")?TEXT("GAGNÉ !"):TEXT("PAS DE CHANCE"),310,3.2);Text(G->Objectives(),400,1.3);if(G->Screen==TEXT("won"))Button(TEXT("Valider ma notion"),530,TEXT("quiz"));}
+ if(G->Screen==TEXT("quiz")){if(G->Stage<30&&int(G->Save->GetNumberField(TEXT("pending")))==G->Stage){auto Q=G->Catalog->GetArrayField(TEXT("questions"))[G->Stage%40]->AsObject();Text(Q->GetStringField(TEXT("question")),280,1.3);auto Options=Q->GetArrayField(TEXT("options"));for(int I=0;I<Options.Num();I++)Button(Options[I]->AsString(),390+I*95,FName(*FString::Printf(TEXT("answer%d"),I)));}else Text(TEXT("Gagne le puzzle avant de valider la notion."),300,1.4);}
+ if(G->Screen==TEXT("market")||G->Screen==TEXT("city")){Text(Company,260,1.8);Text(FString::Printf(TEXT("%d F CFA / part · frais 1 %% (min. 25)"),int(Current->GetNumberField(TEXT("price")))),300,1.5);Button(TEXT("Entreprise suivante →"),340,TEXT("next"));}
+ if(G->Screen==TEXT("market")){Button(TEXT("Acheter plus"),430,TEXT("buy"));Button(TEXT("Vendre"),500,TEXT("sell"),FLinearColor(.7,.13,.08));}
+ if(G->Screen==TEXT("city")){Button(TEXT("Terrain suivant"),405,TEXT("plot"));for(int I=0;I<16;I++){float X=25+(I%4)*128,Y=485+(I/4)*80;DrawRect(FLinearColor(.12,.45,.2,.85),X*S,Y*T,115*S,65*T);DrawText(FString::FromInt(I+1),FLinearColor::White,(X+40)*S,(Y+20)*T,GEngine->GetSmallFont(),2*S);Boxes.Add(FBox2D(FVector2D(X*S,Y*T),FVector2D((X+115)*S,(Y+65)*T)));Names.Add(FName(*FString::Printf(TEXT("site%d"),I)));}}
+ if(G->Screen==TEXT("lands")){const auto& Lands=G->Catalog->GetArrayField(TEXT("lands"));for(int I=0;I<Lands.Num();I++){auto L=Lands[I]->AsObject();Button(L->GetStringField(TEXT("id"))+FString::Printf(TEXT(" · %.0f F CFA · gains %.0f"),L->GetNumberField(TEXT("price")),L->GetNumberField(TEXT("gains"))),280+I*78,FName(*FString::Printf(TEXT("land%d"),I)));}}
+ if(G->Screen==TEXT("cards")){FString Cards;for(auto V:G->Save->GetArrayField(TEXT("cards")))Cards+=V->AsString()+TEXT(" · ");Text(Cards.IsEmpty()?TEXT("Aucune carte acquise"):Cards,300,1.4);}
+ if(G->Screen!=TEXT("home"))Button(TEXT("Menu principal"),885,TEXT("home"));}
