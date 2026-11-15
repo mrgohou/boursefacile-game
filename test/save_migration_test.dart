@@ -23,13 +23,17 @@ void main() {
     final migrated = PlayerState.fromJson(jsonDecode(jsonEncode(old)));
     expect(migrated.companyCards, {'cacao', 'banque'});
     expect(migrated.cash, old['cash']);
-    expect(migrated.holdings, old['holdings']);
-    expect(migrated.prices, old['prices']);
+    for (final id in ['cacao', 'telecom', 'banque']) {
+      expect(migrated.holdings[id], (old['holdings'] as Map)[id]);
+    }
+    for (final id in ['cacao', 'telecom', 'banque']) {
+      expect(migrated.prices[id], (old['prices'] as Map)[id]);
+    }
     expect(migrated.completed, {0, 1});
     expect(migrated.answered, {0, 1});
     expect(migrated.unlockedLevel, 2);
     final encoded = migrated.toJson();
-    expect(encoded['version'], 4);
+    expect(encoded['version'], 5);
     expect(encoded['companyCards'], ['banque', 'cacao']);
     expect(PlayerState.fromJson(encoded).toJson(), encoded);
   });
@@ -42,8 +46,7 @@ void main() {
         'Vente : 2500 − 25 FCFA-jeu de frais.',
       ];
     expect(PlayerState.fromJson(sold).companyCards, isEmpty);
-    final oldInitial = PlayerState.initial().toJson()
-      ..['version'] = 1
+    final oldInitial = legacySave(PlayerState.initial().toJson(), 1)
       ..remove('companyCards');
     expect(PlayerState.fromJson(oldInitial).companyCards, isEmpty);
   });
@@ -110,10 +113,23 @@ void main() {
           ...valid,
           'companyCards': ['cacao', 'banque', 'telecom', 'unknown'],
         },
-        {...valid, 'version': 5},
+        {...valid, 'version': 6},
       ]) {
         expect(() => PlayerState.fromJson(bad), throwsFormatException);
       }
     },
   );
 }
+
+Map<String, dynamic> legacySave(Map<String, dynamic> raw, int version) => {
+  ...raw,
+  'version': version,
+  'holdings': {
+    for (final id in ['cacao', 'telecom', 'banque'])
+      id: (raw['holdings'] as Map)[id],
+  },
+  'prices': {
+    for (final id in ['cacao', 'telecom', 'banque'])
+      id: (raw['prices'] as Map)[id],
+  },
+};

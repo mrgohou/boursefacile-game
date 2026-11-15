@@ -9,6 +9,7 @@ import '../data/player_repository.dart';
 import '../domain/lessons.dart';
 import '../domain/player_state.dart';
 import 'city_map.dart';
+import 'market_list.dart';
 import 'city_growth_sheet.dart';
 import 'companion_page.dart';
 import 'game_chrome.dart';
@@ -24,11 +25,7 @@ String money(int value) => value.toString().replaceAllMapped(
   (_) => '\u202f',
 );
 String companyAsset(String id) =>
-    'assets/buildings/${switch (id) {
-      'cacao' => 'agro',
-      'telecom' => 'telecom',
-      _ => 'banque',
-    }}-1.webp';
+    'assets/buildings/${companies.firstWhere((c) => c.id == id).family}-1.webp';
 
 class PacoApp extends StatefulWidget {
   const PacoApp({super.key, required this.repository, this.audio});
@@ -253,7 +250,7 @@ class _PacoHomeState extends State<PacoHome> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Retrouve tes décisions et les notions explorées. La monnaie et les entreprises sont fictives.',
+              'Retrouve tes décisions et les notions explorées. Les transactions et la monnaie sont simulées.',
             ),
             const SizedBox(height: 20),
             for (final h in s.history.reversed)
@@ -460,7 +457,11 @@ class _PacoHomeState extends State<PacoHome> {
         ),
         const SizedBox(height: 12),
         Chip(label: Text(c.sector)),
-        const Text('Entreprise fictive · portefeuille simulé'),
+        Text(
+          c.archived
+              ? '${c.id} · ${c.country} · cours archivé du 13/11/2026 · simulation'
+              : 'Entreprise fictive · portefeuille simulé',
+        ),
         const SizedBox(height: 18),
         Text(
           '${money(price)} FCFA-jeu / part',
@@ -489,7 +490,7 @@ class _PacoHomeState extends State<PacoHome> {
                       if (await change((s) => s.buy(id))) {
                         widget.audio.play('win');
                         message(
-                          'Une part acquise ! Retrouve le bâtiment dans ta ville.',
+                          'Une part acquise ! Retrouve-la dans Mes propriétés.',
                         );
                       }
                     }
@@ -549,28 +550,16 @@ class _PacoHomeState extends State<PacoHome> {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       const Text(
-        'Trois entreprises pour expérimenter. Les prix sont scénarisés ; ils ne suivent pas un marché réel.',
+        '45 actions du catalogue historique et trois titres pédagogiques. Cours de référence du 13/11/2026, utilisés en FCFA-jeu ; aucun cours en direct.',
       ),
       const SizedBox(height: 20),
-      for (final c in companies)
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Card.outlined(
-            child: ListTile(
-              contentPadding: const EdgeInsets.all(12),
-              leading: Image.asset(companyAsset(c.id), width: 64),
-              title: Text(c.name),
-              subtitle: Text(
-                '${money(s.prices[c.id]!)} FCFA-jeu · ${s.holdings[c.id]} part(s)',
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.pop(context);
-                company(c.id);
-              },
-            ),
-          ),
-        ),
+      MarketList(
+        state: s,
+        onCompany: (id) {
+          Navigator.pop(context);
+          company(id);
+        },
+      ),
       const SizedBox(height: 14),
       Text(
         'Le laboratoire de Paco',

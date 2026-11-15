@@ -1,41 +1,8 @@
 import 'city_growth.dart';
 import 'stage_catalog.dart';
 
-class Company {
-  final String id, name, sector;
-  final int price, colorValue;
-  const Company({
-    required this.id,
-    required this.name,
-    required this.sector,
-    required this.price,
-    required this.colorValue,
-  });
-}
-
-const companies = <Company>[
-  Company(
-    id: 'cacao',
-    name: 'Cacao des Lagunes',
-    sector: 'Agroalimentaire',
-    price: 2000,
-    colorValue: 0xFFAC6B39,
-  ),
-  Company(
-    id: 'telecom',
-    name: 'Télécom Horizon',
-    sector: 'Télécommunications',
-    price: 2500,
-    colorValue: 0xFF477DD2,
-  ),
-  Company(
-    id: 'banque',
-    name: 'Banque Baobab',
-    sector: 'Banque',
-    price: 1500,
-    colorValue: 0xFF537D45,
-  ),
-];
+import 'company_catalog.dart';
+export 'company_catalog.dart';
 
 class PlayerState {
   static const _limit = 1000000000;
@@ -295,7 +262,7 @@ class PlayerState {
   }
 
   Map<String, dynamic> toJson() => {
-    'version': 4,
+    'version': 5,
     'ownedPlots': ownedPlots.toList()..sort(),
     'townBuildings': Map<String, String>.from(townBuildings),
     'journeyAnswers': journeyAnswers.toList()..sort(),
@@ -315,7 +282,8 @@ class PlayerState {
       if ((raw['version'] != 1 &&
               raw['version'] != 2 &&
               raw['version'] != 3 &&
-              raw['version'] != 4) ||
+              raw['version'] != 4 &&
+              raw['version'] != 5) ||
           raw['cash'] is! int ||
           raw['cash'] < 0 ||
           raw['cash'] > _limit ||
@@ -325,9 +293,10 @@ class PlayerState {
       }
       final holdings = Map<String, int>.from(raw['holdings'] as Map);
       final prices = Map<String, int>.from(raw['prices'] as Map);
-      if (holdings.length != 3 ||
-          prices.length != 3 ||
-          companies.any(
+      final expected = raw['version'] == 5 ? companies : legacyCompanies;
+      if (holdings.length != expected.length ||
+          prices.length != expected.length ||
+          expected.any(
             (c) =>
                 !holdings.containsKey(c.id) ||
                 holdings[c.id]! < 0 ||
@@ -335,6 +304,12 @@ class PlayerState {
                 !prices.containsKey(c.id),
           )) {
         throw const FormatException();
+      }
+      if (raw['version'] < 5) {
+        for (final c in archivedCompanies) {
+          holdings[c.id] = 0;
+          prices[c.id] = c.price;
+        }
       }
       final Set<String> companyCards;
       if (raw['version'] == 1) {
@@ -346,7 +321,7 @@ class PlayerState {
         };
       } else {
         final cards = List<String>.from(raw['companyCards'] as List);
-        final knownIds = companies.map((c) => c.id).toSet();
+        final knownIds = expected.map((c) => c.id).toSet();
         if (cards.length > companies.length ||
             cards.toSet().length != cards.length ||
             cards.any((id) => !knownIds.contains(id))) {
@@ -363,7 +338,8 @@ class PlayerState {
       final paid = raw['dividendPaid'] as bool;
       if (prices['cacao'] != 2000 - (dropped ? 300 : 0) - (paid ? 100 : 0) ||
           prices['telecom'] != 2500 ||
-          prices['banque'] != 1500) {
+          prices['banque'] != 1500 ||
+          archivedCompanies.any((c) => prices[c.id] != c.price)) {
         throw const FormatException();
       }
       Set<int> levels(dynamic value) {

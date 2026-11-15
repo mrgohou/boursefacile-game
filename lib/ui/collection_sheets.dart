@@ -69,7 +69,7 @@ class PropertiesSheet extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           const Text(
-            'Tu ne détiens aucune part pour le moment. Au guichet, découvre trois entreprises fictives. Acheter reste ton choix.',
+            'Tu ne détiens aucune part pour le moment. Au guichet, découvre les 45 actions historiques et les titres pédagogiques. Acheter reste ton choix.',
           ),
           const SizedBox(height: 16),
           if (onOpenGuichet != null)
@@ -80,7 +80,7 @@ class PropertiesSheet extends StatelessWidget {
             ),
         ] else ...[
           const Text(
-            'Chaque bâtiment représente une entreprise fictive dont tu détiens au moins une part.',
+            'Chaque bâtiment représente une entreprise dont tu détiens au moins une part.',
           ),
           const SizedBox(height: 16),
           for (final company in owned)
@@ -180,7 +180,11 @@ class CompanyCardsSheet extends StatelessWidget {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         const SizedBox(height: 8),
-                        const Text('Entreprise fictive'),
+                        Text(
+                          company.archived
+                              ? '${company.id} · cours du 13/11/2026'
+                              : 'Entreprise fictive',
+                        ),
                         const SizedBox(height: 12),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -396,7 +400,7 @@ class _Building extends StatelessWidget {
   final double height;
   @override
   Widget build(BuildContext context) {
-    final asset = company.id == 'cacao' ? 'agro' : company.id;
+    final asset = company.family;
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 14),

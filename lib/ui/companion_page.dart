@@ -196,7 +196,7 @@ class _CompanionPageState extends State<CompanionPage> {
                     const Padding(
                       padding: EdgeInsets.all(16),
                       child: Text(
-                        'Exemples historiques fournis dans l’APK. Données non vérifiées ici ; BPA, PER et dividendes sont à contrôler dans les publications officielles. Aucun achat réel ni lien avec le portefeuille fictif.',
+                        'Exemples historiques fournis dans l’APK. Données non vérifiées ici ; BPA, PER et dividendes sont à contrôler dans les publications officielles. Ces cours servent aussi de référence au portefeuille simulé du guichet. Aucun achat réel.',
                       ),
                     ),
                     Padding(

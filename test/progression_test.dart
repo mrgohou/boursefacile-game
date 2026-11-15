@@ -65,7 +65,7 @@ void main() {
       for (var i = 0; i < 6; i++) {
         old = old.completeLevel(i).answerLesson(i);
       }
-      final legacy = {...old.toJson(), 'version': 3};
+      final legacy = legacySave(old.toJson(), 3);
       final restored = PlayerState.fromJson(legacy);
       expect(restored.unlockedLevel, 6);
       expect(restored.cash, 19000);
@@ -73,7 +73,7 @@ void main() {
       final next = restored.completeLevel(6).answerLesson(6);
       expect(next.cash, 20500);
       expect(next.unlockedLevel, 7);
-      expect(next.toJson()['version'], 4);
+      expect(next.toJson()['version'], 5);
       expect(PlayerState.fromJson(next.toJson()).toJson(), next.toJson());
       expect(
         () => PlayerState.fromJson({...next.toJson(), 'version': 3}),
@@ -95,3 +95,16 @@ void main() {
     expect(() => PlayerState.initial().completeLevel(20), throwsStateError);
   });
 }
+
+Map<String, dynamic> legacySave(Map<String, dynamic> raw, int version) => {
+  ...raw,
+  'version': version,
+  'holdings': {
+    for (final id in ['cacao', 'telecom', 'banque'])
+      id: (raw['holdings'] as Map)[id],
+  },
+  'prices': {
+    for (final id in ['cacao', 'telecom', 'banque'])
+      id: (raw['prices'] as Map)[id],
+  },
+};

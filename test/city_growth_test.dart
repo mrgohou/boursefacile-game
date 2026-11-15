@@ -44,7 +44,7 @@ void main() {
   });
   test('v2 saves preserve portfolio and receive empty expansion progress', () {
     final before = PlayerState.initial().completeLevel(0).toJson();
-    final raw = {...before, 'version': 2}
+    final raw = legacySave(before, 2)
       ..remove('ownedPlots')
       ..remove('townBuildings')
       ..remove('journeyAnswers');
@@ -53,7 +53,7 @@ void main() {
     expect(migrated.completed, {0});
     expect(migrated.ownedPlots, isEmpty);
     expect(migrated.journeyAnswers, isEmpty);
-    expect(migrated.toJson()['version'], 4);
+    expect(migrated.toJson()['version'], 5);
   });
   test('invalid expansion data and insufficient budget are rejected', () {
     final s = PlayerState.initial().completeLevel(0);
@@ -122,3 +122,16 @@ void main() {
     expect(catalog.market['sessionDate'], '2026-11-13');
   });
 }
+
+Map<String, dynamic> legacySave(Map<String, dynamic> raw, int version) => {
+  ...raw,
+  'version': version,
+  'holdings': {
+    for (final id in ['cacao', 'telecom', 'banque'])
+      id: (raw['holdings'] as Map)[id],
+  },
+  'prices': {
+    for (final id in ['cacao', 'telecom', 'banque'])
+      id: (raw['prices'] as Map)[id],
+  },
+};
