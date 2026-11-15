@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "593474372ab88fdb0c1e076b436b38395ecf1c06",
+  "version": "0.7.0",
+  "versionCode": 2008,
+  "historicalStocks": 45,
+  "legacyStocks": 3,
+  "stages": 30,
+  "saveVersion": 5,
+  "testsPassed": 60,
+  "analyzerIssues": 0,
+  "physicalDeviceTested": false,
+  "sha256": "e0cd572670ce1b351979bfe145c3d97dbc1982d7f0a3d1b0e535a9c4cf33aa33"
+}
