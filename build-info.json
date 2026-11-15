@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "ed2f265b532f7c050477e3a38a7f4b8b1d4d2e7b",
+  "versionName": "0.8.0",
+  "versionCode": 2009,
+  "applicationId": "com.example.paco_bourse",
+  "minSdk": 24,
+  "targetSdk": 36,
+  "buildMode": "profile AOT / Skia",
+  "boardSize": 9,
+  "campaignStages": 30,
+  "practicalQuestions": 40,
+  "saveVersion": 6,
+  "testsPassed": 79,
+  "analyzerIssues": 0,
+  "physicalDeviceTested": false,
+  "localStatisticalDirector": true,
+  "unrealIntegrated": false,
+  "constructIntegrated": false,
+  "sha256": "ab01560f81c83ee861674b423bce91571752f6828409487357aa01ef61e57255",
+  "bytes": 46352903
+}
